@@ -40,7 +40,7 @@ export default {
     dynamicTable: 'Tabla dinámica',
     dragTable: 'Arrastrar tabla',
     inlineEditTable: 'Editor',
-    complexTable: 'Complex Table',
+    hotelManage: 'Hotel Manage',
     tab: 'Pestaña',
     form: 'Formulario',
     createArticle: 'Crear artículo',
