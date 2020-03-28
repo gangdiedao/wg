@@ -69,9 +69,9 @@ export default {
         files: '附件',
         remarks: '备注',
         modifier: '修改者',
-        actions: '操作',
-        edit: '编辑',
-        delete: '删除'
+        actions: 'actions',
+        edit: 'edit',
+        delete: 'delete'
       },
       areas: {
         all: 'All',
@@ -86,26 +86,6 @@ export default {
         surat: 'surat',
         kohchang: 'kohchang'
       }
-    }
-  },
-  es: {
-    i18nView: {
-      title: 'Switch Language',
-      note: 'The internationalization of this project is based on vue-i18n',
-      datePlaceholder: 'Pick a day',
-      selectPlaceholder: 'Select',
-      tableDate: 'tableDate',
-      tableName: 'tableName',
-      tableAddress: 'tableAddress',
-      default: 'default:',
-      primary: 'primary',
-      success: 'success',
-      info: 'info',
-      warning: 'warning',
-      danger: 'danger',
-      one: 'One',
-      two: 'Two',
-      three: 'Three'
     }
   }
 }

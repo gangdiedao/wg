@@ -206,18 +206,6 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import local from './local'
 const viewName = 'i18nView'
 
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
-
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
-
 export default {
   name: 'hotelMange',
   components: { Pagination },
@@ -252,7 +240,6 @@ export default {
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
@@ -286,7 +273,6 @@ export default {
       this.$router.push(`${this.$route.path}?tab=${val}`)
     },
     lang() {
-      console.log(1)
       this.setOptions()
     }
   },
@@ -298,6 +284,10 @@ export default {
     }
   },
   created() {
+    const tab = this.$route.query.tab
+    if (tab) {
+      this.activeName = tab
+    }
     if (!this.$i18n.getLocaleMessage('zh')[viewName]) {
       this.$i18n.mergeLocaleMessage('en', local.en)
       this.$i18n.mergeLocaleMessage('zh', local.zh)
