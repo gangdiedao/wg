@@ -18,134 +18,140 @@
         {{ $t('table.reviewer') }}
       </el-checkbox> -->
     </div>
-
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      stripe
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange"
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        width="55">
-      </el-table-column>
-      <el-table-column :label="$t('information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.name')" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.company')" min-width="250px">
-        <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.price')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.telePhone')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.fax')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.contacts')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.city')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.hotelType')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.hotelLevel')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.address')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.email')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.website')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.payType')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.creator')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.files')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.remarks')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.modifier')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            {{ $t('information.edit') }}
-          </el-button>
-          <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            {{ $t('table.publish') }}
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            {{ $t('table.draft') }}
-          </el-button> -->
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-            {{ $t('information.delete') }}
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
+        <keep-alive>
+          <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
+          <el-table
+            :key="tableKey"
+            v-loading="listLoading"
+            :data="list"
+            stripe
+            border
+            fit
+            highlight-current-row
+            style="width: 100%;"
+            @sort-change="sortChange"
+          >
+            <el-table-column
+              type="selection"
+              align="center"
+              width="55">
+            </el-table-column>
+            <el-table-column :label="$t('information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+              <template slot-scope="{row}">
+                <span>{{ row.id }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.name')" width="150px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.company')" min-width="250px">
+              <template slot-scope="{row}">
+                <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.price')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.telePhone')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.fax')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.contacts')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.city')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.hotelType')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.hotelLevel')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.address')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.email')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.website')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.payType')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.creator')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.files')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.remarks')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.modifier')" width="110px" align="center">
+              <template slot-scope="{row}">
+                <span>{{ row.author }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
+              <template slot-scope="{row,$index}">
+                <el-button type="primary" size="mini" @click="handleUpdate(row)">
+                  {{ $t('information.edit') }}
+                </el-button>
+                <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
+                  {{ $t('table.publish') }}
+                </el-button>
+                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
+                  {{ $t('table.draft') }}
+                </el-button> -->
+                <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+                  {{ $t('information.delete') }}
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
         <el-form-item :label="$t('table.type')" prop="type">
           <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
@@ -178,9 +184,9 @@
           {{ $t('table.confirm') }}
         </el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
+    <!-- <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
         <el-table-column prop="key" label="Channel" />
         <el-table-column prop="pv" label="Pv" />
@@ -188,7 +194,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -211,7 +217,7 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'ComplexTable',
+  name: 'hotelMange',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -229,6 +235,20 @@ export default {
   },
   data() {
     return {
+      tabMapOptions: [
+        { key: 'all', label: this.$t('areas.all') },
+        { key: 'bangkok', label: this.$t('areas.bangkok') },
+        { key: 'pattaya', label: this.$t('areas.pattaya') },
+        { key: 'samed', label: this.$t('areas.samed') },
+        { key: 'rayong', label: this.$t('areas.rayong') },
+        { key: 'ayutthaya', label: this.$t('areas.ayutthaya') },
+        { key: 'huahin', label: this.$t('areas.huahin') },
+        { key: 'kanchanaburi', label: this.$t('areas.kanchanaburi') },
+        { key: 'samui', label: this.$t('areas.samui') },
+        { key: 'surat', label: this.$t('areas.surat') },
+        { key: 'kohchang', label: this.$t('areas.kohchang') }
+      ],
+      activeName: 'all',
       tableKey: 0,
       list: null,
       total: 0,
@@ -269,6 +289,11 @@ export default {
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       downloadLoading: false
+    }
+  },
+  watch: {
+    activeName(val) {
+      this.$router.push(`${this.$route.path}?tab=${val}`)
     }
   },
   created() {

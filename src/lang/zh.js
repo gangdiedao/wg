@@ -80,5 +80,18 @@ export default {
     actions: '操作',
     edit: '编辑',
     delete: '删除'
+  },
+  areas: {
+    all: '全部',
+    bangkok: '曼谷',
+    pattaya: '芭提雅',
+    samed: '沙美岛',
+    rayong: '罗勇',
+    ayutthaya: '大城',
+    huahin: '华欣',
+    kanchanaburi: '北碧',
+    samui: '苏梅岛',
+    surat: 'SURAT',
+    kohchang: '象岛'
   }
 }
