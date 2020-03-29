@@ -41,6 +41,11 @@ export default {
         samui: '苏梅岛',
         surat: 'SURAT',
         kohchang: '象岛'
+      },
+      status: {
+        publish: '开启',
+        draft: '关闭',
+        all: '全部'
       }
     }
   },
