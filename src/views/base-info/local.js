@@ -10,7 +10,12 @@ export default {
         id: '序号',
         name: '名称',
         company: '公司名称',
+        infoType: '信息类型',
+        icon: '图标',
+        pic: '图片',
+        url: '网址',
         price: '价格',
+        ValuationMethod: '计价方式',
         telePhone: '联系电话',
         fax: '传真',
         contacts: '联系人',
@@ -41,6 +46,12 @@ export default {
         samui: '苏梅岛',
         surat: 'SURAT',
         kohchang: '象岛'
+      },
+      addEditDialog: {
+        team: '团队/TEAM',
+        fit: '自由行/FIT',
+        cancel: '取消',
+        confirm: '确定'
       }
     }
   },
@@ -54,6 +65,11 @@ export default {
         id: '序号',
         name: 'name',
         company: 'company',
+        infoType: '信息类型',
+        icon: '图标',
+        pic: '图片',
+        url: '网址',
+        ValuationMethod: '计价方式',
         price: '价格',
         telePhone: '联系电话',
         fax: '传真',
@@ -85,6 +101,10 @@ export default {
         samui: 'samui',
         surat: 'surat',
         kohchang: 'kohchang'
+      },
+      addEditDialog: {
+        team: '团队/TEAM',
+        fit: '自由行/FIT'
       }
     }
   }
