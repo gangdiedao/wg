@@ -2,8 +2,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
@@ -14,14 +14,10 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         {{ $t('i18nView.information.export') }}
       </el-button>
-      <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        {{ $t('table.reviewer') }}
-      </el-checkbox> -->
     </div>
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
-          <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
           <el-table
             :key="tableKey"
             v-loading="listLoading"
@@ -36,8 +32,8 @@
             <el-table-column
               type="selection"
               align="center"
-              width="55">
-            </el-table-column>
+              width="55"
+            />
             <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
               <template slot-scope="{row}">
                 <span>{{ row.id }}</span>
@@ -133,12 +129,12 @@
                 <el-button type="primary" size="mini" @click="handleUpdate(row)">
                   {{ $t('i18nView.information.edit') }}
                 </el-button>
-                <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-                  {{ $t('table.publish') }}
+                <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
+                  {{ $t('i18nView.status.publish') }}
                 </el-button>
                 <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-                  {{ $t('table.draft') }}
-                </el-button> -->
+                  {{ $t('i18nView.status.draft') }}
+                </el-button>
                 <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
                   {{ $t('i18nView.information.delete') }}
                 </el-button>
@@ -207,22 +203,10 @@ import local from './local'
 const viewName = 'i18nView'
 
 export default {
-  name: 'hotelMange',
+  name: 'HotelMange',
   components: { Pagination },
   directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
-  },
+  filters: {},
   data() {
     return {
       tabMapOptions: [],
@@ -237,11 +221,9 @@ export default {
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: '+id'
+        status: 'all'
       },
-      importanceOptions: [1, 2, 3],
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
+      statusOptions: [],
       showReviewer: false,
       temp: {
         id: undefined,
@@ -268,19 +250,19 @@ export default {
       downloadLoading: false
     }
   },
+  computed: {
+    lang: {
+      get() {
+        return this.$store.state.app.language
+      }
+    }
+  },
   watch: {
     activeName(val) {
       this.$router.push(`${this.$route.path}?tab=${val}`)
     },
     lang() {
       this.setOptions()
-    }
-  },
-  computed: {
-    lang: {
-      get() {
-        return this.$store.state.app.language
-      }
     }
   },
   created() {
@@ -294,6 +276,7 @@ export default {
       this.$i18n.mergeLocaleMessage('es', local.es)
     }
     this.setOptions()
+    this.setStatusOptions()
     this.getList()
   },
   methods: {
@@ -310,6 +293,13 @@ export default {
         { key: 'samui', label: this.$t('i18nView.areas.samui') },
         { key: 'surat', label: this.$t('i18nView.areas.surat') },
         { key: 'kohchang', label: this.$t('i18nView.areas.kohchang') }
+      ]
+    },
+    setStatusOptions() {
+      this.statusOptions = [
+        { key: 'all', label: this.$t('i18nView.status.all') },
+        { key: 'publish', label: this.$t('i18nView.status.publish') },
+        { key: 'draft', label: this.$t('i18nView.status.draft') }
       ]
     },
     getList() {
