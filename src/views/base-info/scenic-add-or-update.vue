@@ -26,12 +26,15 @@
         <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.subject" :placeholder="$t('i18nView.information.url')" />
+        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.url')" />
+      </el-form-item>
+      <el-form-item prop="introduce" :label="$t('i18nView.information.introduce')">
+        <el-input v-model="dataForm.introduce" :placeholder="$t('i18nView.information.introduce')" type="textarea" :rows="2" />
       </el-form-item>
     </el-form>
     <template slot="footer">
-      <el-button @click="visible = false">{{ $t('i18nView.addEditDialog.cancel') }}</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.addEditDialog.confirm') }}</el-button>
+      <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.confirm') }}</el-button>
     </template>
   </el-dialog>
 </template>
@@ -47,17 +50,18 @@ export default {
       dataForm: {
         selectData: '',
         name: '',
-        url: ''
+        url: '',
+        introduce: ''
       },
       dataRule: {},
       options: [
         {
           id: 0,
-          name: this.$t('i18nView.addEditDialog.team')
+          name: this.$t('i18nView.information.team')
         },
         {
           id: 1,
-          name: this.$t('i18nView.addEditDialog.fit')
+          name: this.$t('i18nView.information.fit')
         }
       ]
     }

@@ -32,7 +32,12 @@ export default {
         modifier: '修改者',
         actions: '操作',
         edit: '编辑',
-        delete: '删除'
+        delete: '删除',
+        team: '团队/TEAM',
+        fit: '自由行/FIT',
+        cancel: '取消',
+        confirm: '确定',
+        introduce: '介绍'
       },
       areas: {
         all: '全部',
@@ -51,12 +56,6 @@ export default {
         publish: '开启',
         draft: '关闭',
         all: '全部'
-      },
-      addEditDialog: {
-        team: '团队/TEAM',
-        fit: '自由行/FIT',
-        cancel: '取消',
-        confirm: '确定'
       }
     }
   },
@@ -92,7 +91,11 @@ export default {
         modifier: '修改者',
         actions: 'actions',
         edit: 'edit',
-        delete: 'delete'
+        delete: 'delete',
+        team: '团队/TEAM',
+        fit: '自由行/FIT',
+        cancel: '取消',
+        confirm: '确定'
       },
       areas: {
         all: 'All',
@@ -106,10 +109,6 @@ export default {
         samui: 'samui',
         surat: 'surat',
         kohchang: 'kohchang'
-      },
-      addEditDialog: {
-        team: '团队/TEAM',
-        fit: '自由行/FIT'
       }
     }
   }
