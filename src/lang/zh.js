@@ -53,5 +53,16 @@ export default {
     tagsView: '开启 Tags-View',
     fixedHeader: '固定 Header',
     sidebarLogo: '侧边栏 Logo'
+  },
+  actions: {
+    cancel: '取消',
+    confirm: '提交',
+    create: '创建',
+    edit: '编辑',
+    update: '修改',
+    delete: '删除'
+  },
+  rules: {
+    required: '必填'
   }
 }
