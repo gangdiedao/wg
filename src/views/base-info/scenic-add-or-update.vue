@@ -25,6 +25,28 @@
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
         <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
+      <el-form-item prop="icon" :label="$t('i18nView.information.icon')">
+        <el-upload
+          class="upload-demo"
+          action="string"
+          :show-file-list="false"
+          :http-request="UploadImage"
+          :before-upload="onBeforeUploadImage"
+        >
+          <el-button type="primary" icon="el-icon-upload2">添加图标</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
+        <el-upload
+          class="upload-demo"
+          action="string"
+          :show-file-list="false"
+          :http-request="UploadImage"
+          :before-upload="onBeforeUploadImage"
+        >
+          <el-button type="primary" icon="el-icon-upload2">添加图片</el-button>
+        </el-upload>
+      </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
         <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
       </el-form-item>
@@ -79,10 +101,76 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item prop="creator" :label="$t('i18nView.information.creator')">
+        <el-select v-model="dataForm.creator" :placeholder="'请选择'+$t('i18nView.information.creator')">
+          <el-option
+            v-for="item in creatorList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="files" :label="$t('i18nView.information.files')">
+        <el-upload
+          class="upload-demo"
+          action="string"
+          :show-file-list="false"
+          :http-request="UploadImage"
+          :before-upload="onBeforeUploadImage"
+        >
+          <el-button type="primary" icon="el-icon-upload2">添加文件</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item prop="remarks" :label="$t('i18nView.information.remarks')">
+        <el-input v-model="dataForm.remarks" :placeholder="'请输入'+$t('i18nView.information.remarks')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="detailIntroduce" :label="$t('i18nView.information.detailIntroduce')">
+        <el-input v-model="dataForm.detailIntroduce" :placeholder="'请输入'+$t('i18nView.information.detailIntroduce')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="AccountBookRemark" :label="$t('i18nView.information.AccountBookRemark')">
+        <el-input v-model="dataForm.AccountBookRemark" :placeholder="'请输入'+$t('i18nView.information.AccountBookRemark')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="UKey" :label="$t('i18nView.information.UKey')">
+        <el-input v-model="dataForm.UKey" :placeholder="'请输入'+$t('i18nView.information.UKey')" />
+      </el-form-item>
+      <el-form-item prop="returnType" :label="$t('i18nView.information.returnType')">
+        <el-select v-model="dataForm.returnType" :placeholder="'请选择'+$t('i18nView.information.returnType')" @change="returnTypeChange">
+          <el-option
+            v-for="item in returnTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="returnTypeFlag == 1" prop="fixedValue" :label="$t('i18nView.returnTypeList.fixedValue')">
+        <el-input v-model="dataForm.fixedValue" :placeholder="'请输入'+$t('i18nView.returnTypeList.fixedValue')" type="number" />
+      </el-form-item>
+      <el-form-item v-if="returnTypeFlag == 2" prop="returnedCommissionPercentage" :label="$t('i18nView.returnTypeList.returnedCommissionPercentage')">
+        <el-input v-model="dataForm.returnedCommissionPercentage" type="number" :placeholder="'请输入'+$t('i18nView.returnTypeList.returnedCommissionPercentage')">
+          <template slot="append">%</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item v-if="returnTypeFlag == 3" prop="everyoneReturns" :label="$t('i18nView.returnTypeList.everyoneReturns')">
+        <el-input v-model="dataForm.everyoneReturns" type="number" :placeholder="'请输入'+$t('i18nView.returnTypeList.everyoneReturns')">
+          <template slot="append">/人</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item v-if="returnTypeFlag == 4" prop="everyAdultReturns" :label="$t('i18nView.returnTypeList.everyAdultReturns')">
+        <el-input v-model="dataForm.everyAdultReturns" type="number" :placeholder="'请输入'+$t('i18nView.returnTypeList.everyAdultReturns')">
+          <template slot="append">/大人</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item v-if="returnTypeFlag == 4" prop="everyChildReturns" :label="$t('i18nView.returnTypeList.everyChildReturns')">
+        <el-input v-model="dataForm.everyChildReturns" type="number" :placeholder="'请输入'+$t('i18nView.returnTypeList.everyChildReturns')">
+          <template slot="append">/小孩</template>
+        </el-input>
+      </el-form-item>
     </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.confirm') }}</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
     </template>
   </el-dialog>
 </template>
@@ -108,8 +196,18 @@ export default {
         fax: '',
         ValuationMethod: '',
         email: '',
-        payType: ''
+        payType: '',
+        creator: '',
+        files: '',
+        remarks: '',
+        detailIntroduce: '',
+        AccountBookRemark: '',
+        UKey: '',
+        returnType: '',
+        fixedValue: '',
+        returnedCommissionPercentage: ''
       },
+      returnTypeFlag: 0,
       dataRule: {},
       options: [
         {
@@ -173,6 +271,46 @@ export default {
           name: this.$t('i18nView.information.packagePrice')
         }
       ],
+      creatorList: [
+        {
+          id: 0,
+          name: this.$t('i18nView.creatorList.zhangshan')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.creatorList.liudehua')
+        },
+        {
+          id: 0,
+          name: this.$t('i18nView.creatorList.zhangxueyou')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.creatorList.zhoujielun')
+        }
+      ],
+      returnTypeList: [
+        {
+          id: 0,
+          name: this.$t('i18nView.returnTypeList.noReturn')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.returnTypeList.fixedReturn')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.returnTypeList.consumptionPercentage')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.returnTypeList.groupFinancialStaff')
+        },
+        {
+          id: 4,
+          name: this.$t('i18nView.returnTypeList.adultsAndChildren')
+        }
+      ],
       payTypeList: [
         {
           id: 0,
@@ -211,14 +349,9 @@ export default {
           this.dataForm = item
         }
       })
-      // this.$nextTick(() => {
-      //   if (item.id) {
-      //     this.getInfo()
-      //   }
-      // })
     },
-    // 上传图片之前
-    uploadBeforeUploadHandle(file) {
+    // 上传文件之前
+    onBeforeUploadImage(file) {
       if (
         file.type !== 'image/jpg' &&
         file.type !== 'image/jpeg' &&
@@ -229,23 +362,30 @@ export default {
         return false
       }
     },
-    // 上传图片成功
-    uploadSuccessHandle(result, file, fileList) {
-      if (result.code) {
-        return this.$message.error(result.msg)
-      }
-      this.quillEditor.insertEmbed(this.quillEditor.getSelection().index, 'image', result.data.src)
+    // 上传文件
+    UploadImage(param) {
+      const formData = new FormData()
+      formData.append('file', param.file)
+      this.$http.post(
+        '/school/student/import',
+        formData
+      ).then(({ data: res }) => {
+        if (res.code === 0) {
+          this.$message({
+            message: '导入成功',
+            type: 'success'
+          })
+          this.query()
+        } else {
+          this.$message.error(res.msg || '导入失败')
+        }
+      }).catch((e) => {
+        this.$message.error(e.msg || '导入失败')
+      })
     },
-    // 获取信息
-    async getInfo() {
-      try {
-        const result = await this.$http.get(`/sys/mailtemplate/${this.dataForm.id}`)
-
-        this.dataForm = result.data
-        this.quillEditor.root.innerHTML = this.dataForm.content
-      } catch (error) {
-        this.$message.error(error.msg)
-      }
+    // 返佣改变
+    returnTypeChange(e) {
+      this.returnTypeFlag = e
     },
     // 表单提交
     dataFormSubmitHandle() {

@@ -37,9 +37,14 @@ export default {
         fit: '自由行/FIT',
         cancel: '取消',
         confirm: '确定',
+        save: '保存',
         introduce: '介绍',
+        detailIntroduce: '详细介绍',
+        AccountBookRemark: '账本备注',
         unitPrice: '单价',
-        packagePrice: '套餐价'
+        packagePrice: '套餐价',
+        UKey: 'UKey',
+        returnType: '返佣类型'
       },
       areas: {
         all: '全部',
@@ -66,6 +71,24 @@ export default {
         tourGuidePays: '导游支出',
         pays: '公司支出',
         tourGuidePay: '导游支出(VOUCHER)'
+      },
+      creatorList: {
+        zhangshan: '张山',
+        liudehua: '刘德华',
+        zhangxueyou: '张学友',
+        zhoujielun: '周杰伦'
+      },
+      returnTypeList: {
+        noReturn: '无返佣',
+        fixedReturn: '固定返佣',
+        consumptionPercentage: '按照消费百分比返佣',
+        groupFinancialStaff: '按团财务人数返佣',
+        adultsAndChildren: '按大人小孩数返佣',
+        fixedValue: '固定值',
+        returnedCommissionPercentage: '返佣百分比',
+        everyoneReturns: '每人返佣',
+        everyAdultReturns: '每大人返佣',
+        everyChildReturns: '每小孩返佣'
       }
     }
   },
@@ -119,6 +142,25 @@ export default {
         samui: 'samui',
         surat: 'surat',
         kohchang: 'kohchang'
+      },
+      status: {
+        publish: '开启',
+        draft: '关闭',
+        all: '全部'
+      },
+      payTypeList: {
+        pay: '公司支出(VOUCHER)',
+        charges: '公司收费',
+        revenue: '公司收入',
+        tourGuidePays: '导游支出',
+        pays: '公司支出',
+        tourGuidePay: '导游支出(VOUCHER)'
+      },
+      creatorList: {
+        zhangshan: '张山',
+        liudehua: '刘德华',
+        zhangxueyou: '张学友',
+        zhoujielun: '周杰伦'
       }
     }
   }
