@@ -4,6 +4,7 @@
     :title="!dataForm.id ? $t('i18nView.information.add') : $t('i18nView.information.edit')"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    center
   >
     <el-form
       ref="dataForm"
@@ -15,7 +16,7 @@
       <el-form-item prop="selectData" :label="$t('i18nView.information.infoType')">
         <el-select v-model="dataForm.selectData" :placeholder="'请选择'+$t('i18nView.information.infoType')">
           <el-option
-            v-for="item in options"
+            v-for="item in infoTypeList"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -78,10 +79,10 @@
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
         <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
       </el-form-item>
-      <el-form-item prop="ValuationMethod" :label="$t('i18nView.information.ValuationMethod')">
-        <el-select v-model="dataForm.ValuationMethod" :placeholder="'请选择'+$t('i18nView.information.ValuationMethod')">
+      <el-form-item prop="valuationMethod" :label="$t('i18nView.information.valuationMethod')">
+        <el-select v-model="dataForm.valuationMethod" :placeholder="'请选择'+$t('i18nView.information.valuationMethod')">
           <el-option
-            v-for="item in ValuationMethodList"
+            v-for="item in valuationMethodList"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -167,22 +168,79 @@
           <template slot="append">/小孩</template>
         </el-input>
       </el-form-item>
+      <el-divider content-position="left">价格信息</el-divider>
+      <el-calendar>
+        <template
+          slot="dateCell"
+          slot-scope="{date, data}"
+        >
+          <div @click="handleCaledar(data.day, date)">
+            <b :class="data.isSelected ? 'is-selected' : ''">
+              {{ data.day.split('-').slice(1)[1] }}
+            </b>
+            <div style="margin-top: 10px;">
+              <small>小孩价：10</small><br>
+              <small>成人价：10</small><br>
+              <small>预定数量：10</small>
+            </div>
+          </div>
+        </template>
+      </el-calendar>
     </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
     </template>
+    <!--日历弹窗-->
+    <el-dialog
+      width="30%"
+      :visible.sync="innerVisible"
+      center
+      append-to-body
+    >
+      <el-form label-width="100px">
+        <el-form-item label="选择日期">
+          <el-date-picker
+            v-model="daterange"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            :editable="false"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="handleChangeDate"
+          />
+        </el-form-item>
+        <el-form-item label="小孩价">
+          <el-input />
+        </el-form-item>
+        <el-form-item label="成人价">
+          <el-input />
+        </el-form-item>
+        <el-form-item label="控制预定数量">
+          <el-input />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button>取 消</el-button>
+        <el-button type="primary">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-dialog>
 </template>
 
 <script>
-// import Cookies from 'js-cookie'
-// import debounce from 'lodash/debounce'
+import mixin from './mixin'
 
 export default {
+  mixins: [mixin],
   data() {
     return {
       visible: false,
+      currentDate: '',
+      daterange: '',
+      innerVisible: false,
       dataForm: {
         selectData: '',
         name: '',
@@ -194,7 +252,7 @@ export default {
         contacts: '',
         telePhone: '',
         fax: '',
-        ValuationMethod: '',
+        valuationMethod: '',
         email: '',
         payType: '',
         creator: '',
@@ -209,16 +267,7 @@ export default {
       },
       returnTypeFlag: 0,
       dataRule: {},
-      options: [
-        {
-          id: 0,
-          name: this.$t('i18nView.information.team')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.information.fit')
-        }
-      ],
+      infoTypeList: [],
       cityList: [
         {
           id: 0,
@@ -229,48 +278,39 @@ export default {
           name: this.$t('i18nView.areas.pattaya')
         },
         {
-          id: 0,
+          id: 3,
           name: this.$t('i18nView.areas.samed')
         },
         {
-          id: 1,
+          id: 4,
           name: this.$t('i18nView.areas.rayong')
         },
         {
-          id: 0,
+          id: 5,
           name: this.$t('i18nView.areas.ayutthaya')
         },
         {
-          id: 1,
+          id: 6,
           name: this.$t('i18nView.areas.huahin')
         },
         {
-          id: 0,
+          id: 7,
           name: this.$t('i18nView.areas.kanchanaburi')
         },
         {
-          id: 1,
+          id: 8,
           name: this.$t('i18nView.areas.samui')
         },
         {
-          id: 0,
+          id: 9,
           name: this.$t('i18nView.areas.surat')
         },
         {
-          id: 1,
+          id: 10,
           name: this.$t('i18nView.areas.kohchang')
         }
       ],
-      ValuationMethodList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.information.unitPrice')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.information.packagePrice')
-        }
-      ],
+      valuationMethodList: [],
       creatorList: [
         {
           id: 0,
@@ -281,66 +321,31 @@ export default {
           name: this.$t('i18nView.creatorList.liudehua')
         },
         {
-          id: 0,
+          id: 2,
           name: this.$t('i18nView.creatorList.zhangxueyou')
         },
         {
-          id: 1,
+          id: 3,
           name: this.$t('i18nView.creatorList.zhoujielun')
         }
       ],
-      returnTypeList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.returnTypeList.noReturn')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.returnTypeList.fixedReturn')
-        },
-        {
-          id: 2,
-          name: this.$t('i18nView.returnTypeList.consumptionPercentage')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.returnTypeList.groupFinancialStaff')
-        },
-        {
-          id: 4,
-          name: this.$t('i18nView.returnTypeList.adultsAndChildren')
+      returnTypeList: [],
+      payTypeList: [],
+      pickerOptions: {
+        disabledDate: (date) => {
+          // console.log(new Date(date).getTime(), new Date(this.currentDate).setHours(0).getTime())
+          return new Date(new Date(this.currentDate).setHours(0)).getTime() > new Date(date).getTime()
         }
-      ],
-      payTypeList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.payTypeList.pay')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.payTypeList.charges')
-        },
-        {
-          id: 2,
-          name: this.$t('i18nView.payTypeList.revenue')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.payTypeList.tourGuidePays')
-        },
-        {
-          id: 4,
-          name: this.$t('i18nView.payTypeList.pays')
-        },
-        {
-          id: 5,
-          name: this.$t('i18nView.payTypeList.tourGuidePay')
-        }
-      ]
+      }
     }
   },
   computed: {},
-  created() {},
+  created() {
+    this.payTypeList = this.payTypeListData()
+    this.returnTypeList = this.returnTypeListData()
+    this.valuationMethodList = this.valuationMethodListData()
+    this.infoTypeList = this.infoTypeListData()
+  },
   methods: {
     init(item) {
       this.visible = true
@@ -386,6 +391,14 @@ export default {
     // 返佣改变
     returnTypeChange(e) {
       this.returnTypeFlag = e
+    },
+    handleCaledar(day, date) {
+      this.currentDate = date
+      this.daterange = [day, day]
+      this.innerVisible = true
+    },
+    handleChangeDate(val) {
+      console.log(val)
     },
     // 表单提交
     dataFormSubmitHandle() {
