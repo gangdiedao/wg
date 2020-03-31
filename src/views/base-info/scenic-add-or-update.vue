@@ -48,7 +48,7 @@ export default {
     return {
       visible: false,
       dataForm: {
-        selectData: '',
+        selectData: '1',
         name: '',
         url: '',
         introduce: ''
