@@ -13,7 +13,7 @@
       @keyup.enter.native="dataFormSubmitHandle()"
     >
       <el-form-item prop="selectData" :label="$t('i18nView.information.infoType')">
-        <el-select v-model="dataForm.selectData" placeholder="请选择">
+        <el-select v-model="dataForm.selectData" :placeholder="'请选择'+$t('i18nView.information.infoType')">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -23,13 +23,61 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.url')" />
+        <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
       </el-form-item>
       <el-form-item prop="introduce" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.introduce" :placeholder="$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+        <el-input v-model="dataForm.introduce" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="company" :label="$t('i18nView.information.company')">
+        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.company')" />
+      </el-form-item>
+      <el-form-item prop="city" :label="$t('i18nView.information.city')">
+        <el-select v-model="dataForm.city" :placeholder="'请选择'+$t('i18nView.information.city')">
+          <el-option
+            v-for="item in cityList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="address" :label="$t('i18nView.information.address')">
+        <el-input v-model="dataForm.address" :placeholder="'请输入'+$t('i18nView.information.address')" />
+      </el-form-item>
+      <el-form-item prop="contacts" :label="$t('i18nView.information.contacts')">
+        <el-input v-model="dataForm.contacts" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
+      </el-form-item>
+      <el-form-item prop="telePhone" :label="$t('i18nView.information.telePhone')">
+        <el-input v-model="dataForm.telePhone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+      </el-form-item>
+      <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
+        <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
+      </el-form-item>
+      <el-form-item prop="ValuationMethod" :label="$t('i18nView.information.ValuationMethod')">
+        <el-select v-model="dataForm.ValuationMethod" :placeholder="'请选择'+$t('i18nView.information.ValuationMethod')">
+          <el-option
+            v-for="item in ValuationMethodList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="email" :label="$t('i18nView.information.email')">
+        <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
+      </el-form-item>
+      <el-form-item prop="payType" :label="$t('i18nView.information.payType')">
+        <el-select v-model="dataForm.payType" :placeholder="'请选择'+$t('i18nView.information.payType')">
+          <el-option
+            v-for="item in payTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -51,7 +99,16 @@ export default {
         selectData: '',
         name: '',
         url: '',
-        introduce: ''
+        introduce: '',
+        company: '',
+        city: '',
+        address: '',
+        contacts: '',
+        telePhone: '',
+        fax: '',
+        ValuationMethod: '',
+        email: '',
+        payType: ''
       },
       dataRule: {},
       options: [
@@ -62,6 +119,84 @@ export default {
         {
           id: 1,
           name: this.$t('i18nView.information.fit')
+        }
+      ],
+      cityList: [
+        {
+          id: 0,
+          name: this.$t('i18nView.areas.bangkok')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.areas.pattaya')
+        },
+        {
+          id: 0,
+          name: this.$t('i18nView.areas.samed')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.areas.rayong')
+        },
+        {
+          id: 0,
+          name: this.$t('i18nView.areas.ayutthaya')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.areas.huahin')
+        },
+        {
+          id: 0,
+          name: this.$t('i18nView.areas.kanchanaburi')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.areas.samui')
+        },
+        {
+          id: 0,
+          name: this.$t('i18nView.areas.surat')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.areas.kohchang')
+        }
+      ],
+      ValuationMethodList: [
+        {
+          id: 0,
+          name: this.$t('i18nView.information.unitPrice')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.information.packagePrice')
+        }
+      ],
+      payTypeList: [
+        {
+          id: 0,
+          name: this.$t('i18nView.payTypeList.pay')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.payTypeList.charges')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.payTypeList.revenue')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.payTypeList.tourGuidePays')
+        },
+        {
+          id: 4,
+          name: this.$t('i18nView.payTypeList.pays')
+        },
+        {
+          id: 5,
+          name: this.$t('i18nView.payTypeList.tourGuidePay')
         }
       ]
     }

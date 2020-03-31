@@ -37,7 +37,9 @@ export default {
         fit: '自由行/FIT',
         cancel: '取消',
         confirm: '确定',
-        introduce: '介绍'
+        introduce: '介绍',
+        unitPrice: '单价',
+        packagePrice: '套餐价'
       },
       areas: {
         all: '全部',
@@ -56,6 +58,14 @@ export default {
         publish: '开启',
         draft: '关闭',
         all: '全部'
+      },
+      payTypeList: {
+        pay: '公司支出(VOUCHER)',
+        charges: '公司收费',
+        revenue: '公司收入',
+        tourGuidePays: '导游支出',
+        pays: '公司支出',
+        tourGuidePay: '导游支出(VOUCHER)'
       }
     }
   },
