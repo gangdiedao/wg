@@ -99,5 +99,16 @@ export default {
     tagsView: 'Open Tags-View',
     fixedHeader: 'Fixed Header',
     sidebarLogo: 'Sidebar Logo'
+  },
+  actions: {
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    create: 'Create',
+    edit: 'Edit',
+    update: 'Update',
+    delete: 'Delete'
+  },
+  rules: {
+    required: '必填'
   }
 }
