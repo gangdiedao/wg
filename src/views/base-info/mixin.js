@@ -45,6 +45,85 @@ export default {
         { key: '4', label: '导游支出' },
         { key: '5', label: '公司支出' },
         { key: '6', label: '导游支出(VOUCHER)' }
+    },
+    // 支付类型
+    payTypeListData() {
+      return [
+        {
+          id: 0,
+          name: this.$t('i18nView.payTypeList.pay')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.payTypeList.charges')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.payTypeList.revenue')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.payTypeList.tourGuidePays')
+        },
+        {
+          id: 4,
+          name: this.$t('i18nView.payTypeList.pays')
+        },
+        {
+          id: 5,
+          name: this.$t('i18nView.payTypeList.tourGuidePay')
+        }
+      ]
+    },
+    // 返佣类型
+    returnTypeListData() {
+      return [
+        {
+          id: 0,
+          name: this.$t('i18nView.returnTypeList.noReturn')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.returnTypeList.fixedReturn')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.returnTypeList.consumptionPercentage')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.returnTypeList.groupFinancialStaff')
+        },
+        {
+          id: 4,
+          name: this.$t('i18nView.returnTypeList.adultsAndChildren')
+        }
+      ]
+    },
+    // 计价方式
+    valuationMethodListData() {
+      return [
+        {
+          id: 0,
+          name: this.$t('i18nView.information.unitPrice')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.information.packagePrice')
+        }
+      ]
+    },
+    // 信息类型
+    infoTypeListData() {
+      return [
+        {
+          id: 0,
+          name: this.$t('i18nView.information.team')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.information.fit')
+        }
       ]
     }
   }

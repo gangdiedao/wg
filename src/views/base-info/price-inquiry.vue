@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
+      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
@@ -45,52 +45,12 @@
                 <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.infoType')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.level')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.icon')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.pic')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.url')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.company')" min-width="250px">
-              <template slot-scope="{row}">
-                <span class="link-type">{{ row.title }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.price')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.ValuationMethod')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.category')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
@@ -100,70 +60,49 @@
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.hotelType')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.startTime')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.hotelLevel')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.endTime')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.address')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.type')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.email')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.price')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.website')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.childPrice')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.payType')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.costPrice')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.creator')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.childCostPrice')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.files')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.otherInfo')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.remarks')" width="110px" align="center">
+            <el-table-column :label="$t('i18nView.information.maskInfo')" width="110px" align="center">
               <template slot-scope="{row}">
                 <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.modifier')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
-              <template slot-scope="{row,$index}">
-                <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
-                  {{ $t('i18nView.information.edit') }}
-                </el-button>
-                <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-                  {{ $t('table.publish') }}
-                </el-button>
-                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-                  {{ $t('table.draft') }}
-                </el-button> -->
-                <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-                  {{ $t('i18nView.information.delete') }}
-                </el-button>
               </template>
             </el-table-column>
           </el-table>

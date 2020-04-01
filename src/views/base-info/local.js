@@ -9,7 +9,7 @@ export default {
         add: '添加',
         export: '导出',
         id: '序号',
-        name: '酒店名称',
+        name: '名称',
         company: '公司名称',
         infoType: '信息类型',
         icon: '图标',
@@ -38,7 +38,35 @@ export default {
         fit: '自由行/FIT',
         cancel: '取消',
         confirm: '确定',
-        introduce: '介绍'
+        save: '保存',
+        introduce: '介绍',
+        detailIntroduce: '详细介绍',
+        AccountBookRemark: '账本备注',
+        unitPrice: '单价',
+        packagePrice: '套餐价',
+        UKey: 'UKey',
+        returnType: '返佣类型',
+        level: '等级',
+        category: '类别',
+        startTime: '开始时间',
+        endTime: '结束时间',
+        type: '类型',
+        childPrice: '小孩价格',
+        costPrice: '成本价',
+        childCostPrice: '小孩成本价',
+        otherInfo: '其他信息',
+        maskInfo: '备注信息',
+        shop: '购物店',
+        taxRate: '税率',
+        twoTaxRate: '二次税率',
+        shopspot: '购物点',
+        companyRoyalty: '公司提成',
+        companySecondRoyalty: '公司二次提成',
+        tourGuideRoyalty: '导游提成',
+        leaderRoyalty: '领队提成',
+        calculationType: '计算方式',
+        showType: '显示方式',
+        commissionType: '佣金类型'
       },
       areas: {
         all: '全部',
@@ -57,6 +85,32 @@ export default {
         publish: '开启',
         draft: '关闭',
         all: '全部'
+      },
+      payTypeList: {
+        pay: '公司支出(VOUCHER)',
+        charges: '公司收费',
+        revenue: '公司收入',
+        tourGuidePays: '导游支出',
+        pays: '公司支出',
+        tourGuidePay: '导游支出(VOUCHER)'
+      },
+      creatorList: {
+        zhangshan: '张山',
+        liudehua: '刘德华',
+        zhangxueyou: '张学友',
+        zhoujielun: '周杰伦'
+      },
+      returnTypeList: {
+        noReturn: '无返佣',
+        fixedReturn: '固定返佣',
+        consumptionPercentage: '按照消费百分比返佣',
+        groupFinancialStaff: '按团财务人数返佣',
+        adultsAndChildren: '按大人小孩数返佣',
+        fixedValue: '固定值',
+        returnedCommissionPercentage: '返佣百分比',
+        everyoneReturns: '每人返佣',
+        everyAdultReturns: '每大人返佣',
+        everyChildReturns: '每小孩返佣'
       }
     }
   },
@@ -111,6 +165,25 @@ export default {
         samui: 'samui',
         surat: 'SURAT',
         kohchang: 'kohchang'
+      },
+      status: {
+        publish: '开启',
+        draft: '关闭',
+        all: '全部'
+      },
+      payTypeList: {
+        pay: '公司支出(VOUCHER)',
+        charges: '公司收费',
+        revenue: '公司收入',
+        tourGuidePays: '导游支出',
+        pays: '公司支出',
+        tourGuidePay: '导游支出(VOUCHER)'
+      },
+      creatorList: {
+        zhangshan: '张山',
+        liudehua: '刘德华',
+        zhangxueyou: '张学友',
+        zhoujielun: '周杰伦'
       }
     }
   }
