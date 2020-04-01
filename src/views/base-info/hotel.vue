@@ -145,7 +145,17 @@
       </el-tab-pane>
     </el-tabs>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <el-row type="flex" class="row-bg" justify="space-between">
+      <el-col :span="12">
+        <el-button-group style="padding: 32px 16px; margin-top: 26px;">
+          <el-button type="success">开启</el-button>
+          <el-button>关闭</el-button>
+        </el-button-group>
+      </el-col>
+      <el-col :span="12">
+        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+      </el-col>
+    </el-row>
 
     <edit-hotel :show.sync="showEditHotel"/>
 

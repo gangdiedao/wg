@@ -2,7 +2,7 @@
 
 import Layout from '@/layout'
 
-const baseInfoRouter = {
+const router = {
   path: '/baseinfo',
   component: Layout,
   redirect: '/baseinfo/hotel',
@@ -26,4 +26,4 @@ const baseInfoRouter = {
     }
   ]
 }
-export default baseInfoRouter
+export default router
