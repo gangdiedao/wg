@@ -110,7 +110,7 @@
       </el-tab-pane>
     </el-tabs>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <scenicAddOrUpdate ref="scenicAddOrUpdate" />
+    <!-- <scenicAddOrUpdate ref="scenicAddOrUpdate" /> -->
   </div>
 </template>
 
@@ -119,13 +119,13 @@ import { fetchList } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import scenicAddOrUpdate from './scenic-add-or-update' // secondary package based on el-pagination
+// import scenicAddOrUpdate from './scenic-add-or-update' // secondary package based on el-pagination
 import local from './local'
 const viewName = 'i18nView'
 
 export default {
   name: 'HotelMange',
-  components: { Pagination, scenicAddOrUpdate },
+  components: { Pagination },
   directives: { waves },
   filters: {},
   data() {

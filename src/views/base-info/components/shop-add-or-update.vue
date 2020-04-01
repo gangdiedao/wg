@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :visible.sync="visible"
-    :title="!dataForm.id ? $t('i18nView.information.add')+'佣金' : $t('i18nView.information.edit')+'佣金'"
+    :title="!dataForm.id ? $t('i18nView.information.add') : $t('i18nView.information.edit')"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     center
@@ -13,8 +13,8 @@
       label-width="120px"
       @keyup.enter.native="dataFormSubmitHandle()"
     >
-      <el-form-item prop="shopspot" :label="$t('i18nView.information.shopspot')">
-        <el-select v-model="dataForm.shopspot" :placeholder="'请选择'+$t('i18nView.information.shopspot')">
+      <el-form-item prop="selectData" :label="$t('i18nView.information.infoType')">
+        <el-select v-model="dataForm.selectData" :placeholder="'请选择'+$t('i18nView.information.infoType')">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -26,47 +26,53 @@
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
         <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
-      <el-form-item prop="companyRoyalty" :label="$t('i18nView.information.companyRoyalty')">
-        <el-input v-model="dataForm.companyRoyalty" :placeholder="'请输入'+$t('i18nView.information.companyRoyalty')" type="number" />
+      <el-form-item prop="icon" :label="$t('i18nView.information.icon')">
+        <el-upload
+          class="upload-demo"
+          action="string"
+          :show-file-list="false"
+          :http-request="UploadImage"
+          :before-upload="onBeforeUploadImage"
+        >
+          <el-button type="primary" icon="el-icon-upload2">添加图标</el-button>
+        </el-upload>
       </el-form-item>
-      <el-form-item prop="tourGuideRoyalty" :label="$t('i18nView.information.tourGuideRoyalty')">
-        <el-input v-model="dataForm.tourGuideRoyalty" :placeholder="'请输入'+$t('i18nView.information.tourGuideRoyalty')" type="number" />
+      <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
+        <el-upload
+          class="upload-demo"
+          action="string"
+          :show-file-list="false"
+          :http-request="UploadImage"
+          :before-upload="onBeforeUploadImage"
+        >
+          <el-button type="primary" icon="el-icon-upload2">添加图片</el-button>
+        </el-upload>
       </el-form-item>
-      <el-form-item prop="leaderRoyalty" :label="$t('i18nView.information.leaderRoyalty')">
-        <el-input v-model="dataForm.leaderRoyalty" :placeholder="'请输入'+$t('i18nView.information.leaderRoyalty')" type="number" />
+      <el-form-item prop="url" :label="$t('i18nView.information.url')">
+        <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
       </el-form-item>
-      <el-form-item prop="companySecondRoyalty" :label="$t('i18nView.information.companySecondRoyalty')">
-        <el-input v-model="dataForm.companySecondRoyalty" :placeholder="'请输入'+$t('i18nView.information.companySecondRoyalty')" type="number" />
+      <el-form-item prop="introduce" :label="$t('i18nView.information.introduce')">
+        <el-input v-model="dataForm.introduce" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
       </el-form-item>
-      <el-form-item prop="calculationType" :label="$t('i18nView.information.calculationType')">
-        <el-select v-model="dataForm.calculationType" :placeholder="'请选择'+$t('i18nView.information.calculationType')">
-          <el-option
-            v-for="item in infoTypeList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
+      <el-form-item prop="contacts" :label="$t('i18nView.information.contacts')">
+        <el-input v-model="dataForm.contacts" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
       </el-form-item>
-      <el-form-item prop="showType" :label="$t('i18nView.information.showType')">
-        <el-select v-model="dataForm.showType" :placeholder="'请选择'+$t('i18nView.information.showType')">
-          <el-option
-            v-for="item in infoTypeList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
+      <el-form-item prop="telePhone" :label="$t('i18nView.information.telePhone')">
+        <el-input v-model="dataForm.telePhone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
       </el-form-item>
-      <el-form-item prop="commissionType" :label="$t('i18nView.information.commissionType')">
-        <el-select v-model="dataForm.commissionType" :placeholder="'请选择'+$t('i18nView.information.commissionType')">
-          <el-option
-            v-for="item in infoTypeList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
+      <el-form-item prop="email" :label="$t('i18nView.information.email')">
+        <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
+      </el-form-item>
+      <el-form-item prop="files" :label="$t('i18nView.information.files')">
+        <el-upload
+          class="upload-demo"
+          action="string"
+          :show-file-list="false"
+          :http-request="UploadImage"
+          :before-upload="onBeforeUploadImage"
+        >
+          <el-button type="primary" icon="el-icon-upload2">添加文件</el-button>
+        </el-upload>
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -77,7 +83,7 @@
 </template>
 
 <script>
-import mixin from './mixin'
+import mixin from '../mixin'
 
 export default {
   mixins: [mixin],
@@ -85,15 +91,28 @@ export default {
     return {
       visible: false,
       dataForm: {
-        shopspot: '',
+        selectData: '',
         name: '',
-        companyRoyalty: '0.00',
-        tourGuideRoyalty: '0.00',
-        leaderRoyalty: '0.00',
-        companySecondRoyalty: '0.00',
-        calculationType: '',
-        showType: '',
-        commissionType: ''
+        url: '',
+        introduce: '',
+        company: '',
+        city: '',
+        address: '',
+        contacts: '',
+        telePhone: '',
+        fax: '',
+        valuationMethod: '',
+        email: '',
+        payType: '',
+        creator: '',
+        files: '',
+        remarks: '',
+        detailIntroduce: '',
+        AccountBookRemark: '',
+        UKey: '',
+        returnType: '',
+        fixedValue: '',
+        returnedCommissionPercentage: ''
       },
       returnTypeFlag: 0,
       dataRule: {},
