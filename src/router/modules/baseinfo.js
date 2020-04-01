@@ -35,6 +35,18 @@ const baseInfoRouter = {
       component: () => import('@/views/base-info/shop'),
       name: 'shopManage',
       meta: { title: 'shopManage' }
+    },
+    {
+      path: 'shop-spot',
+      component: () => import('@/views/base-info/shop-spot'),
+      name: 'shopSpotManage',
+      meta: { title: 'shopSpotManage' }
+    },
+    {
+      path: 'commission',
+      component: () => import('@/views/base-info/commission'),
+      name: 'commissionManage',
+      meta: { title: 'commissionManage' }
     }
   ]
 }

@@ -6,6 +6,8 @@ export default {
     scenicManage: '景点信息管理',
     priceInquiry: '价格查询',
     shopManage: '购物店管理',
+    shopSpotManage: '购物点管理',
+    commissionManage: '佣金信息管理',
     errorPages: '错误页面',
     page401: '401',
     page404: '404',
