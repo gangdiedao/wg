@@ -45,6 +45,7 @@ export default {
         { key: '4', label: '导游支出' },
         { key: '5', label: '公司支出' },
         { key: '6', label: '导游支出(VOUCHER)' }
+      ]
     },
     // 支付类型
     payTypeListData() {
