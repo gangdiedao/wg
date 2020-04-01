@@ -9,7 +9,7 @@ export default {
         add: '添加',
         export: '导出',
         id: '序号',
-        name: '酒店名称',
+        name: '名称',
         company: '公司名称',
         infoType: '信息类型',
         icon: '图标',
@@ -55,7 +55,18 @@ export default {
         costPrice: '成本价',
         childCostPrice: '小孩成本价',
         otherInfo: '其他信息',
-        maskInfo: '备注信息'
+        maskInfo: '备注信息',
+        shop: '购物店',
+        taxRate: '税率',
+        twoTaxRate: '二次税率',
+        shopspot: '购物点',
+        companyRoyalty: '公司提成',
+        companySecondRoyalty: '公司二次提成',
+        tourGuideRoyalty: '导游提成',
+        leaderRoyalty: '领队提成',
+        calculationType: '计算方式',
+        showType: '显示方式',
+        commissionType: '佣金类型'
       },
       areas: {
         all: '全部',
