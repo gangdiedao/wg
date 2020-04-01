@@ -25,6 +25,28 @@ export default {
         { key: 'kohchang', label: this.$t('i18nView.areas.kohchang') }
       ]
     },
+    setHotelTypeOptions() {
+      return [
+        { key: 'hotel', label: 'HOTEL' },
+        { key: 'seaSide', label: 'Sea side/海边' },
+        { key: 'city', label: 'City/市区' },
+        { key: 'villa', label: 'Villa/别墅' },
+        { key: 'resident', label: 'Resident/民宿' },
+        { key: 'resort', label: 'Resort/度假村' },
+        { key: 'poolVilla', label: 'pool villa/泳池别墅' },
+        { key: 'poolAccess', label: 'pool Access' }
+      ]
+    },
+    setPayOptions() {
+      return [
+        { key: '1', label: '公司支出(VOUCHER)' },
+        { key: '2', label: '公司收费' },
+        { key: '3', label: '公司收入' },
+        { key: '4', label: '导游支出' },
+        { key: '5', label: '公司支出' },
+        { key: '6', label: '导游支出(VOUCHER)' }
+      ]
+    },
     // 支付类型
     payTypeListData() {
       return [

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
+  <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
     <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px">
       <el-form-item :label="$t('i18nView.information.name')" prop="name">
         <el-input v-model="temp.name"/>
@@ -17,12 +17,15 @@
         <el-input v-model="temp.title" />
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.city')" prop="title">
-        <el-select v-model="temp.city" class="filter-item" placeholder="Please select">
+        <el-select v-model="temp.city" class="filter-item" placeholder="">
           <el-option v-for="item in cityOptions" :key="item.key" :label="item.label" :value="item.key" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.hotelType')" prop="title">
-        <el-input v-model="temp.title" />
+        <el-select v-model="temp.hotelType" class="filter-item" placeholder="">
+          <el-option key="" label="未选择" value="" />
+          <el-option v-for="item in hotelTypeOptions" :key="item.key" :label="item.label" :value="item.key" />
+        </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.hotelLevel')" prop="title">
         <el-input v-model="temp.title" />
@@ -37,7 +40,10 @@
         <el-input v-model="temp.title" />
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.payType')" prop="title">
-        <el-input v-model="temp.title" />
+        <el-select v-model="temp.payType" class="filter-item" placeholder="">
+          <el-option key="" label="未指定" value="" />
+          <el-option v-for="item in payOptions" :key="item.key" :label="item.label" :value="item.key" />
+        </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.files')" prop="title">
         <el-upload
@@ -57,7 +63,7 @@
       </el-form-item>
 
       <el-divider content-position="left">价格信息</el-divider>
-      <el-calendar>
+      <el-calendar v-model="calendar">
          <template
           slot="dateCell"
           slot-scope="{date, data}">
@@ -144,10 +150,14 @@ export default {
       if (!bool) {
         this.daterange = ''
       }
+    },
+    calendar(val) {
+      console.log(val)
     }
   },
   data() {
     return {
+      calendar: '',
       currentDate: '',
       daterange: '',
       innerVisible: false,
@@ -160,6 +170,9 @@ export default {
       temp: {
         id: undefined,
         name: '',
+        city: '',
+        hotelType: '',
+        payType: '',
         remark: '',
         status: 'published'
       },
@@ -168,6 +181,8 @@ export default {
         name: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
       },
       cityOptions: [],
+      hotelTypeOptions: [],
+      payOptions: [],
       pickerOptions: {
         disabledDate: (date) => {
           // console.log(new Date(date).getTime(), new Date(this.currentDate).setHours(0).getTime())
@@ -178,6 +193,8 @@ export default {
   },
   created() {
     this.cityOptions = this.setCityOptions().filter(item => item.key !== 'all')
+    this.hotelTypeOptions = this.setHotelTypeOptions()
+    this.payOptions = this.setPayOptions()
   },
   methods: {
     handleChangeDate(val) {
