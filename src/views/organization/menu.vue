@@ -15,13 +15,11 @@
       <el-table-column
         prop="date"
         label="名称"
-        sortable
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
         label="图标"
-        sortable
         width="180">
       </el-table-column>
       <el-table-column
