@@ -45,7 +45,17 @@ export default {
         unitPrice: '单价',
         packagePrice: '套餐价',
         UKey: 'UKey',
-        returnType: '返佣类型'
+        returnType: '返佣类型',
+        level: '等级',
+        category: '类别',
+        startTime: '开始时间',
+        endTime: '结束时间',
+        type: '类型',
+        childPrice: '小孩价格',
+        costPrice: '成本价',
+        childCostPrice: '小孩成本价',
+        otherInfo: '其他信息',
+        maskInfo: '备注信息'
       },
       areas: {
         all: '全部',

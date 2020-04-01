@@ -223,7 +223,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
+        <el-button @click="innerVisible = false">取 消</el-button>
         <el-button type="primary">确 定</el-button>
       </span>
     </el-dialog>
@@ -333,7 +333,6 @@ export default {
       payTypeList: [],
       pickerOptions: {
         disabledDate: (date) => {
-          // console.log(new Date(date).getTime(), new Date(this.currentDate).setHours(0).getTime())
           return new Date(new Date(this.currentDate).setHours(0)).getTime() > new Date(date).getTime()
         }
       }
