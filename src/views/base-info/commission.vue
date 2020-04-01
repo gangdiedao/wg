@@ -15,100 +15,100 @@
         {{ $t('i18nView.information.export') }}
       </el-button>
     </div>
-    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+    <!-- <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-        <keep-alive>
-          <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
-          <el-table
-            :key="tableKey"
-            v-loading="listLoading"
-            :data="list"
-            stripe
-            border
-            fit
-            highlight-current-row
-            style="width: 100%;"
-            @sort-change="sortChange"
-          >
-            <el-table-column
-              type="selection"
-              align="center"
-              width="55"
-            />
-            <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-              <template slot-scope="{row}">
-                <span>{{ row.id }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.name')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.shop')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.shopspot')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.companyRoyalty')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.tourGuideRoyalty')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.leaderRoyalty')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.companySecondRoyalty')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.calculationType')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.showType')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.commissionType')" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.modifier')" align="center">
-              <template slot-scope="{row}">
-                <span class="link-type">{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width">
-              <template slot-scope="{row}">
-                <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
-                  {{ $t('i18nView.information.edit') }}
-                </el-button>
-                <!-- <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+        <keep-alive> -->
+    <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="list"
+      stripe
+      border
+      fit
+      highlight-current-row
+      style="width: 100%;"
+      @sort-change="sortChange"
+    >
+      <el-table-column
+        type="selection"
+        align="center"
+        width="55"
+      />
+      <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.name')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.shop')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.shopspot')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.companyRoyalty')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.tourGuideRoyalty')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.leaderRoyalty')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.companySecondRoyalty')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.calculationType')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.showType')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.commissionType')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.modifier')" align="center">
+        <template slot-scope="{row}">
+          <span class="link-type">{{ row.author }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="{row}">
+          <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
+            {{ $t('i18nView.information.edit') }}
+          </el-button>
+          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
                   {{ $t('i18nView.information.delete') }}
                 </el-button> -->
-              </template>
-            </el-table-column>
-          </el-table>
-        </keep-alive>
-      </el-tab-pane>
-    </el-tabs>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--</keep-alive>
+       </el-tab-pane>
+    </el-tabs> -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <commissionAddOrUpdate ref="commissionAddOrUpdate" />
   </div>
@@ -119,7 +119,7 @@ import { fetchList } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import commissionAddOrUpdate from './commission-add-or-update' // secondary package based on el-pagination
+import commissionAddOrUpdate from './components/commission-add-or-update' // secondary package based on el-pagination
 import mixin from './mixin'
 
 export default {

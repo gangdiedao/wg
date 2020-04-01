@@ -180,9 +180,7 @@ import { fetchList } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import scenicAddOrUpdate from './scenic-add-or-update' // secondary package based on el-pagination
-import local from './local'
-const viewName = 'i18nView'
+import scenicAddOrUpdate from './components/scenic-add-or-update' // secondary package based on el-pagination
 
 export default {
   name: 'HotelMange',
@@ -253,11 +251,6 @@ export default {
     const tab = this.$route.query.tab
     if (tab) {
       this.activeName = tab
-    }
-    if (!this.$i18n.getLocaleMessage('zh')[viewName]) {
-      this.$i18n.mergeLocaleMessage('en', local.en)
-      this.$i18n.mergeLocaleMessage('zh', local.zh)
-      this.$i18n.mergeLocaleMessage('es', local.es)
     }
     this.setOptions()
     this.getList()
