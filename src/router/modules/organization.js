@@ -22,7 +22,6 @@ const router = {
       path: 'menu',
       component: () => import('@/views/organization/menu'),
       name: 'menuManage',
-      hidden: true,
       meta: { title: 'menuManage' }
     },
     {

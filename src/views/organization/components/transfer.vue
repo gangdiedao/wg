@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :title="$t('organization.label.department') + $t('organization.label.transfer')" :visible.sync="dialogFormVisible" width="480px" :destroy-on-close="true" center>
+  <el-dialog :title="$t('organization.userModules.label.department') + $t('organization.userModules.label.transfer')" :visible.sync="dialogFormVisible" width="480px" :destroy-on-close="true" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item :label="$t('organization.label.select') + $t('organization.label.department')">
+      <el-form-item :label="$t('organization.userModules.label.select') + $t('organization.userModules.label.department')">
         <el-select v-model="ruleForm.departmentId" filterable style="width: 100%" placeholder="请选择部门">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
