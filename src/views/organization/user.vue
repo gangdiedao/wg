@@ -23,9 +23,9 @@
       <label>成员列表</label>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
-          <el-button type="primary" size="mini">添加</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
-          <el-button size="mini">转移</el-button>
+          <el-button type="primary" size="mini" @click="handleAddUser">添加</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete">删除</el-button>
+          <el-button size="mini" @click="handleTransfer">转移</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
           <el-input placeholder="请输入内容" size="mini" class="input-with-select">
@@ -44,35 +44,39 @@
           width="55">
         </el-table-column>
         <el-table-column
-          fixed
-          prop="date"
-          label="创建时间"
-          width="150">
+          prop="name"
+          label="姓名"
+          fixed="left"
+          width="120">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名"
+          label="英文名"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="国籍"
           width="120">
         </el-table-column>
         <el-table-column
           prop="province"
           label="部门名称"
-          width="120">
+          width="160">
         </el-table-column>
         <el-table-column
           prop="city"
           label="角色"
-          width="120">
+          width="160">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="手机号码"
-          width="300">
+          label="联系电话"
+          width="120">
         </el-table-column>
         <el-table-column
           prop="zip"
-          label="备注"
-          width="120">
+          label="备注">
         </el-table-column>
         <el-table-column
           prop="zip"
@@ -80,7 +84,13 @@
           width="120">
         </el-table-column>
         <el-table-column
+          prop="date"
+          label="创建时间"
+          width="150">
+        </el-table-column>
+        <el-table-column
           fixed="right"
+          width="140"
           label="操作">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">转移</el-button>
@@ -93,18 +103,30 @@
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
       </el-row>
     </el-main>
+    <user-edit :show.sync="showUserEdit" :item="userItem"/>
+    <transfer :show.sync="showTransfer" :items="userIds"/>
   </el-container>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination'
+import UserEdit from './components/edit-user'
+import Transfer from './components/transfer'
+import mixin from './mixin'
 export default {
+  mixins: [mixin],
   name: 'userManage',
   components: {
-    Pagination
+    Pagination,
+    UserEdit,
+    Transfer
   },
   data() {
     return {
+      userItem: '',
+      showUserEdit: false,
+      showTransfer: false,
+      userIds: '',
       total: 10,
       listQuery: {
         page: 1,
@@ -188,6 +210,27 @@ export default {
     }
   },
   methods: {
+    handleAddUser() {
+      this.userItem = ''
+      this.showUserEdit = true
+    },
+    handleTransfer() {
+      this.showTransfer = true
+    },
+    // 删除
+    handleDelete(row, index) {
+      this.$confirm('确定要删除该数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        // this.list.splice(index, 1)
+      }).catch(() => {})
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

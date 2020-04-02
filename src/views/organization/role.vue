@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
-          <el-button type="primary" size="mini">添加</el-button>
+          <el-button type="primary" size="mini" @click="handleAddRole">添加</el-button>
           <el-button type="danger" size="mini">删除</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
@@ -25,6 +25,10 @@
           fixed
           prop="date"
           label="名称">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="英文名称">
         </el-table-column>
         <el-table-column
           prop="name"
@@ -54,18 +58,25 @@
       <el-row type="flex" justify="end">
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
       </el-row>
+      <edit-role :show.sync="showEditRole" :item="roleItem"/>
   </div>
 </template>
 
 <script>
+import EditRole from './components/edit-role'
+import mixin from './mixin'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'roleManage',
+  mixins: [mixin],
   components: {
-    Pagination
+    Pagination,
+    EditRole
   },
   data() {
     return {
+      showEditRole: false,
+      roleItem: '',
       total: 10,
       listQuery: {
         page: 1,
@@ -104,6 +115,9 @@ export default {
     }
   },
   methods: {
+    handleAddRole() {
+      this.showEditRole = true
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

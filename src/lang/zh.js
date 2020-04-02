@@ -8,6 +8,7 @@ export default {
     userManage: '用户管理',
     menuManage: '菜单管理',
     roleManage: '角色管理',
+    departmentManage: '部门管理',
     priceInquiry: '价格查询',
     shopManage: '购物店管理',
     shopSpotManage: '购物点管理',

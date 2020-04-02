@@ -22,6 +22,7 @@ const router = {
       path: 'menu',
       component: () => import('@/views/organization/menu'),
       name: 'menuManage',
+      hidden: true,
       meta: { title: 'menuManage' }
     },
     {
@@ -29,6 +30,12 @@ const router = {
       component: () => import('@/views/organization/role'),
       name: 'roleManage',
       meta: { title: 'roleManage' }
+    },
+    {
+      path: 'department',
+      component: () => import('@/views/organization/department'),
+      name: 'departmentManage',
+      meta: { title: 'departmentManage' }
     }
   ]
 }
