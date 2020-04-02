@@ -53,6 +53,12 @@ const router = {
       component: () => import('@/views/base-info/subsidiary'),
       name: 'subsidiaryManage',
       meta: { title: 'subsidiaryManage' }
+    },
+    {
+      path: 'partner',
+      component: () => import('@/views/base-info/partner'),
+      name: 'partnerManage',
+      meta: { title: 'partnerManage' }
     }
   ]
 }

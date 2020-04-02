@@ -6,6 +6,7 @@ export default {
     scenicManage: '景点信息管理',
     restaurantManage: '餐厅信息管理',
     subsidiaryManage: '子公司管理',
+    partnerManage: '合作伙伴管理',
     organization: '权限管理',
     userManage: '用户管理',
     menuManage: '菜单管理',
