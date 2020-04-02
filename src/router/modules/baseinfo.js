@@ -24,12 +24,12 @@ const router = {
       name: 'scenicManage',
       meta: { title: 'scenicManage' }
     },
-    // {
-    //   path: 'price-inquiry',
-    //   component: () => import('@/views/base-info/price-inquiry'),
-    //   name: 'priceInquiry',
-    //   meta: { title: 'priceInquiry' }
-    // },
+    {
+      path: 'restaurant',
+      component: () => import('@/views/base-info/restaurant'),
+      name: 'restaurantManage',
+      meta: { title: 'restaurantManage' }
+    },
     {
       path: 'shop',
       component: () => import('@/views/base-info/shop'),
@@ -47,6 +47,12 @@ const router = {
       component: () => import('@/views/base-info/commission'),
       name: 'commissionManage',
       meta: { title: 'commissionManage' }
+    },
+    {
+      path: 'subsidiary',
+      component: () => import('@/views/base-info/subsidiary'),
+      name: 'subsidiaryManage',
+      meta: { title: 'subsidiaryManage' }
     }
   ]
 }
