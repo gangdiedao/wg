@@ -75,7 +75,9 @@ export default {
         charger: '负责人',
         groupNumberPrefix: '团号前缀',
         businessLicenseNo: '营业执照号',
-        companyAddress: '公司地址'
+        companyAddress: '公司地址',
+        code: '编码',
+        touristDestination: '客源地'
       },
       areas: {
         all: '全部',
