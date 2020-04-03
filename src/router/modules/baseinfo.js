@@ -59,6 +59,41 @@ const router = {
       component: () => import('@/views/base-info/partner'),
       name: 'partnerManage',
       meta: { title: 'partnerManage' }
+    },
+    {
+      path: 'guide',
+      name: 'guide',
+      meta: { title: 'guide' },
+      redirect: 'noRedirect',
+      alwaysShow: true,
+      component: () => import('@/views/guide/layout'),
+      // hidden: true,
+      children: [
+        {
+          path: 'list',
+          component: () => import('@/views/guide/list'),
+          name: 'guideList',
+          meta: { title: 'guideList' }
+        },
+        {
+          path: 'settlement',
+          component: () => import('@/views/guide/settlement'),
+          name: 'settlement',
+          meta: { title: 'settlement' }
+        },
+        {
+          path: 'deposit',
+          component: () => import('@/views/guide/deposit'),
+          name: 'deposit',
+          meta: { title: 'deposit' }
+        },
+        {
+          path: 'advance',
+          component: () => import('@/views/guide/advance'),
+          name: 'advance',
+          meta: { title: 'advance' }
+        },
+      ]
     }
   ]
 }
