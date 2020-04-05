@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-card>
-            <account :user="user" />
+            <update-pwd :user="user" />
           </el-card>
         </el-col>
       </el-row>
@@ -14,11 +14,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Account from './components/Account'
+import UpdatePwd from './components/UpdatePwd'
+
 
 export default {
   name: 'Profile',
-  components: { Account },
+  components: { UpdatePwd },
   data() {
     return {
       user: {},
@@ -27,7 +28,6 @@ export default {
   computed: {
     ...mapGetters([
       'name',
-      'avatar',
       'roles'
     ])
   },
@@ -37,10 +37,9 @@ export default {
   methods: {
     getUser() {
       this.user = {
+        id: '',
         name: this.name,
-        role: this.roles.join(' | '),
         email: 'admin@test.com',
-        avatar: this.avatar
       }
     }
   }

@@ -84,24 +84,24 @@
       </el-col>
     </el-row>
 
-    <edit-guide :show.sync="showEditGuide"/>
+    <edit-advance :show.sync="showEditAdvance"/>
   </div>
 </template>
 
 <script>
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-  import EditGuide from './components/edit-guide'
+  import EditAdvance from './components/edit-advance'
   import mixin from './mixin'
 
   export default {
     mixins: [mixin],
     name: 'settlement',
-    components: { Pagination, EditGuide },
+    components: { Pagination, EditAdvance },
     directives: { waves },
     data() {
       return {
-        showEditGuide: false,
+        showEditAdvance: false,
         tabMapOptions: [],
         activeName: 'open',
         tableKey: 0,
@@ -161,13 +161,13 @@
         row.status = status
       },
       handleCreate() {
-        this.showEditGuide = true
+        this.showEditAdvance = true
         // this.$nextTick(() => {
         //   this.$refs['dataForm'].clearValidate()
         // })
       },
       handleUpdate(row) {
-        this.showEditGuide = true
+        this.showEditAdvance = true
       },
       handleDelete(row, index) {
         this.$notify({

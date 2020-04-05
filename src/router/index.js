@@ -92,7 +92,13 @@ export const constantRoutes = [
         component: () => import('@/views/profile/index'),
         name: 'Profile',
         meta: { title: 'profile', icon: 'user', noCache: true }
-      }
+      },
+      {
+        path: 'updatepwd',
+        component: () => import('@/views/profile/updatepwd'),
+        name: 'updatePwd',
+        meta: { title: 'updatePwd', icon: 'user', noCache: true }
+      },
     ]
   }
 ]

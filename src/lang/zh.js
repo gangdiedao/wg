@@ -25,11 +25,13 @@ export default {
     page401: '401',
     page404: '404',
     errorLog: '错误日志',
-    profile: '个人中心'
+    profile: '个人中心',
+    updatePwd: '修改密码',
   },
   navbar: {
     dashboard: '首页',
     logOut: '退出登录',
+    updatePwd: '修改密码',
     profile: '个人中心',
     theme: '换肤',
     size: '布局大小'
