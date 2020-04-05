@@ -27,6 +27,8 @@ export default {
     errorLog: '错误日志',
     profile: '个人中心',
     updatePwd: '修改密码',
+    system: '系统管理',
+    datadict: '数据字典'
   },
   navbar: {
     dashboard: '首页',
