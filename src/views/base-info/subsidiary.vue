@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/subsidiary'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -144,10 +144,23 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: ''
+        name: '',
+        namekey: '',
+        fullname: '',
+        enname: '',
+        type: 1,
+        status: 1,
+        tel: '',
+        preffix: '',
+        manager_user_id: '',
+        manager: '',
+        op_manager_user_id: '',
+        op_manager: '',
+        principal: '',
+        licenceno: '',
+        fax: '',
+        address: '',
+        remark: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
