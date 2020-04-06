@@ -66,7 +66,18 @@ export default {
         leaderRoyalty: '领队提成',
         calculationType: '计算方式',
         showType: '显示方式',
-        commissionType: '佣金类型'
+        commissionType: '佣金类型',
+        englishName: '英文名称',
+        fullName: '全称',
+        key: 'key',
+        companyManager: '公司经理',
+        operationsManager: '操作经理',
+        charger: '负责人',
+        groupNumberPrefix: '团号前缀',
+        businessLicenseNo: '营业执照号',
+        companyAddress: '公司地址',
+        code: '编码',
+        touristDestination: '客源地'
       },
       areas: {
         all: '全部',
