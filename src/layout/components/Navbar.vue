@@ -31,9 +31,9 @@
               {{ $t('navbar.profile') }}
             </el-dropdown-item>
           </router-link>
-          <router-link to="/">
+          <router-link to="/profile/updatepwd">
             <el-dropdown-item>
-              {{ $t('navbar.dashboard') }}
+              {{ $t('navbar.updatePwd') }}
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">

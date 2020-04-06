@@ -11,19 +11,29 @@ export default {
     userManage: '用户管理',
     menuManage: '菜单管理',
     roleManage: '角色管理',
+    departmentManage: '部门管理',
     priceInquiry: '价格查询',
     shopManage: '购物店管理',
     shopSpotManage: '购物点管理',
     commissionManage: '佣金信息管理',
+    guide: '导游管理',
+    guideList: '导游总表',
+    settlement: '导游结算表',
+    deposit: '导游押金表',
+    advance: '导游预支表',
     errorPages: '错误页面',
     page401: '401',
     page404: '404',
     errorLog: '错误日志',
-    profile: '个人中心'
+    profile: '个人中心',
+    updatePwd: '修改密码',
+    system: '系统管理',
+    datadict: '数据字典'
   },
   navbar: {
     dashboard: '首页',
     logOut: '退出登录',
+    updatePwd: '修改密码',
     profile: '个人中心',
     theme: '换肤',
     size: '布局大小'
@@ -71,7 +81,9 @@ export default {
     create: '创建',
     edit: '编辑',
     update: '修改',
-    delete: '删除'
+    delete: '删除',
+    open: '开启',
+    close: '关闭'
   },
   rules: {
     required: '必填'

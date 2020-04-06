@@ -3,6 +3,8 @@
     <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
           <el-button type="primary" size="mini" @click="handleAddRole">添加</el-button>
+          <el-button type="success" size="mini">开启</el-button>
+          <el-button size="mini">关闭</el-button>
           <el-button type="danger" size="mini">删除</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
@@ -24,27 +26,15 @@
         <el-table-column
           fixed
           prop="date"
-          label="名称">
+          label="类型">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="英文名称">
+          label="键">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="标识">
-        </el-table-column>
-        <el-table-column
-          prop="province"
-          label="备注">
-        </el-table-column>
-        <el-table-column
-          prop="city"
-          label="创建时间">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="更新时间">
+          label="数据">
         </el-table-column>
         <el-table-column
           fixed="right"
@@ -58,12 +48,12 @@
       <el-row type="flex" justify="end">
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
       </el-row>
-      <edit-role :show.sync="showEditRole" :item="roleItem"/>
+      <edit-datadict :show.sync="showEditDatadict" :item="item"/>
   </div>
 </template>
 
 <script>
-import EditRole from './components/edit-role'
+import EditDatadict from './components/edit-datadict'
 import mixin from './mixin'
 import Pagination from '@/components/Pagination'
 export default {
@@ -71,12 +61,12 @@ export default {
   mixins: [mixin],
   components: {
     Pagination,
-    EditRole
+    EditDatadict
   },
   data() {
     return {
-      showEditRole: false,
-      roleItem: '',
+      showEditDatadict: false,
+      item: '',
       total: 10,
       listQuery: {
         page: 1,
@@ -116,7 +106,7 @@ export default {
   },
   methods: {
     handleAddRole() {
-      this.showEditRole = true
+      this.showEditDatadict = true
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

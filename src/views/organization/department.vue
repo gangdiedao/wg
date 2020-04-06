@@ -14,37 +14,22 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column
         prop="date"
-        label="名称"
+        label="部门名称"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="date"
+        label="部门英文名"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="图标"
+        label="上级部门"
         width="180">
       </el-table-column>
       <el-table-column
         prop="address"
-        label="类型">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="文件路径">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="节点路由">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="权限">
-      </el-table-column>
-      <el-table-column
-        prop="address"
         label="排序">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="更新时间">
       </el-table-column>
        <el-table-column
           fixed="right"
@@ -55,23 +40,23 @@
           </template>
         </el-table-column>
     </el-table>
-    <edit-menu :show.sync="showEditMenu" :item="menuItem"/>
+    <edit-department :show.sync="showEditDepartment" :item="deptItem"/>
   </div>
 </template>
 
 <script>
-import EditMenu from './components/edit-menu'
+import EditDepartment from './components/edit-department'
 import mixin from './mixin'
 export default {
   mixins: [mixin],
   name: 'menuManage',
   components: {
-    EditMenu
+    EditDepartment
   },
   data() {
     return {
-      showEditMenu: false,
-      menuItem: '',
+      showEditDepartment: false,
+      deptItem: '',
       tableData: [{
           id: 1,
           date: '2016-05-02',
@@ -130,7 +115,7 @@ export default {
   },
   methods: {
     handleAddMenu() {
-      this.showEditMenu = true
+      this.showEditDepartment = true
     }
   }
 }

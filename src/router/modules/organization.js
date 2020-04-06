@@ -29,6 +29,12 @@ const router = {
       component: () => import('@/views/organization/role'),
       name: 'roleManage',
       meta: { title: 'roleManage' }
+    },
+    {
+      path: 'department',
+      component: () => import('@/views/organization/department'),
+      name: 'departmentManage',
+      meta: { title: 'departmentManage' }
     }
   ]
 }
