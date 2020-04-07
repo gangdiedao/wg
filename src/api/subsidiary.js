@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 
+// 子公司列表
 export function fetchList(query) {
   return request({
     url: '/admin/factordata/subsidiary/search',
@@ -7,7 +8,14 @@ export function fetchList(query) {
     params: query
   })
 }
-
+// 公司经理
+export function companyList(query) {
+  return request({
+    url: '/admin/system/admin/lists',
+    method: 'get',
+    params: query
+  })
+}
 export function fetchArticle(id) {
   return request({
     url: '/vue-element-admin/article/detail',
@@ -26,7 +34,7 @@ export function fetchPv(pv) {
 
 export function createArticle(data) {
   return request({
-    url: '/vue-element-admin/article/create',
+    url: '/admin/factordata/subsidiary/add',
     method: 'post',
     data
   })
