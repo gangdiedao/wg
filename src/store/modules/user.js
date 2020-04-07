@@ -153,6 +153,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       update(data).then(res => {
         commit('SET_NAME', res.data.name)
+        resolve()
       }).catch(error => {
         reject(error)
       })

@@ -75,11 +75,6 @@ export default {
           type: 'error'
         })
       })
-      // this.$message({
-      //   message: 'User information has been updated successfully',
-      //   type: 'success',
-      //   duration: 5 * 1000
-      // })
     },
     cropSuccess(resData) {
       this.imagecropperShow = false
