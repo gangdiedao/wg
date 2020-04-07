@@ -11,14 +11,30 @@ export function login(data) {
 export function getInfo(token) {
   return request({
     url: '/admin/system/user/info',
-    method: 'get',
+    method: 'get'
     // params: { token }
   })
 }
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/admin/system/user/logout',
+    method: 'get'
+  })
+}
+
+export function update(data) {
+  return request({
+    url: '/admin/system/user/update',
+    method: 'post',
+    data
+  })
+}
+
+export function updatePwd(data) {
+  return request({
+    url: '/admin/system/user/updatepassword',
+    method: 'post',
+    data
   })
 }

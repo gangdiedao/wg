@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-card>
-            <account :user="user" />
+            <account :user="data" />
           </el-card>
         </el-col>
       </el-row>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Account from './components/Account'
 
 export default {
@@ -21,13 +21,12 @@ export default {
   components: { Account },
   data() {
     return {
-      user: {},
+      data: {}
     }
   },
   computed: {
     ...mapGetters([
-      'name',
-      'avatar',
+      'user',
       'roles'
     ])
   },
@@ -36,11 +35,9 @@ export default {
   },
   methods: {
     getUser() {
-      this.user = {
-        name: this.name,
-        role: this.roles.join(' | '),
-        email: 'admin@test.com',
-        avatar: this.avatar
+      this.data = {
+        ...this.user,
+        role: this.roles.join(' | ')
       }
     }
   }

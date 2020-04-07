@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, update } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -7,10 +7,14 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  user: ''
 }
 
 const mutations = {
+  SET_USER: (state, user) => {
+    state.user = user
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
@@ -29,6 +33,9 @@ const mutations = {
 }
 
 const actions = {
+  setUser({ commit }, user) {
+    commit('SET_USER', user)
+  },
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
@@ -47,40 +54,43 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const data = {
-        roles: ['admin'],
-        introduction: 'I am a super administrator',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-        name: 'Super Admin'
-      }
-      const { roles, name, avatar, introduction } = data
-      commit('SET_ROLES', roles)
-      commit('SET_NAME', name)
-      commit('SET_AVATAR', avatar)
-      commit('SET_INTRODUCTION', introduction)
-      resolve(data)
-      // getInfo(state.token).then(response => {
-      //   const { data } = response
+      // const data = {
+      //   roles: ['admin'],
+      //   introduction: 'I am a super administrator',
+      //   avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+      //   name: 'Super Admin'
+      // }
+      // const { roles, name, avatar, introduction } = data
+      // commit('SET_ROLES', roles)
+      // commit('SET_NAME', name)
+      // commit('SET_AVATAR', avatar)
+      // commit('SET_INTRODUCTION', introduction)
+      // resolve(data)
+      getInfo(state.token).then(response => {
+        const { data } = response
 
-      //   if (!data) {
-      //     reject('Verification failed, please Login again.')
-      //   }
+        if (!data) {
+          reject('Verification failed, please Login again.')
+        }
 
-      //   const { roles, name, avatar, introduction } = data
+        commit('SET_USER', data)
 
-      //   // roles must be a non-empty array
-      //   if (!roles || roles.length <= 0) {
-      //     reject('getInfo: roles must be a non-null array!')
-      //   }
+        const { name, avatar, remark } = data
 
-      //   commit('SET_ROLES', roles)
-      //   commit('SET_NAME', name)
-      //   commit('SET_AVATAR', avatar)
-      //   commit('SET_INTRODUCTION', introduction)
-      //   resolve(data)
-      // }).catch(error => {
-      //   reject(error)
-      // })
+        // roles must be a non-empty array
+        // if (!allPermissions || allPermissions.length <= 0) {
+        //   reject('getInfo: roles must be a non-null array!')
+        // }
+
+        commit('SET_ROLES', ['admin'])
+        commit('SET_NAME', name)
+        commit('SET_AVATAR', avatar)
+        commit('SET_INTRODUCTION', remark)
+        data.roles = ['admin']
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 
@@ -136,6 +146,16 @@ const actions = {
       dispatch('tagsView/delAllViews', null, { root: true })
 
       resolve()
+    })
+  },
+
+  update({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      update(data).then(res => {
+        commit('SET_NAME', res.data.name)
+      }).catch(error => {
+        reject(error)
+      })
     })
   }
 }
