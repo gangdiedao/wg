@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <div v-if="user">
+    <div>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-card>
-            <update-pwd :user="user" />
+            <update-pwd />
           </el-card>
         </el-col>
       </el-row>
@@ -16,13 +16,12 @@
 import { mapGetters } from 'vuex'
 import UpdatePwd from './components/UpdatePwd'
 
-
 export default {
   name: 'Profile',
   components: { UpdatePwd },
   data() {
     return {
-      user: {},
+
     }
   },
   computed: {
@@ -31,17 +30,8 @@ export default {
       'roles'
     ])
   },
-  created() {
-    this.getUser()
-  },
   methods: {
-    getUser() {
-      this.user = {
-        id: '',
-        name: this.name,
-        email: 'admin@test.com',
-      }
-    }
+
   }
 }
 </script>
