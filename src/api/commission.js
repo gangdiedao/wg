@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 子公司列表
 export function fetchList(query) {
   return request({
-    url: '/admin/factordata/subsidiary/search',
+    url: '/admin/factordata/shoppointret/search',
     method: 'get',
     params: query
   })

@@ -175,7 +175,8 @@ export default {
               if (response.code === 2000) {
                 this.$message({
                   type: 'success',
-                  message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
+                  duration: 1000,
+                  message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
                   onClose: () => {
                     this.visible = false
                     this.$emit('callBcak', 'edit')
@@ -190,7 +191,8 @@ export default {
               if (response.code === 2000) {
                 this.$message({
                   type: 'success',
-                  message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
+                  duration: 1000,
+                  message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
                   onClose: () => {
                     this.visible = false
                     this.$emit('callBcak', 'add')

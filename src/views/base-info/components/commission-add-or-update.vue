@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :visible.sync="visible"
-    :title="!dataForm.id ? $t('i18nView.information.add')+'佣金' : $t('i18nView.information.edit')+'佣金'"
+    :title="!dataForm.id ? $t('i18nView.information.add') : $t('i18nView.information.edit')"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     center
