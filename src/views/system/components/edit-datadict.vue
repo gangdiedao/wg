@@ -1,15 +1,15 @@
 <template>
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" width="720px" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item label="类型" prop="type">
+      <el-form-item :label="$t('system.field.type')" prop="type">
         <el-select v-model="ruleForm.type" style="width: 100%" placeholder="请选择角色">
           <el-option v-for="(value, name) in dictTypeList" :key="name" :label="value" :value="name"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="键">
+      <el-form-item :label="$t('system.field.key')">
         <el-input v-model="ruleForm.key"></el-input>
       </el-form-item>
-      <el-form-item label="数据" prop="value">
+      <el-form-item :label="$t('system.field.value')" prop="value">
         <el-input v-model="ruleForm.value"></el-input>
       </el-form-item>
     </el-form>

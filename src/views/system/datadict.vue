@@ -2,14 +2,14 @@
   <div class="app-container">
     <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
-          <el-button type="primary" size="mini" @click="handleAdd">添加</el-button>
-          <el-button type="success" @click="handleChangeStatus(1)" :disabled="!multipleSelection.length" size="mini">开启</el-button>
-          <el-button size="mini" @click="handleChangeStatus(2)" :disabled="!multipleSelection.length">关闭</el-button>
+          <el-button type="primary" size="mini" @click="handleAdd">{{ $t('actions.create') }}</el-button>
+          <el-button type="success" @click="handleChangeStatus(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
+          <el-button size="mini" @click="handleChangeStatus(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
           <!-- <el-button type="danger" size="mini">删除</el-button> -->
         </el-col>
         <el-col :span="12" style="text-align: right;">
           <el-input placeholder="请输入内容" size="mini" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search">搜索</el-button>
+            <el-button slot="append" icon="el-icon-search">{{ $t('actions.search') }}</el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -27,28 +27,28 @@
         <el-table-column
           fixed
           prop="type"
-          label="类型">
+          :label="$t('system.field.type')">
         </el-table-column>
         <el-table-column
           prop="key"
-          label="键">
+          :label="$t('system.field.key')">
         </el-table-column>
         <el-table-column
           prop="value"
-          label="数据">
+          :label="$t('system.field.value')">
         </el-table-column>
         <el-table-column
           prop="status"
-          label="状态">
+          :label="$t('system.field.status')">
             <template slot-scope="scope">
-              <span>{{scope.row.status === 1 ? '开启' : '关闭'}}</span>
+              <span>{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</span>
             </template>
         </el-table-column>
         <el-table-column
           fixed="right"
-          label="操作">
+          :label="$t('system.field.action')">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleEdit(scope.row)" size="small">编辑</el-button>
+            <el-button type="text" @click="handleEdit(scope.row)" size="small">{{ $t('actions.edit') }}</el-button>
             <!-- <el-button type="text" size="small" @click="handleDelete(scope.row, scope.index)">删除</el-button> -->
           </template>
         </el-table-column>
