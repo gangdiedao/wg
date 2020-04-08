@@ -1,6 +1,6 @@
 <template>
   <el-form>
-    <el-form-item label="用户名">
+    <el-form-item :label="$t('profile.field.username')">
       <div @click="imagecropperShow=true">
         <el-avatar :size="48" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
       </div>
@@ -15,23 +15,23 @@
         @crop-upload-success="cropSuccess"
       />
     </el-form-item>
-    <el-form-item label="姓名">
+    <el-form-item :label="$t('profile.field.name')">
       <el-input v-model.trim="formData.name" />
     </el-form-item>
-    <el-form-item label="英文名">
+    <el-form-item :label="$t('profile.field.nameEn')">
       <el-input v-model.trim="formData.name_en" />
     </el-form-item>
-    <el-form-item label="邮箱">
+    <el-form-item :label="$t('profile.field.email')">
       <el-input v-model.trim="formData.email" />
     </el-form-item>
-    <el-form-item label="联系电话">
+    <el-form-item :label="$t('profile.field.phone')">
       <el-input v-model.trim="formData.phone" type="number" />
     </el-form-item>
-    <el-form-item label="地址">
+    <el-form-item :label="$t('profile.field.address')">
       <el-input v-model.trim="formData.address" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submit">更新</el-button>
+      <el-button type="primary" @click="submit">{{ $t('actions.update') }}</el-button>
     </el-form-item>
   </el-form>
 </template>

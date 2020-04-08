@@ -15,8 +15,10 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Account from './components/Account'
+import mixin from './mixin'
 
 export default {
+  mixins: [mixin],
   name: 'Profile',
   components: { Account },
   data() {
