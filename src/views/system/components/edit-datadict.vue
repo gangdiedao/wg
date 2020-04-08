@@ -1,17 +1,16 @@
 <template>
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" width="720px" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item label="类型">
-        <el-select v-model="ruleForm.role" style="width: 100%" placeholder="请选择角色">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="ruleForm.type" style="width: 100%" placeholder="请选择角色">
+          <el-option v-for="(value, name) in dictTypeList" :key="name" :label="value" :value="name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="键">
-        <el-input v-model="ruleForm.name"></el-input>
+        <el-input v-model="ruleForm.key"></el-input>
       </el-form-item>
-      <el-form-item label="数据" prop="username">
-        <el-input v-model="ruleForm.username"></el-input>
+      <el-form-item label="数据" prop="value">
+        <el-input v-model="ruleForm.value"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -26,6 +25,8 @@
 </template>
 
 <script>
+import { createDict, updateDict } from '@/api/system'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     show: {
@@ -42,9 +43,33 @@ export default {
     },
     show(bool) {
       this.dialogFormVisible = bool
+      if (bool) {
+        if (this.item) {
+          Object.assign(this.ruleForm, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.ruleForm = {
+            id: '',
+            type: '',
+            key: '',
+            value: ''
+          }
+          this.dialogStatus = 'create'
+        }
+      }
     },
     filterText(val) {
       this.$refs.tree.filter(val);
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'dictTypeList'
+    ])
+  },
+  created() {
+    if (this.dictTypeList.length < 1) {
+      this.getList()
     }
   },
   data() {
@@ -52,33 +77,21 @@ export default {
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
-        update: `${this.$t('actions.edit')} ${this.$t('organization.userModules.field.user')}`,
-        create: `${this.$t('actions.create')} ${this.$t('organization.userModules.field.user')}`,
+        update: `${this.$t('actions.edit')}`,
+        create: `${this.$t('actions.create')}`,
       },
       ruleForm: {
         id: '',
-        name: '',
-        username: '',
-        email: '',
-        phone: '',
-        role: [],
-        status: 1,
-        remark: ''
+        type: '',
+        key: '',
+        value: ''
       },
       rules: {
-        name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        type: [
+          { required: true, message: '类型必选', trigger: 'blur' }
         ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, message: '长度最少3个字符', trigger: 'blur' }
-        ],
-        email: [
-          { type: 'email', message: '请选正确的emial', trigger: 'blur' }
-        ],
-        phone: [
-          { type: 'phone', message: '请填写正确的手机号', trigger: 'blur' }
+        value: [
+          { required: true, message: '请填写数据', trigger: 'blur' }
         ]
       },
       filterText: '',
@@ -120,15 +133,32 @@ export default {
     }
   },
   methods: {
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+    getList() {
+      this.$store.dispatch('system/getDictTypeList')
     },
     createData() {
-
+      createDict(this.ruleForm).then(res => {
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.dialogFormVisible = false
+      }).catch(error => {
+        this.$notify.error(error)
+      })
     },
     updateData() {
-
+      updateDict(this.ruleForm).then(res => {
+        this.$message({
+          message: '修改成功',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.dialogFormVisible = false
+      }).catch(error => {
+        this.$notify.error(error)
+      })
     }
   }
 }
