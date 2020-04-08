@@ -27,18 +27,25 @@
         <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
+        <el-image
+          v-if="dataForm.logo != ''"
+          style="width: 100px; height: 100px;float:left"
+          :src="dataForm.logo"
+          fit="cover"
+        />
         <el-upload
           class="upload-demo"
+          style="float:left"
           action="string"
-          :show-file-list="true"
+          :show-file-list="false"
           :limit="1"
           :http-request="UploadIcon"
-          :file-list="dataForm.logo"
           :before-upload="onBeforeUploadImage"
           :on-exceed="handleExceed"
         >
-          <el-button type="primary" size="small">添加图标</el-button>
+          <el-button type="primary" size="small">上传</el-button>
         </el-upload>
+        <el-button type="primary" size="small">删除</el-button>
       </el-form-item>
       <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
         <el-upload
@@ -46,7 +53,6 @@
           action="string"
           :show-file-list="true"
           :http-request="UploadImage"
-          :file-list="imagesArr"
           :before-upload="onBeforeUploadImage"
         >
           <el-button type="primary" size="small">添加图片</el-button>
@@ -73,7 +79,6 @@
           action="string"
           :show-file-list="true"
           :http-request="UploadFile"
-          :file-list="filesArr"
           :before-upload="onBeforeUploadFile"
         >
           <el-button type="primary" size="small">添加文件</el-button>
@@ -128,6 +133,9 @@ export default {
           this.dataForm = item
           this.imagesArr = this.dataForm.imagesArr
           this.filesArr = this.dataForm.filesArr
+        } else {
+          this.imagesArr = this.dataForm.imagesArr = []
+          this.filesArr = this.dataForm.filesArr = []
         }
       })
     },
@@ -185,7 +193,7 @@ export default {
             duration: 1000,
             message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
           })
-          this.dataForm.logo = response.data
+          this.dataForm.logo = response.data.url
         } else {
           this.$message.error(response.msg)
         }
@@ -202,7 +210,8 @@ export default {
             duration: 1000,
             message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
           })
-          this.imagesArr.push(response.data)
+          this.dataForm.imagesArr.push(response.data)
+          console.log(this.dataForm.imagesArr)
         } else {
           this.$message.error(response.msg)
         }

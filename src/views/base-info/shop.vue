@@ -8,7 +8,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate()">
         {{ $t('i18nView.information.add') }}
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
@@ -210,7 +210,7 @@ export default {
     },
     // 新增、编辑
     handleCreateUpdate(item) {
-      this.$refs.shopAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
+      this.$refs.shopAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : '')
     },
     // 删除
     // handleDelete(row, index) {
