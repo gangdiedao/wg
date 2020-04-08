@@ -83,7 +83,8 @@ export default {
     update: '修改',
     delete: '删除',
     open: '开启',
-    close: '关闭'
+    close: '关闭',
+    search: '搜索'
   },
   rules: {
     required: '必填'
