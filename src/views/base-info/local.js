@@ -77,7 +77,8 @@ export default {
         businessLicenseNo: '营业执照号',
         companyAddress: '公司地址',
         code: '编码',
-        touristDestination: '客源地'
+        touristDestination: '客源地',
+        success: '成功'
       },
       areas: {
         all: '全部',

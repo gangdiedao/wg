@@ -17,16 +17,16 @@
         <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="fullName" :label="$t('i18nView.information.fullName')">
-        <el-input v-model="dataForm.fullName" :placeholder="'请输入'+$t('i18nView.information.fullName')" />
+        <el-input v-model="dataForm.fullname" :placeholder="'请输入'+$t('i18nView.information.fullName')" />
       </el-form-item>
-      <el-form-item prop="englishName" :label="$t('i18nView.information.englishName')">
-        <el-input v-model="dataForm.englishName" :placeholder="'请输入'+$t('i18nView.information.englishName')" />
+      <el-form-item prop="enname" :label="$t('i18nView.information.englishName')">
+        <el-input v-model="dataForm.enname" :placeholder="'请输入'+$t('i18nView.information.englishName')" />
       </el-form-item>
-      <el-form-item prop="key" :label="$t('i18nView.information.key')">
-        <el-input v-model="dataForm.key" :placeholder="'请输入'+$t('i18nView.information.key')" />
+      <el-form-item prop="namekey" :label="$t('i18nView.information.key')">
+        <el-input v-model="dataForm.namekey" :placeholder="'请输入'+$t('i18nView.information.key')" />
       </el-form-item>
       <el-form-item prop="companyManager" :label="$t('i18nView.information.companyManager')">
-        <el-select v-model="dataForm.companyManager" :placeholder="'请选择'+$t('i18nView.information.companyManager')">
+        <el-select v-model="dataForm.manager_user_id" :placeholder="'请选择'+$t('i18nView.information.companyManager')" @change="coChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -36,7 +36,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="operationsManager" :label="$t('i18nView.information.operationsManager')">
-        <el-select v-model="dataForm.operationsManager" :placeholder="'请选择'+$t('i18nView.information.operationsManager')">
+        <el-select v-model="dataForm.op_manager_user_id" :placeholder="'请选择'+$t('i18nView.information.operationsManager')" @change="opChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -45,26 +45,26 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item prop="charger" :label="$t('i18nView.information.charger')">
-        <el-input v-model="dataForm.charger" :placeholder="'请输入'+$t('i18nView.information.charger')" />
+      <el-form-item prop="principal" :label="$t('i18nView.information.charger')">
+        <el-input v-model="dataForm.principal" :placeholder="'请输入'+$t('i18nView.information.charger')" />
       </el-form-item>
-      <el-form-item prop="telePhone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telePhone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+      <el-form-item prop="tel" :label="$t('i18nView.information.telePhone')">
+        <el-input v-model="dataForm.tel" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
       </el-form-item>
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
         <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
       </el-form-item>
-      <el-form-item prop="groupNumberPrefix" :label="$t('i18nView.information.groupNumberPrefix')">
-        <el-input v-model="dataForm.groupNumberPrefix" :placeholder="'请输入'+$t('i18nView.information.groupNumberPrefix')" />
+      <el-form-item prop="preffix" :label="$t('i18nView.information.groupNumberPrefix')">
+        <el-input v-model="dataForm.preffix" :placeholder="'请输入'+$t('i18nView.information.groupNumberPrefix')" />
       </el-form-item>
-      <el-form-item prop="businessLicenseNo" :label="$t('i18nView.information.businessLicenseNo')">
-        <el-input v-model="dataForm.businessLicenseNo" :placeholder="'请输入'+$t('i18nView.information.businessLicenseNo')" />
+      <el-form-item prop="licenceno" :label="$t('i18nView.information.businessLicenseNo')">
+        <el-input v-model="dataForm.licenceno" :placeholder="'请输入'+$t('i18nView.information.businessLicenseNo')" />
       </el-form-item>
-      <el-form-item prop="companyAddress" :label="$t('i18nView.information.companyAddress')">
-        <el-input v-model="dataForm.companyAddress" :placeholder="'请输入'+$t('i18nView.information.companyAddress')" />
+      <el-form-item prop="address" :label="$t('i18nView.information.companyAddress')">
+        <el-input v-model="dataForm.address" :placeholder="'请输入'+$t('i18nView.information.companyAddress')" />
       </el-form-item>
-      <el-form-item prop="maskInfo" :label="$t('i18nView.information.maskInfo')">
-        <el-input v-model="dataForm.maskInfo" :placeholder="'请输入'+$t('i18nView.information.maskInfo')" type="textarea" />
+      <el-form-item prop="remark" :label="$t('i18nView.information.maskInfo')">
+        <el-input v-model="dataForm.remark" :placeholder="'请输入'+$t('i18nView.information.maskInfo')" type="textarea" />
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { companyList, createArticle, updateArticle } from '@/api/subsidiary'
 import mixin from '../mixin'
 
 export default {
@@ -85,162 +86,120 @@ export default {
       dataForm: {
         fullName: '',
         name: '',
-        englishName: '',
-        key: '',
-        companyManager: '',
-        operationsManager: '',
+        enname: '',
+        namekey: '',
+        status: 1, // 状态 1:激活 2：锁定
+        manager_user_id: '',
+        manager: '',
+        op_manager_user_id: '',
+        op_manager: '',
         fax: '',
-        telePhone: '',
-        groupNumberPrefix: '',
-        businessLicenseNo: '',
-        companyAddress: '',
-        maskInfo: ''
+        tel: '',
+        preffix: '',
+        principal: '', // 负责人
+        licenceno: '',
+        address: '',
+        remark: ''
       },
-      returnTypeFlag: 0,
+      listQuery: {
+        page: 1,
+        limit: 1000,
+        keyword: '',
+        status: 1
+      },
       dataRule: {},
-      infoTypeList: [],
-      cityList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.areas.bangkok')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.areas.pattaya')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.areas.samed')
-        },
-        {
-          id: 4,
-          name: this.$t('i18nView.areas.rayong')
-        },
-        {
-          id: 5,
-          name: this.$t('i18nView.areas.ayutthaya')
-        },
-        {
-          id: 6,
-          name: this.$t('i18nView.areas.huahin')
-        },
-        {
-          id: 7,
-          name: this.$t('i18nView.areas.kanchanaburi')
-        },
-        {
-          id: 8,
-          name: this.$t('i18nView.areas.samui')
-        },
-        {
-          id: 9,
-          name: this.$t('i18nView.areas.surat')
-        },
-        {
-          id: 10,
-          name: this.$t('i18nView.areas.kohchang')
-        }
-      ],
-      valuationMethodList: [],
-      creatorList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.creatorList.zhangshan')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.creatorList.liudehua')
-        },
-        {
-          id: 2,
-          name: this.$t('i18nView.creatorList.zhangxueyou')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.creatorList.zhoujielun')
-        }
-      ],
-      returnTypeList: [],
-      payTypeList: []
+      infoTypeList: []
     }
   },
   computed: {},
-  created() {
-    this.payTypeList = this.payTypeListData()
-    this.returnTypeList = this.returnTypeListData()
-    this.valuationMethodList = this.valuationMethodListData()
-    this.infoTypeList = this.infoTypeListData()
-  },
+  created() {},
   methods: {
     init(item) {
       this.visible = true
+      this.companyListData() // 操作经理，公司经理数据
       this.$nextTick(() => {
+        // 编辑
         if (item) {
           this.dataForm = item
-        }
-      })
-    },
-    // 上传文件之前
-    onBeforeUploadImage(file) {
-      if (
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/jpeg' &&
-        file.type !== 'image/png' &&
-        file.type !== 'image/gif'
-      ) {
-        this.$message.error(this.$t('upload.tip', { format: 'jpg、png、gif' }))
-        return false
-      }
-    },
-    // 上传文件
-    UploadImage(param) {
-      const formData = new FormData()
-      formData.append('file', param.file)
-      this.$http.post(
-        '/school/student/import',
-        formData
-      ).then(({ data: res }) => {
-        if (res.code === 0) {
-          this.$message({
-            message: '导入成功',
-            type: 'success'
-          })
-          this.query()
         } else {
-          this.$message.error(res.msg || '导入失败')
+          // 新增
+          this.dataForm = {
+            fullname: '',
+            name: '',
+            enname: '',
+            namekey: '',
+            status: 1, // 状态 1:激活 2：锁定
+            manager_user_id: '',
+            manager: '',
+            op_manager_user_id: '',
+            op_manager: '',
+            fax: '',
+            tel: '',
+            preffix: '',
+            principal: '', // 负责人
+            licenceno: '',
+            address: '',
+            remark: ''
+          }
         }
-      }).catch((e) => {
-        this.$message.error(e.msg || '导入失败')
       })
     },
-    // 返佣改变
-    returnTypeChange(e) {
-      this.returnTypeFlag = e
+    // 操作经理，公司经理数据
+    companyListData() {
+      companyList(this.listQuery).then(response => {
+        this.infoTypeList = response.data.data
+      })
+    },
+    // 公司经理改变
+    coChange(id) {
+      let obj = {}
+      obj = this.infoTypeList.find(item => {
+        return item.id === id
+      })
+      this.dataForm.manager = obj.name
+    },
+    // 操作经理改变
+    opChange(id) {
+      let obj = {}
+      obj = this.infoTypeList.find(item => {
+        return item.id === id
+      })
+      this.dataForm.op_manager = obj.name
     },
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
-          try {
-            await this.$http[!this.dataForm.id ? 'post' : 'put'](
-              '/sys/mailtemplate',
-              this.dataForm,
-              {
-                headers: { 'content-type': 'application/x-www-form-urlencoded' }
-              }
-            )
-
-            this.$message({
-              message: this.$t('prompt.success'),
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
+          if (this.dataForm.id) {
+            updateArticle(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'edit')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
               }
             })
-          } catch (error) {
-            this.$message.error(error.msg)
+          } else {
+            createArticle(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'add')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
+              }
+            })
           }
         }
       })

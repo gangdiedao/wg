@@ -14,7 +14,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    config.headers['X-Requested-With'] = "XMLHttpRequest"
+    config.headers['X-Requested-With'] = 'XMLHttpRequest'
 
     if (store.getters.token) {
       // let each request carry token

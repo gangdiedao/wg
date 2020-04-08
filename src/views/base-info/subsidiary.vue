@@ -15,10 +15,6 @@
         {{ $t('i18nView.information.export') }}
       </el-button>
     </div>
-    <!-- <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-        <keep-alive> -->
-    <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -42,62 +38,62 @@
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.name')" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.englishName')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.enname }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.fullName')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.fullname }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.key')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.namekey }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.companyManager')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.manager }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.operationsManager')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.op_manager }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.charger')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.principal }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.telePhone')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.fax')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.fax }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.groupNumberPrefix')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.preffix }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.businessLicenseNo')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.licenceno }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.companyAddress')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.address }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width">
@@ -111,16 +107,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- </keep-alive>
-      </el-tab-pane>
-    </el-tabs> -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <subsidiaryAddOrUpdate ref="subsidiaryAddOrUpdate" />
+    <subsidiaryAddOrUpdate ref="subsidiaryAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/subsidiary'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -144,10 +137,23 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: ''
+        name: '',
+        namekey: '',
+        fullname: '',
+        enname: '',
+        type: 1,
+        status: 1,
+        tel: '',
+        preffix: '',
+        manager_user_id: '',
+        manager: '',
+        op_manager_user_id: '',
+        op_manager: '',
+        principal: '',
+        licenceno: '',
+        fax: '',
+        address: '',
+        remark: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -204,6 +210,10 @@ export default {
     this.getList()
   },
   methods: {
+    callBcak(e) {
+      console.log(e)
+      this.getList()
+    },
     setOptions() {
       this.tabMapOptions = [
         { key: 'all', label: this.$t('i18nView.areas.all') },
@@ -222,8 +232,8 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+        this.list = response.data.data
+        this.total = response.data.count
 
         // Just to simulate the time of the request
         setTimeout(() => {
