@@ -78,7 +78,10 @@ export default {
         companyAddress: '公司地址',
         code: '编码',
         touristDestination: '客源地',
-        success: '成功'
+        success: '成功',
+        upload: '上传',
+        uploadTip: '上传文件格式只能为{format}',
+        uploadSize: '上传文件大小不能大于{format}'
       },
       areas: {
         all: '全部',

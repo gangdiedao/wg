@@ -13,8 +13,8 @@
       label-width="120px"
       @keyup.enter.native="dataFormSubmitHandle()"
     >
-      <el-form-item prop="selectData" :label="$t('i18nView.information.infoType')">
-        <el-select v-model="dataForm.selectData" :placeholder="'请选择'+$t('i18nView.information.infoType')">
+      <el-form-item prop="info_type_id" :label="$t('i18nView.information.infoType')">
+        <el-select v-model="dataForm.info_type_id" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="typeChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -26,39 +26,43 @@
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
         <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
-      <el-form-item prop="icon" :label="$t('i18nView.information.icon')">
+      <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
         <el-upload
           class="upload-demo"
           action="string"
-          :show-file-list="false"
-          :http-request="UploadImage"
+          :show-file-list="true"
+          :limit="1"
+          :http-request="UploadIcon"
+          :file-list="dataForm.logo"
           :before-upload="onBeforeUploadImage"
+          :on-exceed="handleExceed"
         >
-          <el-button type="primary" icon="el-icon-upload2">添加图标</el-button>
+          <el-button type="primary" size="small">添加图标</el-button>
         </el-upload>
       </el-form-item>
       <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
         <el-upload
           class="upload-demo"
           action="string"
-          :show-file-list="false"
+          :show-file-list="true"
           :http-request="UploadImage"
+          :file-list="imagesArr"
           :before-upload="onBeforeUploadImage"
         >
-          <el-button type="primary" icon="el-icon-upload2">添加图片</el-button>
+          <el-button type="primary" size="small">添加图片</el-button>
         </el-upload>
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
         <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
       </el-form-item>
-      <el-form-item prop="introduce" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.introduce" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+      <el-form-item prop="intro" :label="$t('i18nView.information.introduce')">
+        <el-input v-model="dataForm.intro" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
       </el-form-item>
-      <el-form-item prop="contacts" :label="$t('i18nView.information.contacts')">
-        <el-input v-model="dataForm.contacts" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
+      <el-form-item prop="contact" :label="$t('i18nView.information.contacts')">
+        <el-input v-model="dataForm.contact" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
       </el-form-item>
-      <el-form-item prop="telePhone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telePhone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+      <el-form-item prop="telphone" :label="$t('i18nView.information.telePhone')">
+        <el-input v-model="dataForm.telphone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
       </el-form-item>
       <el-form-item prop="email" :label="$t('i18nView.information.email')">
         <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
@@ -67,11 +71,12 @@
         <el-upload
           class="upload-demo"
           action="string"
-          :show-file-list="false"
-          :http-request="UploadImage"
-          :before-upload="onBeforeUploadImage"
+          :show-file-list="true"
+          :http-request="UploadFile"
+          :file-list="filesArr"
+          :before-upload="onBeforeUploadFile"
         >
-          <el-button type="primary" icon="el-icon-upload2">添加文件</el-button>
+          <el-button type="primary" size="small">添加文件</el-button>
         </el-upload>
       </el-form-item>
     </el-form>
@@ -83,6 +88,7 @@
 </template>
 
 <script>
+import { createArticle, updateArticle, upload } from '@/api/shop'
 import mixin from '../mixin'
 
 export default {
@@ -91,102 +97,27 @@ export default {
     return {
       visible: false,
       dataForm: {
-        selectData: '',
+        info_type_id: '',
+        info_type_name: '',
         name: '',
+        status: 1, // 状态 1:激活 2：锁定
         url: '',
-        introduce: '',
-        company: '',
-        city: '',
-        address: '',
-        contacts: '',
-        telePhone: '',
-        fax: '',
-        valuationMethod: '',
+        imagesArr: [],
+        filesArr: [],
+        intro: '',
+        contact: '',
+        telphone: '',
         email: '',
-        payType: '',
-        creator: '',
-        files: '',
-        remarks: '',
-        detailIntroduce: '',
-        AccountBookRemark: '',
-        UKey: '',
-        returnType: '',
-        fixedValue: '',
-        returnedCommissionPercentage: ''
+        logo: ''
       },
-      returnTypeFlag: 0,
+      imagesArr: [],
+      filesArr: [],
       dataRule: {},
-      infoTypeList: [],
-      cityList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.areas.bangkok')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.areas.pattaya')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.areas.samed')
-        },
-        {
-          id: 4,
-          name: this.$t('i18nView.areas.rayong')
-        },
-        {
-          id: 5,
-          name: this.$t('i18nView.areas.ayutthaya')
-        },
-        {
-          id: 6,
-          name: this.$t('i18nView.areas.huahin')
-        },
-        {
-          id: 7,
-          name: this.$t('i18nView.areas.kanchanaburi')
-        },
-        {
-          id: 8,
-          name: this.$t('i18nView.areas.samui')
-        },
-        {
-          id: 9,
-          name: this.$t('i18nView.areas.surat')
-        },
-        {
-          id: 10,
-          name: this.$t('i18nView.areas.kohchang')
-        }
-      ],
-      valuationMethodList: [],
-      creatorList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.creatorList.zhangshan')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.creatorList.liudehua')
-        },
-        {
-          id: 2,
-          name: this.$t('i18nView.creatorList.zhangxueyou')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.creatorList.zhoujielun')
-        }
-      ],
-      returnTypeList: [],
-      payTypeList: []
+      infoTypeList: []
     }
   },
   computed: {},
   created() {
-    this.payTypeList = this.payTypeListData()
-    this.returnTypeList = this.returnTypeListData()
-    this.valuationMethodList = this.valuationMethodListData()
     this.infoTypeList = this.infoTypeListData()
   },
   methods: {
@@ -195,10 +126,20 @@ export default {
       this.$nextTick(() => {
         if (item) {
           this.dataForm = item
+          this.imagesArr = this.dataForm.imagesArr
+          this.filesArr = this.dataForm.filesArr
         }
       })
     },
-    // 上传文件之前
+    // 信息类型改变
+    typeChange(id) {
+      let obj = {}
+      obj = this.infoTypeList.find(item => {
+        return item.id === id
+      })
+      this.dataForm.info_type_name = obj.name
+    },
+    // 上传图片、图标之前
     onBeforeUploadImage(file) {
       if (
         file.type !== 'image/jpg' &&
@@ -206,59 +147,122 @@ export default {
         file.type !== 'image/png' &&
         file.type !== 'image/gif'
       ) {
-        this.$message.error(this.$t('upload.tip', { format: 'jpg、png、gif' }))
+        this.$message.error(this.$t('i18nView.information.uploadTip', { format: 'jpg、png、gif' }))
+        return false
+      }
+      if (file.size / 1024 / 1024 > 10) {
+        this.$message.error(this.$t('i18nView.information.uploadSize', { format: '10MB' }))
         return false
       }
     },
-    // 上传文件
-    UploadImage(param) {
+    // 上传图片、图标之前
+    onBeforeUploadFile(file) {
+      if (
+        file.type !== 'application/vnd.ms-excel' &&
+        file.type !== 'pplication/msword' &&
+        file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+        file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ) {
+        this.$message.error(this.$t('i18nView.information.uploadTip', { format: 'doc、docx、xls、xlsx' }))
+        return false
+      }
+      if (file.size / 1024 / 1024 > 10) {
+        this.$message.error(this.$t('i18nView.information.uploadSize', { format: '10MB' }))
+        return false
+      }
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`最多只能上传1张图标`)
+    },
+    // 上传图标
+    UploadIcon(param) {
       const formData = new FormData()
-      formData.append('file', param.file)
-      this.$http.post(
-        '/school/student/import',
-        formData
-      ).then(({ data: res }) => {
-        if (res.code === 0) {
+      formData.append('Filedata', param.file)
+      upload(formData).then(response => {
+        if (response.code === 2000) {
           this.$message({
-            message: '导入成功',
-            type: 'success'
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
           })
-          this.query()
+          this.dataForm.logo = response.data
         } else {
-          this.$message.error(res.msg || '导入失败')
+          this.$message.error(response.msg)
         }
-      }).catch((e) => {
-        this.$message.error(e.msg || '导入失败')
       })
     },
-    // 返佣改变
-    returnTypeChange(e) {
-      this.returnTypeFlag = e
+    // 上传图片
+    UploadImage(param) {
+      const formData = new FormData()
+      formData.append('Filedata', param.file)
+      upload(formData).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
+          })
+          this.imagesArr.push(response.data)
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
+    // 上传文件
+    UploadFile(param) {
+      const formData = new FormData()
+      formData.append('Filedata', param.file)
+      upload(formData).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
+          })
+          this.filesArr.push(response.data)
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
     },
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
-          try {
-            await this.$http[!this.dataForm.id ? 'post' : 'put'](
-              '/sys/mailtemplate',
-              this.dataForm,
-              {
-                headers: { 'content-type': 'application/x-www-form-urlencoded' }
-              }
-            )
-
-            this.$message({
-              message: this.$t('prompt.success'),
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
+          this.dataForm.imagesArr = this.imagesArr
+          this.dataForm.filesArr = this.filesArr
+          if (this.dataForm.id) {
+            updateArticle(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  duration: 1000,
+                  message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'edit')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
               }
             })
-          } catch (error) {
-            this.$message.error(error.msg)
+          } else {
+            createArticle(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  duration: 1000,
+                  message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'add')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
+              }
+            })
           }
         }
       })
