@@ -8,8 +8,8 @@
           <!-- <el-button type="danger" size="mini">删除</el-button> -->
         </el-col>
         <el-col :span="12" style="text-align: right;">
-          <el-input placeholder="请输入内容" size="mini" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search">{{ $t('actions.search') }}</el-button>
+          <el-input placeholder="请输入内容" size="mini" v-model="listQuery.keyword" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -84,7 +84,8 @@ export default {
       total: 10,
       listQuery: {
         page: 1,
-        limit: 10
+        limit: 10,
+        keyword: undefined
       },
       multipleSelection: []
     }
@@ -93,6 +94,10 @@ export default {
     ...mapGetters(['dictList'])
   },
   methods: {
+    search() {
+      this.listQuery.page = 1
+      this.getList()
+    },
     getList() {
       this.loading = true
       this.$store.dispatch('system/getDictList', this.listQuery).then(res => {
