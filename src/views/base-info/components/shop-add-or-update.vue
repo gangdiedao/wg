@@ -29,13 +29,14 @@
       <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
         <el-image
           v-if="dataForm.logo != ''"
-          style="width: 100px; height: 100px;float:left"
+          style="width: 100px; height: 100px"
           :src="dataForm.logo"
           fit="cover"
         />
         <el-upload
+          ref="uploadIcon"
           class="upload-demo"
-          style="float:left"
+          style="display:inline-block"
           action="string"
           :show-file-list="false"
           :limit="1"
@@ -43,20 +44,27 @@
           :before-upload="onBeforeUploadImage"
           :on-exceed="handleExceed"
         >
-          <el-button type="primary" size="small">上传</el-button>
+          <el-button type="text" size="small">上传</el-button>
         </el-upload>
-        <el-button type="primary" size="small">删除</el-button>
+        <el-button type="text" size="small" style="display:inline-block" @click="deleteIcon">删除</el-button>
       </el-form-item>
       <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
         <el-upload
           class="upload-demo"
           action="string"
           :show-file-list="true"
+          list-type="picture-card"
+          :file-list="dataForm.imagesArr"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemoveImage"
           :http-request="UploadImage"
           :before-upload="onBeforeUploadImage"
         >
-          <el-button type="primary" size="small">添加图片</el-button>
+          <i class="el-icon-plus" />
         </el-upload>
+        <el-dialog :visible.sync="dialogVisible" append-to-body>
+          <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
         <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
@@ -79,6 +87,8 @@
           action="string"
           :show-file-list="true"
           :http-request="UploadFile"
+          :file-list="dataForm.filesArr"
+          :on-remove="handleRemoveFile"
           :before-upload="onBeforeUploadFile"
         >
           <el-button type="primary" size="small">添加文件</el-button>
@@ -101,6 +111,7 @@ export default {
   data() {
     return {
       visible: false,
+      dialogVisible: false,
       dataForm: {
         info_type_id: '',
         info_type_name: '',
@@ -115,10 +126,9 @@ export default {
         email: '',
         logo: ''
       },
-      imagesArr: [],
-      filesArr: [],
       dataRule: {},
-      infoTypeList: []
+      infoTypeList: [],
+      dialogImageUrl: ''
     }
   },
   computed: {},
@@ -131,11 +141,9 @@ export default {
       this.$nextTick(() => {
         if (item) {
           this.dataForm = item
-          this.imagesArr = this.dataForm.imagesArr
-          this.filesArr = this.dataForm.filesArr
         } else {
-          this.imagesArr = this.dataForm.imagesArr = []
-          this.filesArr = this.dataForm.filesArr = []
+          this.dataForm.imagesArr = []
+          this.dataForm.filesArr = []
         }
       })
     },
@@ -199,6 +207,11 @@ export default {
         }
       })
     },
+    // 删除图标
+    deleteIcon() {
+      this.dataForm.logo = ''
+      this.$refs.uploadIcon.clearFiles()
+    },
     // 上传图片
     UploadImage(param) {
       const formData = new FormData()
@@ -211,11 +224,19 @@ export default {
             message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
           })
           this.dataForm.imagesArr.push(response.data)
-          console.log(this.dataForm.imagesArr)
         } else {
           this.$message.error(response.msg)
         }
       })
+    },
+    // 查看图片
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    // 删除图片
+    handleRemoveImage(file, fileList) {
+      this.dataForm.imagesArr = fileList
     },
     // 上传文件
     UploadFile(param) {
@@ -228,18 +249,20 @@ export default {
             duration: 1000,
             message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
           })
-          this.filesArr.push(response.data)
+          this.dataForm.filesArr.push(response.data)
         } else {
           this.$message.error(response.msg)
         }
       })
     },
+    // 删除文件
+    handleRemoveFile(file, fileList) {
+      this.dataForm.filesArr = fileList
+    },
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
-          this.dataForm.imagesArr = this.imagesArr
-          this.dataForm.filesArr = this.filesArr
           if (this.dataForm.id) {
             updateArticle(this.dataForm).then(response => {
               if (response.code === 2000) {
