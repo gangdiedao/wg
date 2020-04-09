@@ -12,7 +12,7 @@ export default {
   methods: {
     assign(a, b) {
       for(let i in a) {
-        if (b[i]) {
+        if (b[i] !== undefined) {
           a[i] = b[i]
         }
       }
