@@ -14,9 +14,9 @@
       @keyup.enter.native="dataFormSubmitHandle()"
     >
       <el-form-item prop="shop" :label="$t('i18nView.information.shop')">
-        <el-select v-model="dataForm.shop" :placeholder="'请选择'+$t('i18nView.information.shop')">
+        <el-select v-model="dataForm.foundation_shop_id" :placeholder="'请选择'+$t('i18nView.information.shop')">
           <el-option
-            v-for="item in infoTypeList"
+            v-for="item in shopListData"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -27,10 +27,10 @@
         <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="taxRate" :label="$t('i18nView.information.taxRate')">
-        <el-input v-model="dataForm.taxRate" :placeholder="'请输入'+$t('i18nView.information.taxRate')" type="number" />
+        <el-input v-model="dataForm.comptaxrate" :placeholder="'请输入'+$t('i18nView.information.taxRate')" type="number" />
       </el-form-item>
       <el-form-item prop="twoTaxRate" :label="$t('i18nView.information.twoTaxRate')">
-        <el-input v-model="dataForm.twoTaxRate" :placeholder="'请输入'+$t('i18nView.information.twoTaxRate')" type="number" />
+        <el-input v-model="dataForm.comptaxrate2" :placeholder="'请输入'+$t('i18nView.information.twoTaxRate')" type="number" />
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { shopList, create, update } from '@/api/shop-spot'
 import mixin from '../mixin'
 
 export default {
@@ -49,156 +50,92 @@ export default {
     return {
       visible: false,
       dataForm: {
-        shop: '',
+        foundation_shop_id: '',
         name: '',
-        taxRate: '',
-        twoTaxRate: ''
+        status: 1, // 状态 1:激活 2：锁定
+        comptaxrate: '',
+        comptaxrate2: ''
+      },
+      listQuery: {
+        page: 1,
+        limit: 10,
+        name: '',
+        status: 1, // 状态 1:激活 2：锁定
+        info_type_id: '',
+        info_type_name: '',
+        logo: '',
+        url: '',
+        intro: '',
+        contact: '',
+        telphone: '',
+        email: ''
       },
       returnTypeFlag: 0,
       dataRule: {},
-      infoTypeList: [],
-      cityList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.areas.bangkok')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.areas.pattaya')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.areas.samed')
-        },
-        {
-          id: 4,
-          name: this.$t('i18nView.areas.rayong')
-        },
-        {
-          id: 5,
-          name: this.$t('i18nView.areas.ayutthaya')
-        },
-        {
-          id: 6,
-          name: this.$t('i18nView.areas.huahin')
-        },
-        {
-          id: 7,
-          name: this.$t('i18nView.areas.kanchanaburi')
-        },
-        {
-          id: 8,
-          name: this.$t('i18nView.areas.samui')
-        },
-        {
-          id: 9,
-          name: this.$t('i18nView.areas.surat')
-        },
-        {
-          id: 10,
-          name: this.$t('i18nView.areas.kohchang')
-        }
-      ],
-      valuationMethodList: [],
-      creatorList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.creatorList.zhangshan')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.creatorList.liudehua')
-        },
-        {
-          id: 2,
-          name: this.$t('i18nView.creatorList.zhangxueyou')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.creatorList.zhoujielun')
-        }
-      ],
-      returnTypeList: [],
-      payTypeList: []
+      shopListData: []
     }
   },
   computed: {},
-  created() {
-    this.payTypeList = this.payTypeListData()
-    this.returnTypeList = this.returnTypeListData()
-    this.valuationMethodList = this.valuationMethodListData()
-    this.infoTypeList = this.infoTypeListData()
-  },
+  created() {},
   methods: {
     init(item) {
       this.visible = true
+      this.getShopList()
       this.$nextTick(() => {
         if (item) {
           this.dataForm = item
-        }
-      })
-    },
-    // 上传文件之前
-    onBeforeUploadImage(file) {
-      if (
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/jpeg' &&
-        file.type !== 'image/png' &&
-        file.type !== 'image/gif'
-      ) {
-        this.$message.error(this.$t('upload.tip', { format: 'jpg、png、gif' }))
-        return false
-      }
-    },
-    // 上传文件
-    UploadImage(param) {
-      const formData = new FormData()
-      formData.append('file', param.file)
-      this.$http.post(
-        '/school/student/import',
-        formData
-      ).then(({ data: res }) => {
-        if (res.code === 0) {
-          this.$message({
-            message: '导入成功',
-            type: 'success'
-          })
-          this.query()
         } else {
-          this.$message.error(res.msg || '导入失败')
+          this.dataForm = {
+            foundation_shop_id: '',
+            name: '',
+            status: 1, // 状态 1:激活 2：锁定
+            comptaxrate: '',
+            comptaxrate2: ''
+          }
         }
-      }).catch((e) => {
-        this.$message.error(e.msg || '导入失败')
       })
     },
-    // 返佣改变
-    returnTypeChange(e) {
-      this.returnTypeFlag = e
+    getShopList() {
+      shopList(this.listQuery).then(response => {
+        this.shopListData = response.data.data
+      })
     },
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
-          try {
-            await this.$http[!this.dataForm.id ? 'post' : 'put'](
-              '/sys/mailtemplate',
-              this.dataForm,
-              {
-                headers: { 'content-type': 'application/x-www-form-urlencoded' }
-              }
-            )
-
-            this.$message({
-              message: this.$t('prompt.success'),
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
+          if (this.dataForm.id) {
+            update(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  duration: 1000,
+                  message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'edit')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
               }
             })
-          } catch (error) {
-            this.$message.error(error.msg)
+          } else {
+            create(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  duration: 1000,
+                  message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'add')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
+              }
+            })
           }
         }
       })
