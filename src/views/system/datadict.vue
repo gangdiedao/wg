@@ -8,6 +8,14 @@
           <!-- <el-button type="danger" size="mini">删除</el-button> -->
         </el-col>
         <el-col :span="12" style="text-align: right;">
+          <el-select v-model="listQuery.type" clearable size="mini" @change="getList(1)" placeholder="请选择">
+            <el-option
+              v-for="(value, name) in dictTypeList"
+              :key="name"
+              :label="value"
+              :value="name">
+            </el-option>
+          </el-select>
           <el-input placeholder="请输入内容" size="mini" v-model="listQuery.keyword" class="input-with-select">
             <el-button slot="append" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
           </el-input>
@@ -28,6 +36,9 @@
           fixed
           prop="type"
           :label="$t('system.field.type')">
+          <template slot-scope="scope">
+            <span>{{dictTypeList[scope.row.type]}}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="key"
@@ -74,6 +85,9 @@ export default {
     EditDatadict
   },
   created() {
+    if (this.dictTypeList.length < 1) {
+      this.$store.dispatch('system/getDictTypeList')
+    }
     this.getList()
   },
   data() {
@@ -83,6 +97,7 @@ export default {
       item: '',
       total: 10,
       listQuery: {
+        type: undefined,
         page: 1,
         limit: 10,
         keyword: undefined
@@ -91,14 +106,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['dictList'])
+    ...mapGetters(['dictList', 'dictTypeList'])
   },
   methods: {
     search() {
       this.listQuery.page = 1
       this.getList()
     },
-    getList() {
+    getList(page) {
+      if (/\d+/.test(page)) {
+        this.listQuery.page = page
+      }
       this.loading = true
       this.$store.dispatch('system/getDictList', this.listQuery).then(res => {
         this.total = res.data.count

@@ -7,6 +7,7 @@
       <el-tree
         :data="deptList"
         node-key="id"
+        :expand-on-click-node="false"
         default-expand-all
         @node-drag-start="handleDragStart"
         @node-drag-enter="handleDragEnter"
