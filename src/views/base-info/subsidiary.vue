@@ -8,7 +8,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate()">
         {{ $t('i18nView.information.add') }}
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
@@ -129,7 +129,6 @@ export default {
   data() {
     return {
       tabMapOptions: [],
-      activeName: 'all',
       tableKey: 0,
       list: null,
       total: 0,
@@ -185,49 +184,19 @@ export default {
       downloadLoading: false
     }
   },
-  computed: {
-    lang: {
-      get() {
-        return this.$store.state.app.language
-      }
-    }
-  },
-  watch: {
-    activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
-    },
-    lang() {
-      this.setOptions()
-    }
-  },
+  computed: {},
+  watch: {},
   created() {
-    this.infoTypeList = this.infoTypeListData()
-    const tab = this.$route.query.tab
-    if (tab) {
-      this.activeName = tab
-    }
-    this.setOptions()
     this.getList()
   },
   methods: {
     callBcak(e) {
-      console.log(e)
-      this.getList()
-    },
-    setOptions() {
-      this.tabMapOptions = [
-        { key: 'all', label: this.$t('i18nView.areas.all') },
-        { key: 'bangkok', label: this.$t('i18nView.areas.bangkok') },
-        { key: 'pattaya', label: this.$t('i18nView.areas.pattaya') },
-        { key: 'samed', label: this.$t('i18nView.areas.samed') },
-        { key: 'rayong', label: this.$t('i18nView.areas.rayong') },
-        { key: 'ayutthaya', label: this.$t('i18nView.areas.ayutthaya') },
-        { key: 'huahin', label: this.$t('i18nView.areas.huahin') },
-        { key: 'kanchanaburi', label: this.$t('i18nView.areas.kanchanaburi') },
-        { key: 'samui', label: this.$t('i18nView.areas.samui') },
-        { key: 'surat', label: this.$t('i18nView.areas.surat') },
-        { key: 'kohchang', label: this.$t('i18nView.areas.kohchang') }
-      ]
+      if (e === 'add') {
+        this.listQuery.page = 1
+        this.getList()
+      } else {
+        this.getList()
+      }
     },
     getList() {
       this.listLoading = true
@@ -244,13 +213,6 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -271,19 +233,19 @@ export default {
       this.$refs.subsidiaryAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
     },
     // 删除
-    handleDelete(row, index) {
-      this.$confirm('确定要删除该数据?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        this.list.splice(index, 1)
-      }).catch(() => {})
-    },
+    // handleDelete(row, index) {
+    //   this.$confirm('确定要删除该数据?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     this.$message({
+    //       type: 'success',
+    //       message: '删除成功!'
+    //     })
+    //     this.list.splice(index, 1)
+    //   }).catch(() => {})
+    // },
     // 导出
     handleDownload() {
       this.downloadLoading = true

@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/commission'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -139,10 +139,16 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: ''
+        foundation_shop_id: '',
+        foundation_shop_point_id: '',
+        name: '',
+        money_type: '',
+        companyrate: '',
+        guiderate: '',
+        leaderrate: '',
+        companyrate2: '',
+        show_type: '',
+        type: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -174,51 +180,17 @@ export default {
       downloadLoading: false
     }
   },
-  computed: {
-    lang: {
-      get() {
-        return this.$store.state.app.language
-      }
-    }
-  },
-  watch: {
-    activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
-    },
-    lang() {
-      this.setOptions()
-    }
-  },
+  computed: {},
+  watch: {},
   created() {
-    this.infoTypeList = this.infoTypeListData()
-    const tab = this.$route.query.tab
-    if (tab) {
-      this.activeName = tab
-    }
-    this.setOptions()
     this.getList()
   },
   methods: {
-    setOptions() {
-      this.tabMapOptions = [
-        { key: 'all', label: this.$t('i18nView.areas.all') },
-        { key: 'bangkok', label: this.$t('i18nView.areas.bangkok') },
-        { key: 'pattaya', label: this.$t('i18nView.areas.pattaya') },
-        { key: 'samed', label: this.$t('i18nView.areas.samed') },
-        { key: 'rayong', label: this.$t('i18nView.areas.rayong') },
-        { key: 'ayutthaya', label: this.$t('i18nView.areas.ayutthaya') },
-        { key: 'huahin', label: this.$t('i18nView.areas.huahin') },
-        { key: 'kanchanaburi', label: this.$t('i18nView.areas.kanchanaburi') },
-        { key: 'samui', label: this.$t('i18nView.areas.samui') },
-        { key: 'surat', label: this.$t('i18nView.areas.surat') },
-        { key: 'kohchang', label: this.$t('i18nView.areas.kohchang') }
-      ]
-    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+        this.list = response.data.data
+        this.total = response.data.count
 
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -229,13 +201,6 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -256,19 +221,19 @@ export default {
       this.$refs.commissionAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
     },
     // 删除
-    handleDelete(row, index) {
-      this.$confirm('确定要删除该数据?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        this.list.splice(index, 1)
-      }).catch(() => {})
-    },
+    // handleDelete(row, index) {
+    //   this.$confirm('确定要删除该数据?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     this.$message({
+    //       type: 'success',
+    //       message: '删除成功!'
+    //     })
+    //     this.list.splice(index, 1)
+    //   }).catch(() => {})
+    // },
     // 导出
     handleDownload() {
       this.downloadLoading = true

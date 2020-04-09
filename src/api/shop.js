@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 子公司列表
 export function fetchList(query) {
   return request({
-    url: '/admin/factordata/subsidiary/search',
+    url: '/admin/factordata/shop/search',
     method: 'get',
     params: query
   })
@@ -24,17 +24,17 @@ export function companyList(query) {
 //   })
 // }
 
-// export function fetchPv(pv) {
-//   return request({
-//     url: '/vue-element-admin/article/pv',
-//     method: 'get',
-//     params: { pv }
-//   })
-// }
+export function upload(data) {
+  return request({
+    url: '/admin/system/file/upload',
+    method: 'post',
+    data
+  })
+}
 // 新增
 export function createArticle(data) {
   return request({
-    url: '/admin/factordata/subsidiary/add',
+    url: '/admin/factordata/shop/add',
     method: 'post',
     data
   })
@@ -42,7 +42,7 @@ export function createArticle(data) {
 // 编辑
 export function updateArticle(data) {
   return request({
-    url: '/admin/factordata/subsidiary/edit',
+    url: '/admin/factordata/shop/edit',
     method: 'post',
     data
   })
