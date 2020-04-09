@@ -14,6 +14,7 @@ const getters = {
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs,
   dictTypeList: state => state.system.dictTypeList,
-  dictList: state => state.system.dictList
+  dictList: state => state.system.dictList,
+  deptList: state => state.organization.deptList
 }
 export default getters

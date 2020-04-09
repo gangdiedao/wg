@@ -4,10 +4,10 @@
       <el-form-item :label="$t('organization.deptModules.field.name')" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('organization.deptModules.field.nameEn')" prop="username">
-        <el-input v-model="ruleForm.username"></el-input>
+      <el-form-item :label="$t('organization.deptModules.field.nameEn')" prop="name_en">
+        <el-input v-model="ruleForm.name_en"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('organization.deptModules.field.parent')" prop="email">
+      <el-form-item :label="$t('organization.deptModules.field.parent')">
         <el-popover
           v-model="open"
           placement="bottom"
@@ -19,7 +19,7 @@
             </el-input>
             <el-tree
               class="filter-tree"
-              :data="data"
+              :data="deptList"
               :props="defaultProps"
               default-expand-all
               :highlight-current="true"
@@ -29,12 +29,12 @@
               ref="tree">
             </el-tree>
           </div>
-          <el-input slot="reference" v-model="ruleForm.parent" readonly></el-input>
+          <el-input slot="reference" v-model="parentname" readonly></el-input>
        </el-popover>
       </el-form-item>
-      <el-form-item :label="$t('organization.deptModules.field.sort')" prop="sort">
+      <!-- <el-form-item :label="$t('organization.deptModules.field.sort')" prop="sort">
         <el-input type="number" v-model="ruleForm.phone"></el-input>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false">
@@ -48,7 +48,11 @@
 </template>
 
 <script>
+import mixin from '../mixin'
+import { createDept, updateDept } from '@/api/organization'
+import { mapGetters } from 'vuex'
 export default {
+  mixins: [mixin],
   props: {
     show: {
       type: Boolean,
@@ -57,6 +61,9 @@ export default {
     item: ''
   },
   watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
     dialogFormVisible(bool) {
       if (!bool) {
         this.open = false
@@ -65,10 +72,28 @@ export default {
     },
     show(bool) {
       this.dialogFormVisible = bool
+      if (bool) {
+        if (this.item) {
+          this.ruleForm = this.assign(this.ruleForm, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.parentname = ''
+          this.ruleForm = {
+            id: undefined,
+            name: '',
+            name_en: '',
+            parent_id: undefined
+          }
+          this.dialogStatus = 'create'
+        }
+      }
     },
     filterText(val) {
       this.$refs.tree.filter(val)
     }
+  },
+  computed: {
+    ...mapGetters(['deptList'])
   },
   data() {
     return {
@@ -79,90 +104,60 @@ export default {
         update: `${this.$t('actions.edit')}`,
         create: `${this.$t('actions.create')}`,
       },
+      parentname: '',
       ruleForm: {
-        id: '',
+        id: undefined,
         name: '',
-        username: '',
-        parent: '',
-        email: '',
-        phone: '',
-        role: [],
-        status: 1,
-        remark: ''
+        name_en: '',
+        parent_id: undefined
       },
       rules: {
         name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入部门名称', trigger: 'blur' }
         ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, message: '长度最少3个字符', trigger: 'blur' }
-        ],
-        email: [
-          { type: 'email', message: '请选正确的emial', trigger: 'blur' }
-        ],
-        phone: [
-          { type: 'phone', message: '请填写正确的手机号', trigger: 'blur' }
+        name_en: [
+          { required: true, message: '请输入部门英文名称', trigger: 'blur' }
         ]
       },
       filterText: '',
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'childs',
+        label: 'name'
       }
     }
   },
   methods: {
     handleClickNode(data) {
-      this.ruleForm.parent = data.label
+      this.ruleForm.parent_id = data.id
+      this.parentname = data.name
       this.open = false
-      console.log(data)
     },
     filterNode(value, data) {
       if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      return data.name.indexOf(value) !== -1;
+    },
+    close() {
+      this.dialogFormVisible = false
     },
     createData() {
-
+      createDept(this.ruleForm).then(() => {
+        this.$message({
+          message: '创建部门成功',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.close()
+      })
     },
     updateData() {
-
+      updateDept(this.ruleForm).then(() => {
+        this.$message({
+          message: '修改部门成功',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.close()
+      })
     }
   }
 }

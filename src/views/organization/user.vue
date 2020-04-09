@@ -2,10 +2,10 @@
   <el-container>
     <el-aside class="user-aside">
       <div>
-        <label>组织架构</label>
+        <label @click="clearDept">组织架构</label>
       </div>
       <el-tree
-        :data="data"
+        :data="deptList"
         node-key="id"
         default-expand-all
         @node-drag-start="handleDragStart"
@@ -14,22 +14,25 @@
         @node-drag-over="handleDragOver"
         @node-drag-end="handleDragEnd"
         @node-drop="handleDrop"
+        @node-click="handleClickNode"
+        :props="defaultProps"
         :draggable="false"
         :allow-drop="allowDrop"
         :allow-drag="allowDrag">
       </el-tree>
     </el-aside>
     <el-main>
-      <label>成员列表</label>
+      <label>{{deptName}}用户列表</label>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
-          <el-button type="primary" size="mini" @click="handleAddUser">添加</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete">删除</el-button>
-          <el-button size="mini" @click="handleTransfer">转移</el-button>
+          <el-button type="primary" size="mini" @click="handleAdd">{{ $t('actions.create') }}</el-button>
+          <el-button type="success" @click="handleChangeStatus(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
+          <el-button size="mini" @click="handleChangeStatus(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
+          <el-button size="mini" :disabled="!multipleSelection.length" @click="handleTransfers">{{ $t('actions.transfer') }}</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
-          <el-input placeholder="请输入内容" size="mini" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search">搜索</el-button>
+          <el-input v-model="listQuery.keyword" :placeholder="$t('organization.userModules.field.username')" size="mini" class="input-with-select">
+            <el-button slot="append" type="primary" icon="el-icon-search" @click="handleSearch">{{ $t('actions.search') }}</el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -44,58 +47,72 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
+          prop="username"
+          :label="$t('organization.userModules.field.username')"
           fixed="left"
           width="120">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="英文名"
+          :label="$t('organization.userModules.field.name')"
+          fixed="left"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="国籍"
+          prop="name_en"
+          :label="$t('organization.userModules.field.nameEn')"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="province"
-          label="部门名称"
+          :label="$t('organization.userModules.field.nationality')"
+          width="120">
+          <template slot-scope="scope">
+            <span>{{scope.row.nationality && scope.row.nationality.name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          :label="$t('organization.userModules.field.deptname')"
           width="160">
+          <template slot-scope="scope">
+            <span>{{scope.row.department && scope.row.department.name}}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="city"
-          label="角色"
+          :label="$t('organization.userModules.field.role')"
           width="160">
+          <template slot-scope="scope">
+            <el-tag v-for="item in scope.row.roles" :key="item.id" type="info">{{item.name}}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="联系电话"
+          prop="phone"
+          :label="$t('organization.userModules.field.phone')"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="zip"
-          label="备注">
+          prop="remark"
+          :label="$t('organization.userModules.field.remark')">
         </el-table-column>
         <el-table-column
-          prop="zip"
-          label="状态"
-          width="120">
+          prop="status"
+          :label="$t('organization.userModules.field.status')"
+          width="80">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="date"
-          label="创建时间"
-          width="150">
+          prop="created_at"
+          :label="$t('organization.userModules.field.createTime')"
+          width="160">
         </el-table-column>
         <el-table-column
           fixed="right"
-          width="140"
-          label="操作">
+          width="100"
+          :label="$t('organization.userModules.field.action')">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">转移</el-button>
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button @click="handleTransfer(scope.row)" type="text" size="small">{{ $t('actions.transfer') }}</el-button>
+            <el-button @click="handleEdit(scope.row)" type="text" size="small">{{ $t('actions.edit') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,8 +120,8 @@
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
       </el-row>
     </el-main>
-    <user-edit :show.sync="showUserEdit" :item="userItem"/>
-    <transfer :show.sync="showTransfer" :items="userIds"/>
+    <user-edit :show.sync="showUserEdit" :item="userItem" @success="getList" :dept-id="listQuery.department_id" :dept-name="deptName"/>
+    <transfer :show.sync="showTransfer" :ids="userIds" @success="getList"/>
   </el-container>
 </template>
 
@@ -113,6 +130,8 @@ import Pagination from '@/components/Pagination'
 import UserEdit from './components/edit-user'
 import Transfer from './components/transfer'
 import mixin from './mixin'
+import { mapGetters } from 'vuex'
+import { getUserList, setStatus } from '@/api/organization'
 export default {
   mixins: [mixin],
   name: 'userManage',
@@ -121,100 +140,52 @@ export default {
     UserEdit,
     Transfer
   },
+  created() {
+    if (!this.deptList.length) {
+      this.$store.dispatch('organization/getDeptList', {page: 1, limit: 500})
+    }
+    this.getList()
+  },
+  computed: {
+    ...mapGetters(['deptList'])
+  },
   data() {
     return {
+      deptName: '全部',
+      defaultProps: {
+        children: 'childs',
+        label: 'name'
+      },
       userItem: '',
       showUserEdit: false,
       showTransfer: false,
       userIds: '',
-      total: 10,
+      total: 0,
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 20,
+        keyword: undefined,
+        department_id: undefined
       },
       multipleSelection: [],
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2',
-          children: [{
-            id: 11,
-            label: '三级 3-2-1'
-          }, {
-            id: 12,
-            label: '三级 3-2-2'
-          }, {
-            id: 13,
-            label: '三级 3-2-3'
-          }]
-        }]
-      }],
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        zip: 200333
-      }]
+      tableData: []
     }
   },
   methods: {
-    handleAddUser() {
+    handleAdd() {
       this.userItem = ''
       this.showUserEdit = true
     },
-    handleTransfer() {
+    handleEdit(item) {
+      this.userItem = item
+      this.showUserEdit = true
+    },
+    handleTransfers() {
+      this.userIds = this.multipleSelection.map(item => item.id)
+      this.showTransfer = true
+    },
+    handleTransfer(item) {
+      this.userIds = [item.id]
       this.showTransfer = true
     },
     // 删除
@@ -252,6 +223,11 @@ export default {
     handleDrop(draggingNode, dropNode, dropType, ev) {
       console.log('tree drop: ', dropNode.label, dropType);
     },
+    handleClickNode(data) {
+      this.listQuery.department_id = data.id
+      this.deptName = data.name
+      this.handleSearch()
+    },
     allowDrop(draggingNode, dropNode, type) {
       if (dropNode.data.label === '二级 3-1') {
         return type !== 'inner';
@@ -262,9 +238,31 @@ export default {
     allowDrag(draggingNode) {
       return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
     },
-    getList() {
-
+    clearDept() {
+      this.listQuery.department_id = undefined
+      this.deptName = '全部'
+      this.handleSearch()
     },
+    handleSearch() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    getList() {
+      getUserList(this.listQuery).then(res => {
+        this.total = res.data.count
+        this.tableData = res.data.data
+      })
+    },
+    handleChangeStatus(type) {
+      let ids = this.multipleSelection.map(item => item.id)
+      setStatus({id: ids, status: type}).then(() => {
+        this.getList()
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      })
+    }
   }
 }
 </script>

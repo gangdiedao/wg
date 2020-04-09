@@ -14,19 +14,25 @@ export default {
           router: '节点路由',
           auth: '权限',
           updateTime: '更新时间',
-          actions: '操作'
+          action: '操作'
         }
       },
       userModules: {
         field: {
           user: '用户',
           name: '姓名',
+          nameEn: '英文名',
           username: '用户名',
           email: '邮箱',
-          phone: '手机号',
+          phone: '联系电话',
           role: '角色',
           status: '状态',
-          remark: '备注'
+          remark: '备注',
+          nationality: '国籍',
+          deptname: '部门名称',
+          createTime: '创建时间',
+          password: '密码',
+          action: '操作'
         },
         label: {
           department: '部门',
@@ -45,7 +51,7 @@ export default {
           nameEn: '部门英文名称',
           parent: '上级部门',
           sort: '排序',
-          actions: '操作'
+          action: '操作'
         }
       }
     }

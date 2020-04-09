@@ -84,7 +84,8 @@ export default {
     delete: '删除',
     open: '开启',
     close: '关闭',
-    search: '搜索'
+    search: '搜索',
+    transfer: '转移'
   },
   rules: {
     required: '必填'

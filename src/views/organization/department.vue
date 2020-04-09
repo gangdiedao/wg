@@ -2,120 +2,99 @@
   <div class="app-container">
     <el-row type="flex" class="row-bg" justify="space-between">
       <el-col :span="12">
-        <el-button type="primary" size="mini" @click="handleAddMenu">添加</el-button>
+        <el-button type="primary" size="mini" @click="handleAdd">{{ $t('actions.create') }}</el-button>
       </el-col>
     </el-row>
     <el-table
-      :data="tableData"
+      :data="deptList"
       style="width: 100%;margin-bottom: 20px;"
       row-key="id"
       border
       default-expand-all
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-      <el-table-column
-        prop="date"
-        label="部门名称"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="date"
-        label="部门英文名"
-        width="180">
-      </el-table-column>
+      :tree-props="{children: 'childs', hasChildren: 'hasChildren'}">
       <el-table-column
         prop="name"
-        label="上级部门"
-        width="180">
+        :label="$t('organization.deptModules.field.name')"
+        width="360">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="排序">
+        prop="name_en"
+        :label="$t('organization.deptModules.field.nameEn')"
+        width="360">
       </el-table-column>
+      <el-table-column
+        prop="parent_id"
+        :label="$t('organization.deptModules.field.parent')"
+        width="480">
+      </el-table-column>
+      <!-- <el-table-column
+        prop="sort"
+        :label="$t('organization.deptModules.field.sort')">
+      </el-table-column> -->
        <el-table-column
           fixed="right"
-          label="操作">
+          :label="$t('organization.deptModules.field.action')">
           <template slot-scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="handleEdit(scope.row)">{{ $t('actions.edit') }}</el-button>
+            <el-button type="text" size="small" @click="handleDelete(scope.row)">{{ $t('actions.delete') }}</el-button>
           </template>
         </el-table-column>
     </el-table>
-    <edit-department :show.sync="showEditDepartment" :item="deptItem"/>
+    <edit-department :show.sync="showEditDepartment" :item="deptItem" @success="getList"/>
   </div>
 </template>
 
 <script>
 import EditDepartment from './components/edit-department'
 import mixin from './mixin'
+import { mapGetters } from 'vuex'
+import { deleteDept } from '@/api/organization'
 export default {
   mixins: [mixin],
-  name: 'menuManage',
+  name: 'deptManage',
   components: {
     EditDepartment
+  },
+  created() {
+    this.getList()
   },
   data() {
     return {
       showEditDepartment: false,
-      deptItem: '',
-      tableData: [{
-          id: 1,
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          id: 2,
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          id: 3,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          children: [{
-              id: 31,
-              date: '2016-05-01',
-              name: '王小虎',
-              address: '上海市普陀区金沙江路 1519 弄'
-            }, {
-              id: 32,
-              date: '2016-05-01',
-              name: '王小虎',
-              address: '上海市普陀区金沙江路 1519 弄'
-          }]
-        }, {
-          id: 4,
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        tableData1: [{
-          id: 1,
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          id: 2,
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          id: 3,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          hasChildren: true
-        }, {
-          id: 4,
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+      deptItem: ''
     }
   },
+  computed: {
+    ...mapGetters(['deptList'])
+  },
   methods: {
-    handleAddMenu() {
+    getList() {
+      this.$store.dispatch('organization/getDeptList', {page: 1, limit: 500}).then(res => {
+        // this.tableData = res.data.data
+      })
+    },
+    handleAdd() {
+      this.deptItem = ''
       this.showEditDepartment = true
+    },
+    handleEdit(item) {
+      this.deptItem = item
+      this.showEditDepartment = true
+    },
+    handleDelete(item) {
+      this.$confirm('确定要删除该数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteDept({id: [item.id]}).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getList()
+        })
+      }).catch(() => {})
     }
   }
 }

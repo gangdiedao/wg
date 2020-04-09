@@ -10,6 +10,13 @@ export default {
     }
   },
   methods: {
-    
+    assign(a, b) {
+      for(let i in a) {
+        if (b[i]) {
+          a[i] = b[i]
+        }
+      }
+      return a
+    }
   }
 }
