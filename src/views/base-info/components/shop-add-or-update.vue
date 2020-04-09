@@ -142,8 +142,20 @@ export default {
         if (item) {
           this.dataForm = item
         } else {
-          this.dataForm.imagesArr = []
-          this.dataForm.filesArr = []
+          this.dataForm = {
+            info_type_id: '',
+            info_type_name: '',
+            name: '',
+            status: 1, // 状态 1:激活 2：锁定
+            url: '',
+            imagesArr: [],
+            filesArr: [],
+            intro: '',
+            contact: '',
+            telphone: '',
+            email: '',
+            logo: ''
+          }
         }
       })
     },
