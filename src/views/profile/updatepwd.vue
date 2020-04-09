@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-card>
-            <update-pwd />
+            <update />
           </el-card>
         </el-col>
       </el-row>
@@ -14,11 +14,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import UpdatePwd from './components/UpdatePwd'
+import Update from './components/Update'
+import mixin from './mixin'
 
 export default {
-  name: 'Profile',
-  components: { UpdatePwd },
+  name: 'updatePwd',
+  mixins: [mixin],
+  components: { Update },
   data() {
     return {
 

@@ -1,14 +1,14 @@
 <template>
   <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="100px" class="demo-ruleForm">
-    <el-form-item label="新密码" prop="password">
+    <el-form-item :label="$t('profile.field.password')" prop="password">
       <el-input v-model="ruleForm.password" type="password" autocomplete="off" />
     </el-form-item>
-    <el-form-item label="确认密码" prop="confirm">
+    <el-form-item :label="$t('profile.field.confirm')" prop="confirm">
       <el-input v-model="ruleForm.confirm" type="password" autocomplete="off" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-      <el-button @click="resetForm('ruleForm')">重置</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')">{{ $t('actions.confirm') }}</el-button>
+      <el-button @click="resetForm('ruleForm')">{{ $t('profile.field.reset') }}</el-button>
     </el-form-item>
   </el-form>
 </template>
