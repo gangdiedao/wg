@@ -32,9 +32,9 @@
           <el-input slot="reference" v-model="parentname" readonly></el-input>
        </el-popover>
       </el-form-item>
-      <!-- <el-form-item :label="$t('organization.deptModules.field.sort')" prop="sort">
-        <el-input type="number" v-model="ruleForm.phone"></el-input>
-      </el-form-item> -->
+      <el-form-item>
+        <span style="color: #909399">tips: 上级部门为空则默认是顶级部门</span>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false">
@@ -75,6 +75,7 @@ export default {
       if (bool) {
         if (this.item) {
           this.ruleForm = this.assign(this.ruleForm, this.item)
+          this.parentname = this.item.parent && this.item.parent.name + '/' + this.item.parent.name_en
           this.dialogStatus = 'update'
         } else {
           this.parentname = ''
@@ -122,14 +123,16 @@ export default {
       filterText: '',
       defaultProps: {
         children: 'childs',
-        label: 'name'
+        label: (data) => {
+          return data.name + '/' + data.name_en
+        }
       }
     }
   },
   methods: {
     handleClickNode(data) {
       this.ruleForm.parent_id = data.id
-      this.parentname = data.name
+      this.parentname = data.name + '/' + data.name_en
       this.open = false
     },
     filterNode(value, data) {

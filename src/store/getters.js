@@ -15,6 +15,7 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   dictTypeList: state => state.system.dictTypeList,
   dictList: state => state.system.dictList,
-  deptList: state => state.organization.deptList
+  deptList: state => state.organization.deptList,
+  roleMenu: state => state.organization.menus
 }
 export default getters

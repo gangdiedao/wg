@@ -3,9 +3,8 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item :label="$t('organization.menuModules.field.nodeType')">
         <el-radio-group v-model="ruleForm.type">
-          <el-radio :label="1">目录</el-radio>
-          <el-radio :label="2">菜单</el-radio>
-          <el-radio :label="3">权限</el-radio>
+          <el-radio :label="1">菜单</el-radio>
+          <el-radio :label="2">权限</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item :label="$t('organization.menuModules.field.nodeName')" prop="name">
@@ -32,7 +31,7 @@
           </div>
         </el-select>
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 1 || ruleForm.type === 2" :label="$t('organization.menuModules.field.icon')" prop="email">
+      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.icon')" prop="email">
         <el-popover
           placement="bottom"
           width="400">
@@ -48,13 +47,13 @@
           <el-input v-model="ruleForm.email" readonly></el-input>
         </el-tooltip> -->
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 2" :label="$t('organization.menuModules.field.router')" prop="phone">
+      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.router')" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 2" :label="$t('organization.menuModules.field.filepath')" prop="phone">
+      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.filepath')" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 3" :label="$t('organization.menuModules.field.auth')" prop="phone">
+      <el-form-item v-if="ruleForm.type === 2" :label="$t('organization.menuModules.field.auth')" prop="phone">
         <el-cascader
           placeholder="搜索"
           :options="options"

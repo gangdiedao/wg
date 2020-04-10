@@ -1,17 +1,17 @@
 <template>
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" width="720px" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item :label="$t('organization.userModules.field.name')" prop="name">
+      <el-form-item :label="$t('organization.roleModules.field.name')" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('organization.userModules.field.name')" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item :label="$t('organization.roleModules.field.nameEn')">
+        <el-input v-model="ruleForm.name_en"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('organization.userModules.field.username')" prop="username">
-        <el-input v-model="ruleForm.username"></el-input>
+      <el-form-item :label="$t('organization.roleModules.field.mark')" prop="slug">
+        <el-input v-model="ruleForm.slug"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('organization.userModules.field.email')" prop="email">
-        <el-input type="textarea" v-model="ruleForm.remark"></el-input>
+      <el-form-item :label="$t('organization.roleModules.field.remark')">
+        <el-input type="textarea" v-model="ruleForm.describe"></el-input>
       </el-form-item>
       <el-form-item>
         <el-row :gutter="20">
@@ -23,13 +23,17 @@
             </el-input>
             <el-tree
               class="filter-tree"
-              :data="data"
+              node-key="id"
+              :data="roleMenu"
               :show-checkbox="true"
+              :default-checked-keys="ruleForm.menu_id"
               :props="{
-                children: 'children',
-                label: 'label'
+                children: 'childs',
+                label: 'title'
               }"
               :filter-node-method="filterNode"
+              @check="handleClickMenu"
+              style="height: 260px; overflow-y: auto;"
               ref="tree">
             </el-tree>
           </el-col>
@@ -37,18 +41,22 @@
             <div>数据权限</div>
             <el-input
               placeholder="输入关键字进行过滤"
-              v-model="filterText">
+              v-model="filterDataText">
             </el-input>
             <el-tree
               class="filter-tree"
-              :data="data"
+              node-key="id"
+              :data="deptList"
               :show-checkbox="true"
+              :default-checked-keys="ruleForm.department_id"
               :props="{
-                children: 'children',
-                label: 'label'
+                children: 'childs',
+                label: 'name'
               }"
               :filter-node-method="filterNode"
-              ref="tree">
+              @check="handleClickDept"
+              style="height: 260px; overflow-y: auto;"
+              ref="treedata">
             </el-tree>
           </el-col>
         </el-row>
@@ -66,7 +74,11 @@
 </template>
 
 <script>
+import mixin from '../mixin'
+import { mapGetters } from 'vuex'
+import { createRole, updateRole } from '@/api/organization'
 export default {
+  mixins: [mixin],
   props: {
     show: {
       type: Boolean,
@@ -82,9 +94,40 @@ export default {
     },
     show(bool) {
       this.dialogFormVisible = bool
+      if (bool) {
+        if (this.item) {
+          this.ruleForm = this.assign(this.ruleForm, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.ruleForm = {
+            id: undefined,
+            name: '',
+            name_en: '',
+            describe: '',
+            slug: '',
+            menu_id: [],
+            department_id: []
+          }
+          this.dialogStatus = 'create'
+        }
+      }
     },
     filterText(val) {
       this.$refs.tree.filter(val);
+    },
+    filterDataText(val) {
+      this.$refs.treedata.filter(val);
+    }
+  },
+  computed: {
+    ...mapGetters(['deptList', 'roleMenu'])
+  },
+  created() {
+    if (!this.deptList.length) {
+      this.$store.dispatch('organization/getDeptList', {page: 1, limit: 500})
+    }
+    if (!this.roleMenu.length) {
+      this.$store.dispatch('organization/getMenus')
     }
   },
   data() {
@@ -92,83 +135,63 @@ export default {
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
-        update: `${this.$t('actions.edit')} ${this.$t('organization.userModules.field.user')}`,
-        create: `${this.$t('actions.create')} ${this.$t('organization.userModules.field.user')}`,
+        update: `${this.$t('actions.edit')}`,
+        create: `${this.$t('actions.create')}`,
       },
       ruleForm: {
-        id: '',
+        id: undefined,
         name: '',
-        username: '',
-        email: '',
-        phone: '',
-        role: [],
-        status: 1,
-        remark: ''
+        name_en: '',
+        describe: '',
+        slug: '',
+        menu_id: [],
+        department_id: []
       },
       rules: {
         name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
         ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, message: '长度最少3个字符', trigger: 'blur' }
-        ],
-        email: [
-          { type: 'email', message: '请选正确的emial', trigger: 'blur' }
-        ],
-        phone: [
-          { type: 'phone', message: '请填写正确的手机号', trigger: 'blur' }
+        slug: [
+          { required: true, message: '请输入标识', trigger: 'blur' }
         ]
       },
       filterText: '',
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }]
+      filterDataText: ''
     }
   },
   methods: {
     filterNode(value, data) {
       if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      return data.name.indexOf(value) !== -1;
+    },
+    handleClickDept(data, { checkedKeys }) {
+      this.ruleForm.department_id = checkedKeys
+    },
+    handleClickMenu(data, { checkedKeys }) {
+      this.ruleForm.menu_id = checkedKeys
+    },
+    close() {
+      this.dialogFormVisible = false
     },
     createData() {
-
+      createRole(this.ruleForm).then(() => {
+        this.$message({
+          message: '创建角色成功',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.close()
+      })
     },
     updateData() {
-
+      updateRole(this.ruleForm).then(() => {
+        this.$message({
+          message: '修改角色成功',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.close()
+      })
     }
   }
 }
