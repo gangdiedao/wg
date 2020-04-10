@@ -90,18 +90,18 @@
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
         <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
       </el-form-item>
-      <el-form-item prop="touristDestination" :label="$t('i18nView.information.touristDestination')">
-        <el-select v-model="dataForm.touristDestination" :placeholder="'请选择'+$t('i18nView.information.touristDestination')">
+      <el-form-item prop="source" :label="$t('i18nView.information.touristDestination')">
+        <el-select v-model="dataForm.source" :placeholder="'请选择'+$t('i18nView.information.touristDestination')">
           <el-option
-            v-for="item in valuationMethodList"
+            v-for="item in cityListData"
             :key="item.id"
-            :label="item.name"
-            :value="item.id"
+            :label="item.value"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
       <el-form-item prop="input_user_id" :label="$t('i18nView.information.creator')">
-        <el-select v-model="dataForm.input_user_id" :placeholder="'请选择'+$t('i18nView.information.creator')">
+        <el-select v-model="dataForm.input_user_id" :placeholder="'请选择'+$t('i18nView.information.creator')" @change="userChange">
           <el-option
             v-for="item in userListData"
             :key="item.id"
@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import { create, update, upload, userList } from '@/api/partner'
+import { create, update, upload, userList, cityList } from '@/api/partner'
 import mixin from '../mixin'
 
 export default {
@@ -149,6 +149,7 @@ export default {
   data() {
     return {
       visible: false,
+      dialogVisible: false,
       currentDate: '',
       daterange: '',
       innerVisible: false,
@@ -182,7 +183,8 @@ export default {
       dataRule: {},
       infoTypeList: [],
       userListData: [],
-      dialogImageUrl: ''
+      dialogImageUrl: '',
+      cityListData: []
     }
   },
   computed: {},
@@ -193,6 +195,7 @@ export default {
     init(item) {
       this.visible = true
       this.getUserList()
+      this.getCityList()
       this.$nextTick(() => {
         if (item) {
           this.dataForm = item
@@ -232,6 +235,12 @@ export default {
         this.userListData = response.data.data
       })
     },
+    // 客源地列表
+    getCityList() {
+      cityList({ type: 'customersource' }).then(response => {
+        this.cityListData = response.data
+      })
+    },
     // 信息类型改变
     typeChange(id) {
       let obj = {}
@@ -239,6 +248,14 @@ export default {
         return item.id === id
       })
       this.dataForm.info_type_name = obj.name
+    },
+    // 创建者改变
+    userChange(id) {
+      let obj = {}
+      obj = this.userListData.find(item => {
+        return item.id === id
+      })
+      this.dataForm.input_user_name = obj.name
     },
     // 上传图片、图标之前
     onBeforeUploadImage(file) {

@@ -31,120 +31,109 @@
         align="center"
         width="55"
       />
-      <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
+      <el-table-column :label="$t('i18nView.information.id')" type="index" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+        <!-- <template slot-scope="{row}">
           <span>{{ row.id }}</span>
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.name')" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.infoType')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.info_type_name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.icon')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span><i v-if="row.logo != ''" class="el-icon-picture" /></span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.pic')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span><i v-if="row.imagesArr.length != 0" class="el-icon-picture" /></span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.url')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.url }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.fullName')" min-width="250px">
+      <el-table-column :label="$t('i18nView.information.fullName')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.title }}</span>
+          <span>{{ row.fullname }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.code')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.code }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.touristDestination')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.source }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.telphone }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.fax }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.city')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.contact }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.address')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.address }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.email')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.email }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.creator')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.input_user_name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.files')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span><i v-if="row.filesArr.length != 0" class="el-icon-folder" /></span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.remarks')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.remark }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.modifier')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.AccountBookRemark')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.bookremark }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
+        <template slot-scope="{row}">
+          <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
           </el-button>
-          <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-                  {{ $t('table.publish') }}
-                </el-button>
-                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-                  {{ $t('table.draft') }}
-                </el-button> -->
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="text" @click="handleDelete(row,$index)">
             {{ $t('i18nView.information.delete') }}
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <partnerAddOrUpdate ref="partnerAddOrUpdate" />
+    <partnerAddOrUpdate ref="partnerAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
@@ -171,10 +160,31 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
+        start_date: '',
+        end_date: '',
+        orderByColumn: 'updated_at',
+        orderByDirection: 'desc',
+        name: '',
+        status: 1, // 状态 1:激活 2：锁定
+        code: '',
+        fullname: '',
+        enname: '',
+        info_type_id: '',
+        info_type_name: '',
+        fax: '',
+        input_user_id: '',
+        input_organization_id: '',
+        input_user_name: '',
+        logo: '',
+        source: '',
+        email: '',
+        address: '',
+        url: '',
+        contact: '',
+        telphone: '',
+        intro: '',
+        remark: '',
+        bookremark: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -211,6 +221,14 @@ export default {
     this.getList()
   },
   methods: {
+    callBcak(e) {
+      if (e === 'add') {
+        this.listQuery.page = 1
+        this.getList()
+      } else {
+        this.getList()
+      }
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {

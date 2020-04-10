@@ -16,6 +16,14 @@ export function userList(query) {
     params: query
   })
 }
+// 客源地列表
+export function cityList(query) {
+  return request({
+    url: '/admin/system/datadict/listbytype',
+    method: 'get',
+    params: query
+  })
+}
 // 上传
 export function upload(data) {
   return request({
