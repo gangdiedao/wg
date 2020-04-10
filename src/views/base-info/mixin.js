@@ -126,6 +126,61 @@ export default {
           name: this.$t('i18nView.information.fit')
         }
       ]
+    },
+    // 计算方式
+    computedTypeListData() {
+      return [
+        {
+          id: 1,
+          name: this.$t('i18nView.computedType.proportion')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.computedType.piece')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.computedType.fixedValue')
+        },
+        {
+          id: 4,
+          name: this.$t('i18nView.computedType.custom')
+        }
+      ]
+    },
+    // 显示方式
+    showTypeListData() {
+      return [
+        {
+          id: 1,
+          name: this.$t('i18nView.showType.royaltyRate')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.showType.shop')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.showType.allShow')
+        }
+      ]
+    },
+    // 佣金方式
+    commissionTypeListData() {
+      return [
+        {
+          id: 1,
+          name: this.$t('i18nView.commissionType.default')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.commissionType.company')
+        },
+        {
+          id: 3,
+          name: this.$t('i18nView.commissionType.leader')
+        }
+      ]
     }
   }
 }

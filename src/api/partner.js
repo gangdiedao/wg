@@ -1,25 +1,33 @@
 import request from '@/utils/request'
 
-// 子公司列表
+// 合作伙伴列表
 export function fetchList(query) {
   return request({
-    url: '/admin/factordata/shoppointret/search',
+    url: '/admin/factordata/company/search',
     method: 'get',
     params: query
   })
 }
-// 购物点列表
-export function shopSpotList(query) {
+// 用户列表
+export function userList(query) {
   return request({
-    url: '/admin/factordata/shoppoint/search',
+    url: '/admin/system/admin/lists',
     method: 'get',
     params: query
+  })
+}
+// 上传
+export function upload(data) {
+  return request({
+    url: '/admin/system/file/upload',
+    method: 'post',
+    data
   })
 }
 // 新增
 export function create(data) {
   return request({
-    url: '/admin/factordata/shoppointret/add',
+    url: '/admin/factordata/company/add',
     method: 'post',
     data
   })
@@ -27,7 +35,7 @@ export function create(data) {
 // 编辑
 export function update(data) {
   return request({
-    url: '/admin/factordata/shoppointret/edit',
+    url: '/admin/factordata/company/edit',
     method: 'post',
     data
   })

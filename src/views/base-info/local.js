@@ -81,7 +81,9 @@ export default {
         success: '成功',
         upload: '上传',
         uploadTip: '上传文件格式只能为{format}',
-        uploadSize: '上传文件大小不能大于{format}'
+        uploadSize: '上传文件大小不能大于{format}',
+        lock: '锁定',
+        unLock: '激活'
       },
       areas: {
         all: '全部',
@@ -126,6 +128,22 @@ export default {
         everyoneReturns: '每人返佣',
         everyAdultReturns: '每大人返佣',
         everyChildReturns: '每小孩返佣'
+      },
+      computedType: {
+        proportion: '按比例%',
+        piece: '按件数(/件)',
+        fixedValue: '定值',
+        custom: '自定义'
+      },
+      showType: {
+        royaltyRate: '有提成率时显示',
+        shop: '有购物时显示',
+        allShow: '始终显示'
+      },
+      commissionType: {
+        default: '默认类型',
+        company: '公司佣金',
+        leader: '导游佣金'
       }
     }
   },

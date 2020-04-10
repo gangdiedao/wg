@@ -8,17 +8,19 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate()">
         {{ $t('i18nView.information.add') }}
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         {{ $t('i18nView.information.export') }}
       </el-button>
+      <el-button class="filter-item" type="danger" icon="el-icon-lock" @click="handleLock">
+        {{ $t('i18nView.information.lock') }}
+      </el-button>
+      <el-button class="filter-item" type="success" icon="el-icon-unlock" @click="handleUnLock">
+        {{ $t('i18nView.information.unLock') }}
+      </el-button>
     </div>
-    <!-- <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-        <keep-alive> -->
-    <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -35,64 +37,64 @@
         align="center"
         width="55"
       />
-      <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
+      <el-table-column :label="$t('i18nView.information.id')" type="index" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+        <!-- <template slot-scope="{row}">
           <span>{{ row.id }}</span>
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.name')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.shop')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.shop.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.shopspot')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.shop_point.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.companyRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.companyrate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.tourGuideRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.guiderate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.leaderRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.leaderrate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.companySecondRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.companyrate2 }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.calculationType')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.money_type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.showType')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.show_type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.commissionType')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.modifier')" align="center">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.author }}</span>
+          <span class="link-type">{{ row.updated_user_name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width">
@@ -106,11 +108,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--</keep-alive>
-       </el-tab-pane>
-    </el-tabs> -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <commissionAddOrUpdate ref="commissionAddOrUpdate" />
+    <commissionAddOrUpdate ref="commissionAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
@@ -139,9 +138,14 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        start_date: '',
+        end_date: '',
+        orderByColumn: 'updated_at',
+        orderByDirection: 'desc',
         foundation_shop_id: '',
         foundation_shop_point_id: '',
         name: '',
+        status: 1, // 状态 1:激活 2：锁定
         money_type: '',
         companyrate: '',
         guiderate: '',
@@ -186,6 +190,14 @@ export default {
     this.getList()
   },
   methods: {
+    callBcak(e) {
+      if (e === 'add') {
+        this.listQuery.page = 1
+        this.getList()
+      } else {
+        this.getList()
+      }
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
@@ -198,6 +210,10 @@ export default {
         }, 1.5 * 1000)
       })
     },
+    // 锁定
+    handleLock() {},
+    // 激活
+    handleUnLock() {},
     handleFilter() {
       this.listQuery.page = 1
       this.getList()

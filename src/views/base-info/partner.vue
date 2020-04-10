@@ -8,17 +8,13 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate()">
         {{ $t('i18nView.information.add') }}
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         {{ $t('i18nView.information.export') }}
       </el-button>
     </div>
-    <!-- <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-        <keep-alive> -->
-    <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -147,16 +143,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- </keep-alive>
-      </el-tab-pane>
-    </el-tabs> -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <partnerAddOrUpdate ref="partnerAddOrUpdate" />
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/partner'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -212,50 +205,17 @@ export default {
       downloadLoading: false
     }
   },
-  computed: {
-    lang: {
-      get() {
-        return this.$store.state.app.language
-      }
-    }
-  },
-  watch: {
-    activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
-    },
-    lang() {
-      this.setOptions()
-    }
-  },
+  computed: {},
+  watch: {},
   created() {
-    const tab = this.$route.query.tab
-    if (tab) {
-      this.activeName = tab
-    }
-    this.setOptions()
     this.getList()
   },
   methods: {
-    setOptions() {
-      this.tabMapOptions = [
-        { key: 'all', label: this.$t('i18nView.areas.all') },
-        { key: 'bangkok', label: this.$t('i18nView.areas.bangkok') },
-        { key: 'pattaya', label: this.$t('i18nView.areas.pattaya') },
-        { key: 'samed', label: this.$t('i18nView.areas.samed') },
-        { key: 'rayong', label: this.$t('i18nView.areas.rayong') },
-        { key: 'ayutthaya', label: this.$t('i18nView.areas.ayutthaya') },
-        { key: 'huahin', label: this.$t('i18nView.areas.huahin') },
-        { key: 'kanchanaburi', label: this.$t('i18nView.areas.kanchanaburi') },
-        { key: 'samui', label: this.$t('i18nView.areas.samui') },
-        { key: 'surat', label: this.$t('i18nView.areas.surat') },
-        { key: 'kohchang', label: this.$t('i18nView.areas.kohchang') }
-      ]
-    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+        this.list = response.data.data
+        this.total = response.data.count
 
         // Just to simulate the time of the request
         setTimeout(() => {
