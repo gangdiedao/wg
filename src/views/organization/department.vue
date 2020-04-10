@@ -23,9 +23,12 @@
         width="360">
       </el-table-column>
       <el-table-column
-        prop="parent_id"
+        prop="parent"
         :label="$t('organization.deptModules.field.parent')"
         width="480">
+        <template slot-scope="scope">
+          <span>{{scope.row.parent ? scope.row.parent.name + ' / ' + scope.row.parent.name_en : '-'}}</span>
+        </template>
       </el-table-column>
       <!-- <el-table-column
         prop="sort"

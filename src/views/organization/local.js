@@ -45,6 +45,15 @@ export default {
           all: '全部'
         }
       },
+      roleModules: {
+        field: {
+          name: '角色名称',
+          nameEn: '角色英文名称',
+          mark: '标识',
+          remark: '备注',
+          action: '操作'
+        }
+      },
       deptModules: {
         field: {
           name: '部门名称',

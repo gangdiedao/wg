@@ -2,12 +2,12 @@
   <div class="app-container">
     <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
-          <el-button type="primary" size="mini" @click="handleAddRole">添加</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="primary" size="mini" @click="handleAdd">{{ $t('actions.create') }}</el-button>
+          <el-button type="danger" size="mini">{{ $t('actions.delete') }}</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
-          <el-input placeholder="请输入内容" size="mini" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search">搜索</el-button>
+          <el-input placeholder="请输入内容" v-model="listQuery.keyword" size="mini" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="search">{{ $t('actions.search') }}</el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -23,42 +23,34 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="date"
-          label="名称">
-        </el-table-column>
-        <el-table-column
           prop="name"
-          label="英文名称">
+          :label="$t('organization.roleModules.field.name')">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="标识">
+          prop="name_en"
+          :label="$t('organization.roleModules.field.nameEn')">
         </el-table-column>
         <el-table-column
+          prop="slug"
+          :label="$t('organization.roleModules.field.mark')">
+        </el-table-column>
+        <!-- <el-table-column
           prop="province"
-          label="备注">
-        </el-table-column>
-        <el-table-column
-          prop="city"
-          label="创建时间">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="更新时间">
-        </el-table-column>
+          :label="$t('organization.roleModules.field.remark')">
+        </el-table-column> -->
         <el-table-column
           fixed="right"
-          label="操作">
+          :label="$t('organization.roleModules.field.action')">
           <template slot-scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="handleEdit(scope.row)">{{ $t('actions.edit') }}</el-button>
+            <el-button type="text" size="small">{{ $t('actions.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-row type="flex" justify="end">
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
       </el-row>
-      <edit-role :show.sync="showEditRole" :item="roleItem"/>
+      <edit-role :show.sync="showEditRole" :item="roleItem" @success="getList"/>
   </div>
 </template>
 
@@ -66,12 +58,16 @@
 import EditRole from './components/edit-role'
 import mixin from './mixin'
 import Pagination from '@/components/Pagination'
+import { getRoleList } from '@/api/organization'
 export default {
   name: 'roleManage',
   mixins: [mixin],
   components: {
     Pagination,
     EditRole
+  },
+  created() {
+    this.getList()
   },
   data() {
     return {
@@ -80,49 +76,34 @@ export default {
       total: 10,
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 20,
+        keyword: ''
       },
       multipleSelection: [],
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        zip: 200333
-      }]
+      tableData: []
     }
   },
   methods: {
-    handleAddRole() {
+    handleAdd() {
+      this.showEditRole = true
+      this.roleItem = ''
+    },
+    handleEdit(item) {
+      this.roleItem = item
       this.showEditRole = true
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+    search() {
+      this.listQuery.page = 1
+      this.getList()
+    },
     getList() {
-
+      getRoleList(this.listQuery).then(res => {
+        this.total = res.data.count
+        this.tableData = res.data.data
+      })
     },
   }
 }

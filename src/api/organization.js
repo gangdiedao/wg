@@ -72,6 +72,15 @@ export function deleteRole(params) {
   })
 }
 
+// 角色菜单功能权限列表
+export function getMenus(params) {
+  return request({
+    url: '/admin/system/role/menus',
+    method: 'get',
+    params
+  })
+}
+
 // 用户列表
 export function getUserList(params) {
   return request({
