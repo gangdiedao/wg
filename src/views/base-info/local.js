@@ -83,7 +83,10 @@ export default {
         uploadTip: '上传文件格式只能为{format}',
         uploadSize: '上传文件大小不能大于{format}',
         lock: '锁定',
-        unLock: '激活'
+        unLock: '激活',
+        tips: '提示',
+        pleaseCheckTheData: '请先勾选数据',
+        areYouSureDeleteThisData: '确定要删除该数据?'
       },
       areas: {
         all: '全部',

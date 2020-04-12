@@ -16,21 +16,14 @@ export function companyList(query) {
     params: query
   })
 }
-// export function fetchArticle(id) {
-//   return request({
-//     url: '/vue-element-admin/article/detail',
-//     method: 'get',
-//     params: { id }
-//   })
-// }
-
-// export function fetchPv(pv) {
-//   return request({
-//     url: '/vue-element-admin/article/pv',
-//     method: 'get',
-//     params: { pv }
-//   })
-// }
+// 锁定,激活,删除
+export function isLockOrDelete(data) {
+  return request({
+    url: '/admin/factordata/subsidiary/batsave',
+    method: 'post',
+    data
+  })
+}
 // 新增
 export function createArticle(data) {
   return request({
