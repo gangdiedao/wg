@@ -46,8 +46,7 @@
       </el-form-item>
       <el-form-item :label="$t('organization.userModules.field.role')">
         <el-select v-model="ruleForm.role_id" multiple filterable style="width: 100%" placeholder="请选择角色">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <!-- <el-form-item :label="$t('organization.userModules.field.status')">
@@ -100,9 +99,11 @@ export default {
       this.dialogFormVisible = bool
       if (bool) {
         if (this.item) {
+          this.item.password = ''
           this.ruleForm = this.assign(this.ruleForm, this.item)
-          this.ruleForm.password = undefined
-          this.parentname = this.item.department.name
+          this.ruleForm.role_id = []
+          this.parentname = this.item.department && this.item.department.name
+          this.ruleForm.role_id = this.item.roles.map(item => item.id)
           this.dialogStatus = 'update'
         } else {
           this.parentname = ''
@@ -171,8 +172,13 @@ export default {
       }
     }
   },
+  created() {
+    if (!this.roleList.length) {
+      this.$store.dispatch('organization/getRoleList', {page: 1, limit: 1000})
+    }
+  },
   computed: {
-    ...mapGetters(['deptList'])
+    ...mapGetters(['deptList', 'roleList'])
   },
   methods: {
     handleClickNode(data) {

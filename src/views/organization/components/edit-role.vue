@@ -180,6 +180,7 @@ export default {
           type: 'success'
         })
         this.$emit('success')
+        this.$store.dispatch('organization/getRoleList', {page: 1, limit: 1000})
         this.close()
       })
     },
