@@ -14,7 +14,7 @@
       @keyup.enter.native="dataFormSubmitHandle()"
     >
       <el-form-item prop="info_type_id" :label="$t('i18nView.information.infoType')">
-        <el-select v-model="dataForm.info_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.infoType')" @change="typeChange">
+        <el-select v-model="dataForm.info_type_id" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="typeChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -24,7 +24,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
         <el-image
@@ -48,7 +48,7 @@
         </el-upload>
         <el-button type="text" size="small" style="display:inline-block" @click="deleteIcon">删除</el-button>
       </el-form-item>
-      <el-form-item prop="imagesArr" :label="$t('i18nView.information.pic')">
+      <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
         <el-upload
           class="upload-demo"
           action="string"
@@ -67,21 +67,47 @@
         </el-dialog>
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.url')" />
+        <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
       </el-form-item>
       <el-form-item prop="intro" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.intro" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+        <el-input v-model="dataForm.intro" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="address" :label="$t('i18nView.information.address')">
+        <el-input v-model="dataForm.address" :placeholder="'请输入'+$t('i18nView.information.address')" />
       </el-form-item>
       <el-form-item prop="contact" :label="$t('i18nView.information.contacts')">
-        <el-input v-model="dataForm.contact" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.contacts')" />
+        <el-input v-model="dataForm.contact" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
       </el-form-item>
       <el-form-item prop="telphone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telphone" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.telePhone')" />
+        <el-input v-model="dataForm.telphone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+      </el-form-item>
+      <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
+        <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
+      </el-form-item>
+      <el-form-item prop="source" :label="$t('i18nView.information.touristDestination')">
+        <el-select v-model="dataForm.source" :placeholder="'请选择'+$t('i18nView.information.touristDestination')">
+          <el-option
+            v-for="item in cityListData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="input_user_id" :label="$t('i18nView.information.creator')">
+        <el-select v-model="dataForm.input_user_id" :placeholder="'请选择'+$t('i18nView.information.creator')" @change="userChange">
+          <el-option
+            v-for="item in userListData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item prop="email" :label="$t('i18nView.information.email')">
-        <el-input v-model="dataForm.email" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.email')" />
+        <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
       </el-form-item>
-      <el-form-item prop="filesArr" :label="$t('i18nView.information.files')">
+      <el-form-item prop="files" :label="$t('i18nView.information.files')">
         <el-upload
           class="upload-demo"
           action="string"
@@ -94,6 +120,12 @@
           <el-button type="primary" size="small">添加文件</el-button>
         </el-upload>
       </el-form-item>
+      <el-form-item prop="remark" :label="$t('i18nView.information.remarks')">
+        <el-input v-model="dataForm.remark" :placeholder="'请输入'+$t('i18nView.information.remarks')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="bookremark" :label="$t('i18nView.information.AccountBookRemark')">
+        <el-input v-model="dataForm.bookremark" :placeholder="'请输入'+$t('i18nView.information.AccountBookRemark')" type="textarea" :rows="2" />
+      </el-form-item>
     </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
@@ -103,7 +135,7 @@
 </template>
 
 <script>
-import { createArticle, updateArticle, upload } from '@/api/shop'
+import { create, update, upload, userList, cityList } from '@/api/car-info'
 import mixin from '../mixin'
 
 export default {
@@ -112,54 +144,39 @@ export default {
     return {
       visible: false,
       dialogVisible: false,
+      currentDate: '',
+      daterange: '',
+      innerVisible: false,
       dataForm: {
+        status: 1, // 状态 1:激活 2：锁定
+        name: '',
+        enname: '',
         info_type_id: '',
         info_type_name: '',
-        name: '',
-        status: 1, // 状态 1:激活 2：锁定
+        fax: '',
+        input_user_id: '',
+        input_organization_id: '',
+        input_user_name: '',
+        logo: '',
+        source: '',
+        email: '',
+        payType: '',
+        address: '',
         url: '',
-        imagesArr: [],
-        filesArr: [],
-        intro: '',
         contact: '',
         telphone: '',
-        email: '',
-        logo: ''
+        intro: '',
+        remark: '',
+        bookremark: '',
+        filesArr: [],
+        imagesArr: []
       },
-      dataRule: {
-        info_type_id: [
-          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.infoType'), trigger: 'blur' }
-        ],
-        name: [
-          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.name'), trigger: 'blur' }
-        ],
-        logo: [
-          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.icon'), trigger: 'blur' }
-        ],
-        imagesArr: [
-          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.pic'), trigger: 'blur' }
-        ],
-        url: [
-          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.url'), trigger: 'blur' }
-        ],
-        intro: [
-          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.introduce'), trigger: 'blur' }
-        ],
-        contact: [
-          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.contacts'), trigger: 'blur' }
-        ],
-        telphone: [
-          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.telePhone'), trigger: 'blur' }
-        ],
-        email: [
-          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.email'), trigger: 'blur' }
-        ],
-        filesArr: [
-          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.files'), trigger: 'blur' }
-        ]
-      },
+      returnTypeFlag: 0,
+      dataRule: {},
       infoTypeList: [],
-      dialogImageUrl: ''
+      userListData: [],
+      dialogImageUrl: '',
+      cityListData: []
     }
   },
   computed: {},
@@ -169,26 +186,49 @@ export default {
   methods: {
     init(item) {
       this.visible = true
+      this.getUserList()
+      this.getCityList()
       this.$nextTick(() => {
-        this.$refs.dataForm.resetFields()
         if (item) {
           this.dataForm = item
         } else {
           this.dataForm = {
+            status: 1, // 状态 1:激活 2：锁定
+            name: '',
+            enname: '',
             info_type_id: '',
             info_type_name: '',
-            name: '',
-            status: 1, // 状态 1:激活 2：锁定
+            fax: '',
+            input_user_id: '',
+            input_organization_id: '',
+            input_user_name: '',
+            logo: '',
+            source: '',
+            email: '',
+            payType: '',
+            address: '',
             url: '',
-            imagesArr: [],
-            filesArr: [],
-            intro: '',
             contact: '',
             telphone: '',
-            email: '',
-            logo: ''
+            intro: '',
+            remark: '',
+            bookremark: '',
+            filesArr: [],
+            imagesArr: []
           }
         }
+      })
+    },
+    // 用户列表
+    getUserList() {
+      userList(this.listQuery).then(response => {
+        this.userListData = response.data.data
+      })
+    },
+    // 客源地列表
+    getCityList() {
+      cityList({ type: 'customersource' }).then(response => {
+        this.cityListData = response.data
       })
     },
     // 信息类型改变
@@ -198,6 +238,14 @@ export default {
         return item.id === id
       })
       this.dataForm.info_type_name = obj.name
+    },
+    // 创建者改变
+    userChange(id) {
+      let obj = {}
+      obj = this.userListData.find(item => {
+        return item.id === id
+      })
+      this.dataForm.input_user_name = obj.name
     },
     // 上传图片、图标之前
     onBeforeUploadImage(file) {
@@ -308,7 +356,7 @@ export default {
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
           if (this.dataForm.id) {
-            updateArticle(this.dataForm).then(response => {
+            update(this.dataForm).then(response => {
               if (response.code === 2000) {
                 this.$message({
                   type: 'success',
@@ -324,7 +372,7 @@ export default {
               }
             })
           } else {
-            createArticle(this.dataForm).then(response => {
+            create(this.dataForm).then(response => {
               if (response.code === 2000) {
                 this.$message({
                   type: 'success',

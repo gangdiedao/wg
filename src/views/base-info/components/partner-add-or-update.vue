@@ -13,8 +13,8 @@
       label-width="120px"
       @keyup.enter.native="dataFormSubmitHandle()"
     >
-      <el-form-item prop="selectData" :label="$t('i18nView.information.infoType')">
-        <el-select v-model="dataForm.selectData" :placeholder="'请选择'+$t('i18nView.information.infoType')">
+      <el-form-item prop="info_type_id" :label="$t('i18nView.information.infoType')">
+        <el-select v-model="dataForm.info_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.infoType')" @change="typeChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -24,68 +24,86 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
-      <el-form-item prop="icon" :label="$t('i18nView.information.icon')">
+      <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
+        <el-image
+          v-if="dataForm.logo != ''"
+          style="width: 100px; height: 100px"
+          :src="dataForm.logo"
+          fit="cover"
+        />
+        <el-upload
+          ref="uploadIcon"
+          class="upload-demo"
+          style="display:inline-block"
+          action="string"
+          :show-file-list="false"
+          :limit="1"
+          :http-request="UploadIcon"
+          :before-upload="onBeforeUploadImage"
+          :on-exceed="handleExceed"
+        >
+          <el-button type="text" size="small">上传</el-button>
+        </el-upload>
+        <el-button type="text" size="small" style="display:inline-block" @click="deleteIcon">删除</el-button>
+      </el-form-item>
+      <el-form-item prop="imagesArr" :label="$t('i18nView.information.pic')">
         <el-upload
           class="upload-demo"
           action="string"
-          :show-file-list="false"
+          :show-file-list="true"
+          list-type="picture-card"
+          :file-list="dataForm.imagesArr"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemoveImage"
           :http-request="UploadImage"
           :before-upload="onBeforeUploadImage"
         >
-          <el-button type="primary" icon="el-icon-upload2">添加图标</el-button>
+          <i class="el-icon-plus" />
         </el-upload>
-      </el-form-item>
-      <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
-        <el-upload
-          class="upload-demo"
-          action="string"
-          :show-file-list="false"
-          :http-request="UploadImage"
-          :before-upload="onBeforeUploadImage"
-        >
-          <el-button type="primary" icon="el-icon-upload2">添加图片</el-button>
-        </el-upload>
+        <el-dialog :visible.sync="dialogVisible" append-to-body>
+          <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
+        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.url')" />
       </el-form-item>
-      <el-form-item prop="introduce" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.introduce" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+      <el-form-item prop="intro" :label="$t('i18nView.information.introduce')">
+        <el-input v-model="dataForm.intro" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
       </el-form-item>
-      <el-form-item prop="fullName" :label="$t('i18nView.information.fullName')">
-        <el-input v-model="dataForm.fullName" :placeholder="'请输入'+$t('i18nView.information.fullName')" />
+      <el-form-item prop="fullname" :label="$t('i18nView.information.fullName')">
+        <el-input v-model="dataForm.fullname" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.fullName')" />
       </el-form-item>
       <el-form-item prop="code" :label="$t('i18nView.information.code')">
-        <el-input v-model="dataForm.code" :placeholder="'请输入'+$t('i18nView.information.code')" />
+        <el-input v-model="dataForm.code" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.code')" />
       </el-form-item>
       <el-form-item prop="address" :label="$t('i18nView.information.address')">
-        <el-input v-model="dataForm.address" :placeholder="'请输入'+$t('i18nView.information.address')" />
+        <el-input v-model="dataForm.address" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.address')" />
       </el-form-item>
-      <el-form-item prop="contacts" :label="$t('i18nView.information.contacts')">
-        <el-input v-model="dataForm.contacts" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
+      <el-form-item prop="contact" :label="$t('i18nView.information.contacts')">
+        <el-input v-model="dataForm.contact" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.contacts')" />
       </el-form-item>
-      <el-form-item prop="telePhone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telePhone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+      <el-form-item prop="telphone" :label="$t('i18nView.information.telePhone')">
+        <el-input v-model="dataForm.telphone" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.telePhone')" />
       </el-form-item>
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
-        <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
+        <el-input v-model="dataForm.fax" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.fax')" />
       </el-form-item>
-      <el-form-item prop="touristDestination" :label="$t('i18nView.information.touristDestination')">
-        <el-select v-model="dataForm.touristDestination" :placeholder="'请选择'+$t('i18nView.information.touristDestination')">
+      <el-form-item prop="source" :label="$t('i18nView.information.touristDestination')">
+        <el-select v-model="dataForm.source" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.touristDestination')">
           <el-option
-            v-for="item in valuationMethodList"
+            v-for="item in cityListData"
             :key="item.id"
-            :label="item.name"
-            :value="item.id"
+            :label="item.value"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item prop="creator" :label="$t('i18nView.information.creator')">
-        <el-select v-model="dataForm.creator" :placeholder="'请选择'+$t('i18nView.information.creator')">
+      <el-form-item prop="input_user_id" :label="$t('i18nView.information.creator')">
+        <el-select v-model="dataForm.input_user_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.creator')" @change="userChange">
           <el-option
-            v-for="item in creatorList"
+            v-for="item in userListData"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -93,24 +111,26 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="email" :label="$t('i18nView.information.email')">
-        <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
+        <el-input v-model="dataForm.email" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.email')" />
       </el-form-item>
-      <el-form-item prop="files" :label="$t('i18nView.information.files')">
+      <el-form-item prop="filesArr" :label="$t('i18nView.information.files')">
         <el-upload
           class="upload-demo"
           action="string"
-          :show-file-list="false"
-          :http-request="UploadImage"
-          :before-upload="onBeforeUploadImage"
+          :show-file-list="true"
+          :http-request="UploadFile"
+          :file-list="dataForm.filesArr"
+          :on-remove="handleRemoveFile"
+          :before-upload="onBeforeUploadFile"
         >
-          <el-button type="primary" icon="el-icon-upload2">添加文件</el-button>
+          <el-button type="primary" size="small">添加文件</el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item prop="remarks" :label="$t('i18nView.information.remarks')">
-        <el-input v-model="dataForm.remarks" :placeholder="'请输入'+$t('i18nView.information.remarks')" type="textarea" :rows="2" />
+      <el-form-item prop="remark" :label="$t('i18nView.information.remarks')">
+        <el-input v-model="dataForm.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.remarks')" type="textarea" :rows="2" />
       </el-form-item>
-      <el-form-item prop="AccountBookRemark" :label="$t('i18nView.information.AccountBookRemark')">
-        <el-input v-model="dataForm.AccountBookRemark" :placeholder="'请输入'+$t('i18nView.information.AccountBookRemark')" type="textarea" :rows="2" />
+      <el-form-item prop="bookremark" :label="$t('i18nView.information.AccountBookRemark')">
+        <el-input v-model="dataForm.bookremark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.AccountBookRemark')" type="textarea" :rows="2" />
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -121,6 +141,7 @@
 </template>
 
 <script>
+import { create, update, upload, userList, cityList } from '@/api/partner'
 import mixin from '../mixin'
 
 export default {
@@ -128,123 +149,171 @@ export default {
   data() {
     return {
       visible: false,
+      dialogVisible: false,
       currentDate: '',
       daterange: '',
       innerVisible: false,
       dataForm: {
-        selectData: '',
+        status: 1, // 状态 1:激活 2：锁定
         name: '',
-        url: '',
-        introduce: '',
-        company: '',
-        city: '',
-        address: '',
-        contacts: '',
-        telePhone: '',
+        code: '',
+        fullname: '',
+        enname: '',
+        info_type_id: '',
+        info_type_name: '',
         fax: '',
-        valuationMethod: '',
+        input_user_id: '',
+        input_organization_id: '',
+        input_user_name: '',
+        logo: '',
+        source: '',
         email: '',
         payType: '',
-        creator: '',
-        files: '',
-        remarks: '',
-        detailIntroduce: '',
-        AccountBookRemark: '',
-        UKey: '',
-        returnType: '',
-        fixedValue: '',
-        returnedCommissionPercentage: ''
+        address: '',
+        url: '',
+        contact: '',
+        telphone: '',
+        intro: '',
+        remark: '',
+        bookremark: '',
+        filesArr: [],
+        imagesArr: []
       },
       returnTypeFlag: 0,
-      dataRule: {},
+      dataRule: {
+        name: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.name'), trigger: 'blur' }
+        ],
+        info_type_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.infoType'), trigger: 'blur' }
+        ],
+        logo: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.icon'), trigger: 'blur' }
+        ],
+        imagesArr: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.pic'), trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.url'), trigger: 'blur' }
+        ],
+        intro: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.introduce'), trigger: 'blur' }
+        ],
+        fullname: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.fullName'), trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.code'), trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.address'), trigger: 'blur' }
+        ],
+        contact: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.contacts'), trigger: 'blur' }
+        ],
+        telphone: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.telePhone'), trigger: 'blur' }
+        ],
+        fax: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.fax'), trigger: 'blur' }
+        ],
+        source: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.touristDestination'), trigger: 'blur' }
+        ],
+        input_user_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.creator'), trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.email'), trigger: 'blur' }
+        ],
+        filesArr: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.files'), trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.remarks'), trigger: 'blur' }
+        ],
+        bookremark: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.AccountBookRemark'), trigger: 'blur' }
+        ]
+      },
       infoTypeList: [],
-      cityList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.areas.bangkok')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.areas.pattaya')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.areas.samed')
-        },
-        {
-          id: 4,
-          name: this.$t('i18nView.areas.rayong')
-        },
-        {
-          id: 5,
-          name: this.$t('i18nView.areas.ayutthaya')
-        },
-        {
-          id: 6,
-          name: this.$t('i18nView.areas.huahin')
-        },
-        {
-          id: 7,
-          name: this.$t('i18nView.areas.kanchanaburi')
-        },
-        {
-          id: 8,
-          name: this.$t('i18nView.areas.samui')
-        },
-        {
-          id: 9,
-          name: this.$t('i18nView.areas.surat')
-        },
-        {
-          id: 10,
-          name: this.$t('i18nView.areas.kohchang')
-        }
-      ],
-      valuationMethodList: [],
-      creatorList: [
-        {
-          id: 0,
-          name: this.$t('i18nView.creatorList.zhangshan')
-        },
-        {
-          id: 1,
-          name: this.$t('i18nView.creatorList.liudehua')
-        },
-        {
-          id: 2,
-          name: this.$t('i18nView.creatorList.zhangxueyou')
-        },
-        {
-          id: 3,
-          name: this.$t('i18nView.creatorList.zhoujielun')
-        }
-      ],
-      returnTypeList: [],
-      payTypeList: [],
-      pickerOptions: {
-        disabledDate: (date) => {
-          return new Date(new Date(this.currentDate).setHours(0)).getTime() > new Date(date).getTime()
-        }
-      }
+      userListData: [],
+      dialogImageUrl: '',
+      cityListData: []
     }
   },
   computed: {},
   created() {
-    this.payTypeList = this.payTypeListData()
-    this.returnTypeList = this.returnTypeListData()
-    this.valuationMethodList = this.valuationMethodListData()
     this.infoTypeList = this.infoTypeListData()
   },
   methods: {
     init(item) {
       this.visible = true
+      this.getUserList()
+      this.getCityList()
       this.$nextTick(() => {
+        this.$refs.dataForm.resetFields()
         if (item) {
           this.dataForm = item
+        } else {
+          this.dataForm = {
+            status: 1, // 状态 1:激活 2：锁定
+            name: '',
+            code: '',
+            fullname: '',
+            enname: '',
+            info_type_id: '',
+            info_type_name: '',
+            fax: '',
+            input_user_id: '',
+            input_organization_id: '',
+            input_user_name: '',
+            logo: '',
+            source: '',
+            email: '',
+            payType: '',
+            address: '',
+            url: '',
+            contact: '',
+            telphone: '',
+            intro: '',
+            remark: '',
+            bookremark: '',
+            filesArr: [],
+            imagesArr: []
+          }
         }
       })
     },
-    // 上传文件之前
+    // 用户列表
+    getUserList() {
+      userList(this.listQuery).then(response => {
+        this.userListData = response.data.data
+      })
+    },
+    // 客源地列表
+    getCityList() {
+      cityList({ type: 'customersource' }).then(response => {
+        this.cityListData = response.data
+      })
+    },
+    // 信息类型改变
+    typeChange(id) {
+      let obj = {}
+      obj = this.infoTypeList.find(item => {
+        return item.id === id
+      })
+      this.dataForm.info_type_name = obj.name
+    },
+    // 创建者改变
+    userChange(id) {
+      let obj = {}
+      obj = this.userListData.find(item => {
+        return item.id === id
+      })
+      this.dataForm.input_user_name = obj.name
+    },
+    // 上传图片、图标之前
     onBeforeUploadImage(file) {
       if (
         file.type !== 'image/jpg' &&
@@ -252,67 +321,138 @@ export default {
         file.type !== 'image/png' &&
         file.type !== 'image/gif'
       ) {
-        this.$message.error(this.$t('upload.tip', { format: 'jpg、png、gif' }))
+        this.$message.error(this.$t('i18nView.information.uploadTip', { format: 'jpg、png、gif' }))
+        return false
+      }
+      if (file.size / 1024 / 1024 > 10) {
+        this.$message.error(this.$t('i18nView.information.uploadSize', { format: '10MB' }))
         return false
       }
     },
-    // 上传文件
-    UploadImage(param) {
+    // 上传图片、图标之前
+    onBeforeUploadFile(file) {
+      if (
+        file.type !== 'application/vnd.ms-excel' &&
+        file.type !== 'pplication/msword' &&
+        file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' &&
+        file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ) {
+        this.$message.error(this.$t('i18nView.information.uploadTip', { format: 'doc、docx、xls、xlsx' }))
+        return false
+      }
+      if (file.size / 1024 / 1024 > 10) {
+        this.$message.error(this.$t('i18nView.information.uploadSize', { format: '10MB' }))
+        return false
+      }
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`最多只能上传1张图标`)
+    },
+    // 上传图标
+    UploadIcon(param) {
       const formData = new FormData()
-      formData.append('file', param.file)
-      this.$http.post(
-        '/school/student/import',
-        formData
-      ).then(({ data: res }) => {
-        if (res.code === 0) {
+      formData.append('Filedata', param.file)
+      upload(formData).then(response => {
+        if (response.code === 2000) {
           this.$message({
-            message: '导入成功',
-            type: 'success'
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
           })
-          this.query()
+          this.dataForm.logo = response.data.url
         } else {
-          this.$message.error(res.msg || '导入失败')
+          this.$message.error(response.msg)
         }
-      }).catch((e) => {
-        this.$message.error(e.msg || '导入失败')
       })
     },
-    // 返佣改变
-    returnTypeChange(e) {
-      this.returnTypeFlag = e
+    // 删除图标
+    deleteIcon() {
+      this.dataForm.logo = ''
+      this.$refs.uploadIcon.clearFiles()
     },
-    handleCaledar(day, date) {
-      this.currentDate = date
-      this.daterange = [day, day]
-      this.innerVisible = true
+    // 上传图片
+    UploadImage(param) {
+      const formData = new FormData()
+      formData.append('Filedata', param.file)
+      upload(formData).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
+          })
+          this.dataForm.imagesArr.push(response.data)
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
     },
-    handleChangeDate(val) {
-      console.log(val)
+    // 查看图片
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    // 删除图片
+    handleRemoveImage(file, fileList) {
+      this.dataForm.imagesArr = fileList
+    },
+    // 上传文件
+    UploadFile(param) {
+      const formData = new FormData()
+      formData.append('Filedata', param.file)
+      upload(formData).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.upload') + this.$t('i18nView.information.success')
+          })
+          this.dataForm.filesArr.push(response.data)
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
+    // 删除文件
+    handleRemoveFile(file, fileList) {
+      this.dataForm.filesArr = fileList
     },
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
-          try {
-            await this.$http[!this.dataForm.id ? 'post' : 'put'](
-              '/sys/mailtemplate',
-              this.dataForm,
-              {
-                headers: { 'content-type': 'application/x-www-form-urlencoded' }
-              }
-            )
-
-            this.$message({
-              message: this.$t('prompt.success'),
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
+          if (this.dataForm.id) {
+            update(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  duration: 1000,
+                  message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'edit')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
               }
             })
-          } catch (error) {
-            this.$message.error(error.msg)
+          } else {
+            create(this.dataForm).then(response => {
+              if (response.code === 2000) {
+                this.$message({
+                  type: 'success',
+                  duration: 1000,
+                  message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('callBcak', 'add')
+                  }
+                })
+              } else {
+                this.$message.error(response.msg)
+              }
+            })
           }
         }
       })

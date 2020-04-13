@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="handleFilter">
-        <el-option v-for="item in infoTypeList" :key="item.id" :label="item.name" :value="item.id" />
+      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
-      <el-input v-model="listQuery.title" :placeholder="'请输入'+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
@@ -13,15 +13,6 @@
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         {{ $t('i18nView.information.export') }}
-      </el-button>
-      <el-button class="filter-item" type="danger" icon="el-icon-lock" @click="handleLock">
-        {{ $t('i18nView.information.lock') }}
-      </el-button>
-      <el-button class="filter-item" type="success" icon="el-icon-unlock" @click="handleUnLock">
-        {{ $t('i18nView.information.unLock') }}
-      </el-button>
-      <el-button class="filter-item" type="danger" icon="el-icon-circle-close" @click="handleDelete()">
-        {{ $t('i18nView.information.delete') }}
       </el-button>
     </div>
     <el-table
@@ -34,7 +25,6 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
-      @selection-change="handleSelectionChange"
     >
       <el-table-column
         type="selection"
@@ -51,76 +41,104 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.infoType')" align="center">
+      <el-table-column :label="$t('i18nView.information.infoType')" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.info_type_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.icon')" align="center">
+      <el-table-column :label="$t('i18nView.information.icon')" width="110px" align="center">
         <template slot-scope="{row}">
           <span><i v-if="row.logo != ''" class="el-icon-picture" /></span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.pic')" align="center">
+      <el-table-column :label="$t('i18nView.information.pic')" width="110px" align="center">
         <template slot-scope="{row}">
           <span><i v-if="row.imagesArr.length != 0" class="el-icon-picture" /></span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.url')" align="center">
+      <el-table-column :label="$t('i18nView.information.url')" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.url }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.contacts')" align="center">
+      <el-table-column :label="$t('i18nView.information.touristDestination')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.contact }}</span>
+          <span>{{ row.source }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.telePhone')" align="center">
+      <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.telphone }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.email')" align="center">
+      <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.fax }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.contact }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.address')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.address }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.email')" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.email }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.files')" align="center">
+      <el-table-column :label="$t('i18nView.information.creator')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.input_user_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.files')" width="110px" align="center">
         <template slot-scope="{row}">
           <span><i v-if="row.filesArr.length != 0" class="el-icon-folder" /></span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center">
+      <el-table-column :label="$t('i18nView.information.remarks')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.remark }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.AccountBookRemark')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.bookremark }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="text" @click="handleDelete(row)">
+          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="text" @click="handleDelete(row,$index)">
             {{ $t('i18nView.information.delete') }}
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <shopAddOrUpdate ref="shopAddOrUpdate" @callBcak="callBcak" />
+    <carInfoAddOrUpdate ref="carInfoAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
 <script>
-import { fetchList, isLockOrDelete } from '@/api/shop'
+import { fetchList } from '@/api/car-info'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import shopAddOrUpdate from './components/shop-add-or-update' // secondary package based on el-pagination
-import mixin from './mixin'
+import carInfoAddOrUpdate from './components/car-info-add-or-update' // secondary package based on el-pagination
 
 export default {
   name: 'HotelMange',
-  components: { Pagination, shopAddOrUpdate },
+  components: { Pagination, carInfoAddOrUpdate },
   directives: { waves },
   filters: {},
-  mixins: [mixin],
   data() {
     return {
       tabMapOptions: [],
@@ -132,16 +150,29 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        start_date: '',
+        end_date: '',
+        orderByColumn: 'updated_at',
+        orderByDirection: 'desc',
         name: '',
-        status: '', // 状态 1:激活 2：锁定
+        status: 1, // 状态 1:激活 2：锁定
+        enname: '',
         info_type_id: '',
         info_type_name: '',
+        fax: '',
+        input_user_id: '',
+        input_organization_id: '',
+        input_user_name: '',
         logo: '',
+        source: '',
+        email: '',
+        address: '',
         url: '',
-        intro: '',
         contact: '',
         telphone: '',
-        email: ''
+        intro: '',
+        remark: '',
+        bookremark: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -164,20 +195,17 @@ export default {
       },
       dialogPvVisible: false,
       pvData: [],
-      infoTypeList: [], // 信息类型
       rules: {
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
-      downloadLoading: false,
-      listData: []
+      downloadLoading: false
     }
   },
   computed: {},
   watch: {},
   created() {
-    this.infoTypeList = this.infoTypeListData()
     this.getList()
   },
   methods: {
@@ -201,75 +229,16 @@ export default {
         }, 1.5 * 1000)
       })
     },
-    // 勾选
-    handleSelectionChange(e) {
-      e.map(item => {
-        this.listData.push({
-          id: item.id,
-          status: item.status,
-          is_delete: item.is_delete
-        })
-      })
-    },
-    // 锁定
-    handleLock() {
-      if (this.listData.length === 0) {
-        this.$message({
-          type: 'warning',
-          duration: 1000,
-          message: this.$t('i18nView.information.pleaseCheckTheData')
-        })
-        return
-      }
-      this.listData.map(item => {
-        item.status = 2
-      })
-      isLockOrDelete({ listData: this.listData }).then(response => {
-        if (response.code === 2000) {
-          this.$message({
-            type: 'success',
-            duration: 1000,
-            message: this.$t('i18nView.information.lock') + this.$t('i18nView.information.success'),
-            onClose: () => {
-              this.getList()
-            }
-          })
-        } else {
-          this.$message.error(response.msg)
-        }
-      })
-    },
-    // 激活
-    handleUnLock() {
-      if (this.listData.length === 0) {
-        this.$message({
-          type: 'warning',
-          duration: 1000,
-          message: this.$t('i18nView.information.pleaseCheckTheData')
-        })
-        return
-      }
-      this.listData.map(item => {
-        item.status = 1
-      })
-      isLockOrDelete({ listData: this.listData }).then(response => {
-        if (response.code === 2000) {
-          this.$message({
-            type: 'success',
-            duration: 1000,
-            message: this.$t('i18nView.information.unLock') + this.$t('i18nView.information.success'),
-            onClose: () => {
-              this.getList()
-            }
-          })
-        } else {
-          this.$message.error(response.msg)
-        }
-      })
-    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handleModifyStatus(row, status) {
+      this.$message({
+        message: '操作成功',
+        type: 'success'
+      })
+      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -287,54 +256,21 @@ export default {
     },
     // 新增、编辑
     handleCreateUpdate(item) {
-      this.$refs.shopAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : '')
+      this.$refs.carInfoAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
     },
     // 删除
-    handleDelete(row) {
-      if (row) {
-        // 单删
-        this.listData = []
-        this.listData.push({
-          id: row.id,
-          status: row.status,
-          is_delete: row.is_delete
-        })
-      } else {
-        // 多删
-        if (this.listData.length === 0) {
-          this.$message({
-            type: 'warning',
-            duration: 1000,
-            message: this.$t('i18nView.information.pleaseCheckTheData')
-          })
-          return
-        }
-      }
-      this.$confirm(this.$t('i18nView.information.areYouSureDeleteThisData'), this.$t('i18nView.information.tips'), {
-        confirmButtonText: this.$t('i18nView.information.confirm'),
-        cancelButtonText: this.$t('i18nView.information.cancel'),
+    handleDelete(row, index) {
+      this.$confirm('确定要删除该数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.listData.map(item => {
-          item.is_delete = 2
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
         })
-        isLockOrDelete({ listData: this.listData }).then(response => {
-          if (response.code === 2000) {
-            this.$message({
-              type: 'success',
-              duration: 1000,
-              message: this.$t('i18nView.information.delete') + this.$t('i18nView.information.success'),
-              onClose: () => {
-                this.getList()
-              }
-            })
-          } else {
-            this.$message.error(response.msg)
-          }
-        })
-      }).catch((e) => {
-        this.$message.error(e.msg)
-      })
+        this.list.splice(index, 1)
+      }).catch(() => {})
     },
     // 导出
     handleDownload() {

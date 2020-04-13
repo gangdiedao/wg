@@ -1,24 +1,29 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="'请选择'+$t('i18nView.information.shop')" @change="handleFilter">
+      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.shop')" @change="handleFilter">
         <el-option v-for="item in infoTypeList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-input v-model="listQuery.title" :placeholder="'请输入'+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate()">
         {{ $t('i18nView.information.add') }}
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         {{ $t('i18nView.information.export') }}
       </el-button>
+      <el-button class="filter-item" type="danger" icon="el-icon-lock" @click="handleLock">
+        {{ $t('i18nView.information.lock') }}
+      </el-button>
+      <el-button class="filter-item" type="success" icon="el-icon-unlock" @click="handleUnLock">
+        {{ $t('i18nView.information.unLock') }}
+      </el-button>
+      <el-button class="filter-item" type="danger" icon="el-icon-circle-close" @click="handleDelete()">
+        {{ $t('i18nView.information.delete') }}
+      </el-button>
     </div>
-    <!-- <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-        <keep-alive> -->
-    <!-- <tab-pane v-if="activeName==item" :type="item" /> -->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -29,93 +34,91 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
         type="selection"
         align="center"
         width="55"
       />
-      <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
+      <el-table-column :label="$t('i18nView.information.id')" type="index" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+        <!-- <template slot-scope="{row}">
           <span>{{ row.id }}</span>
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.name')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.shop')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.shop.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.shopspot')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.shop_point.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.companyRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.companyrate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.tourGuideRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.guiderate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.leaderRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.leaderrate }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.companySecondRoyalty')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.companyrate2 }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.calculationType')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.money_type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.showType')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.show_type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.commissionType')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.modifier')" align="center">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.author }}</span>
+          <span class="link-type">{{ row.updated_user_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
+          <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
           </el-button>
-          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-                  {{ $t('i18nView.information.delete') }}
-                </el-button> -->
+          <el-button size="mini" type="text" @click="handleDelete(row)">
+            {{ $t('i18nView.information.delete') }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!--</keep-alive>
-       </el-tab-pane>
-    </el-tabs> -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <commissionAddOrUpdate ref="commissionAddOrUpdate" />
+    <commissionAddOrUpdate ref="commissionAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/commission'
+import { fetchList, isLockOrDelete } from '@/api/commission'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -139,9 +142,14 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        start_date: '',
+        end_date: '',
+        orderByColumn: 'updated_at',
+        orderByDirection: 'desc',
         foundation_shop_id: '',
         foundation_shop_point_id: '',
         name: '',
+        status: '', // 状态 1:激活 2：锁定
         money_type: '',
         companyrate: '',
         guiderate: '',
@@ -177,7 +185,8 @@ export default {
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      listData: []
     }
   },
   computed: {},
@@ -186,6 +195,14 @@ export default {
     this.getList()
   },
   methods: {
+    callBcak(e) {
+      if (e === 'add') {
+        this.listQuery.page = 1
+        this.getList()
+      } else {
+        this.getList()
+      }
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
@@ -196,6 +213,72 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
+      })
+    },
+    // 勾选
+    handleSelectionChange(e) {
+      e.map(item => {
+        this.listData.push({
+          id: item.id,
+          status: item.status,
+          is_delete: item.is_delete
+        })
+      })
+    },
+    // 锁定
+    handleLock() {
+      if (this.listData.length === 0) {
+        this.$message({
+          type: 'warning',
+          duration: 1000,
+          message: this.$t('i18nView.information.pleaseCheckTheData')
+        })
+        return
+      }
+      this.listData.map(item => {
+        item.status = 2
+      })
+      isLockOrDelete({ listData: this.listData }).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.lock') + this.$t('i18nView.information.success'),
+            onClose: () => {
+              this.getList()
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
+    // 激活
+    handleUnLock() {
+      if (this.listData.length === 0) {
+        this.$message({
+          type: 'warning',
+          duration: 1000,
+          message: this.$t('i18nView.information.pleaseCheckTheData')
+        })
+        return
+      }
+      this.listData.map(item => {
+        item.status = 1
+      })
+      isLockOrDelete({ listData: this.listData }).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.unLock') + this.$t('i18nView.information.success'),
+            onClose: () => {
+              this.getList()
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
       })
     },
     handleFilter() {
@@ -221,19 +304,52 @@ export default {
       this.$refs.commissionAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
     },
     // 删除
-    // handleDelete(row, index) {
-    //   this.$confirm('确定要删除该数据?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     this.$message({
-    //       type: 'success',
-    //       message: '删除成功!'
-    //     })
-    //     this.list.splice(index, 1)
-    //   }).catch(() => {})
-    // },
+    handleDelete(row) {
+      if (row) {
+        // 单删
+        this.listData = []
+        this.listData.push({
+          id: row.id,
+          status: row.status,
+          is_delete: row.is_delete
+        })
+      } else {
+        // 多删
+        if (this.listData.length === 0) {
+          this.$message({
+            type: 'warning',
+            duration: 1000,
+            message: this.$t('i18nView.information.pleaseCheckTheData')
+          })
+          return
+        }
+      }
+      this.$confirm(this.$t('i18nView.information.areYouSureDeleteThisData'), this.$t('i18nView.information.tips'), {
+        confirmButtonText: this.$t('i18nView.information.confirm'),
+        cancelButtonText: this.$t('i18nView.information.cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.listData.map(item => {
+          item.is_delete = 2
+        })
+        isLockOrDelete({ listData: this.listData }).then(response => {
+          if (response.code === 2000) {
+            this.$message({
+              type: 'success',
+              duration: 1000,
+              message: this.$t('i18nView.information.delete') + this.$t('i18nView.information.success'),
+              onClose: () => {
+                this.getList()
+              }
+            })
+          } else {
+            this.$message.error(response.msg)
+          }
+        })
+      }).catch((e) => {
+        this.$message.error(e.msg)
+      })
+    },
     // 导出
     handleDownload() {
       this.downloadLoading = true

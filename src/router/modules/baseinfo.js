@@ -61,6 +61,12 @@ const router = {
       meta: { title: 'partnerManage' }
     },
     {
+      path: 'car-info',
+      component: () => import('@/views/base-info/car-info'),
+      name: 'carInfoManage',
+      meta: { title: 'carInfoManage' }
+    },
+    {
       path: 'guide',
       name: 'guide',
       meta: { title: 'guide' },
@@ -92,7 +98,7 @@ const router = {
           component: () => import('@/views/guide/advance'),
           name: 'advance',
           meta: { title: 'advance' }
-        },
+        }
       ]
     }
   ]

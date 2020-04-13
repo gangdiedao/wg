@@ -1,17 +1,17 @@
 import request from '@/utils/request'
 
-// 子公司列表
+// 购物点列表
 export function fetchList(query) {
   return request({
-    url: '/admin/factordata/subsidiary/search',
+    url: '/admin/factordata/shoppoint/search',
     method: 'get',
     params: query
   })
 }
-// 公司经理（用户列表）
-export function companyList(query) {
+// 购物店列表
+export function shopList(query) {
   return request({
-    url: '/admin/system/admin/lists',
+    url: '/admin/factordata/shop/search',
     method: 'get',
     params: query
   })
@@ -19,23 +19,23 @@ export function companyList(query) {
 // 锁定,激活,删除
 export function isLockOrDelete(data) {
   return request({
-    url: '/admin/factordata/subsidiary/batsave',
+    url: '/admin/factordata/shoppoint/batsave',
     method: 'post',
     data
   })
 }
 // 新增
-export function createArticle(data) {
+export function create(data) {
   return request({
-    url: '/admin/factordata/subsidiary/add',
+    url: '/admin/factordata/shoppoint/add',
     method: 'post',
     data
   })
 }
 // 编辑
-export function updateArticle(data) {
+export function update(data) {
   return request({
-    url: '/admin/factordata/subsidiary/edit',
+    url: '/admin/factordata/shoppoint/edit',
     method: 'post',
     data
   })
