@@ -44,3 +44,48 @@ export function getDictTypes() {
     method: 'get'
   })
 }
+
+// 获取特定字典类型列表
+export function getOtherDictList(params) {
+  return request({
+    url: '/admin/system/datadict/listbytype',
+    method: 'get',
+    params
+  })
+}
+
+// 创建语言
+export function addLang(data) {
+  return request({
+    url: '/admin/system/lang/create',
+    method: 'post',
+    data
+  })
+}
+
+// 创建语言
+export function updateLang(data) {
+  return request({
+    url: '/admin/system/lang/update',
+    method: 'post',
+    data
+  })
+}
+
+// 删除语言
+export function deleteLang(params) {
+  return request({
+    url: '/admin/system/lang/delete',
+    method: 'delete',
+    params
+  })
+}
+
+// 删除语言
+export function langList(params) {
+  return request({
+    url: '/admin/system/lang/lists',
+    method: 'get',
+    params
+  })
+}

@@ -37,20 +37,20 @@ export function guideDetail(params) {
 }
 
 // 设置导游状态
-export function setGuideStatus(post) {
+export function setGuideStatus(data) {
   return request({
     url: '/admin/factordata/guide/batsave',
     method: 'post',
-    post
+    data
   })
 }
 
 // 押金创建
-export function addDeposit(post) {
+export function addDeposit(data) {
   return request({
     url: '/admin/factordata/guidedeposit/add',
     method: 'post',
-    post
+    data
   })
 }
 

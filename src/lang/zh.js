@@ -28,7 +28,8 @@ export default {
     profile: '个人中心',
     updatePwd: '修改密码',
     system: '系统管理',
-    datadict: '数据字典'
+    datadict: '数据字典',
+    lang: '多语言'
   },
   navbar: {
     dashboard: '首页',

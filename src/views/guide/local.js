@@ -13,6 +13,7 @@ export default {
         guideId: '导游证号',
         phone: '联系电话',
         wechat: '微信号',
+        email: '邮箱',
         sex: '性别',
         birthday: '出生日期',
         level: '等级',
