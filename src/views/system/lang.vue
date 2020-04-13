@@ -75,7 +75,7 @@ export default {
       loading: false,
       showEditLang: false,
       item: '',
-      total: 10,
+      total: 20,
       list: [],
       listQuery: {
         type: undefined,

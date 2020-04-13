@@ -12,9 +12,9 @@ export default {
   methods: {
     setTabOptions() {
       return [
-        { key: 'open', label: this.$t('guide.status.open') },
-        { key: 'close', label: this.$t('guide.status.close') },
-        { key: 'all', label: this.$t('guide.status.all') },
+        { key: '1', label: this.$t('guide.status.open') },
+        { key: '2', label: this.$t('guide.status.close') },
+        // { key: '0', label: this.$t('guide.status.all') },
       ]
     }
   }
