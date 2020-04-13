@@ -13,8 +13,8 @@
       label-width="120px"
       @keyup.enter.native="dataFormSubmitHandle()"
     >
-      <el-form-item prop="shop" :label="$t('i18nView.information.shop')">
-        <el-select v-model="dataForm.foundation_shop_id" :placeholder="'请选择'+$t('i18nView.information.shop')">
+      <el-form-item prop="foundation_shop_id" :label="$t('i18nView.information.shop')">
+        <el-select v-model="dataForm.foundation_shop_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.shop')">
           <el-option
             v-for="item in shopListData"
             :key="item.id"
@@ -24,13 +24,13 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
-      <el-form-item prop="taxRate" :label="$t('i18nView.information.taxRate')">
-        <el-input v-model="dataForm.comptaxrate" :placeholder="'请输入'+$t('i18nView.information.taxRate')" type="number" />
+      <el-form-item prop="comptaxrate" :label="$t('i18nView.information.taxRate')">
+        <el-input v-model="dataForm.comptaxrate" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.taxRate')" type="number" />
       </el-form-item>
-      <el-form-item prop="twoTaxRate" :label="$t('i18nView.information.twoTaxRate')">
-        <el-input v-model="dataForm.comptaxrate2" :placeholder="'请输入'+$t('i18nView.information.twoTaxRate')" type="number" />
+      <el-form-item prop="comptaxrate2" :label="$t('i18nView.information.twoTaxRate')">
+        <el-input v-model="dataForm.comptaxrate2" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.twoTaxRate')" type="number" />
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -71,7 +71,20 @@ export default {
         email: ''
       },
       returnTypeFlag: 0,
-      dataRule: {},
+      dataRule: {
+        name: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.name'), trigger: 'blur' }
+        ],
+        foundation_shop_id: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.shop'), trigger: 'blur' }
+        ],
+        comptaxrate: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.taxRate'), trigger: 'blur' }
+        ],
+        comptaxrate2: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.twoTaxRate'), trigger: 'blur' }
+        ]
+      },
       shopListData: []
     }
   },
@@ -82,6 +95,7 @@ export default {
       this.visible = true
       this.getShopList()
       this.$nextTick(() => {
+        this.$refs.dataForm.resetFields()
         if (item) {
           this.dataForm = item
         } else {
