@@ -38,3 +38,11 @@ export function updatePwd(data) {
     data
   })
 }
+
+export function getUserMenu(params) {
+  return request({
+    url: '/admin/system/user/privs',
+    method: 'get',
+    params
+  })
+}

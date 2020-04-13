@@ -3,7 +3,7 @@
     <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
           <el-button type="primary" size="mini" @click="handleAdd">{{ $t('actions.create') }}</el-button>
-          <el-button type="danger" size="mini">{{ $t('actions.delete') }}</el-button>
+          <el-button type="danger" :disabled="!multipleSelection.length" size="mini" @click="handleDelete('all')">{{ $t('actions.delete') }}</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
           <el-input placeholder="请输入内容" v-model="listQuery.keyword" size="mini" class="input-with-select">
@@ -43,7 +43,7 @@
           :label="$t('organization.roleModules.field.action')">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleEdit(scope.row)">{{ $t('actions.edit') }}</el-button>
-            <el-button type="text" size="small">{{ $t('actions.delete') }}</el-button>
+            <el-button type="text" size="small" @click="handleDelete(scope.row)">{{ $t('actions.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -58,7 +58,7 @@
 import EditRole from './components/edit-role'
 import mixin from './mixin'
 import Pagination from '@/components/Pagination'
-import { getRoleList } from '@/api/organization'
+import { getRoleList, deleteRole } from '@/api/organization'
 export default {
   name: 'roleManage',
   mixins: [mixin],
@@ -105,6 +105,27 @@ export default {
         this.tableData = res.data.data
       })
     },
+    handleDelete(item) {
+      let ids
+      if (item === 'all') {
+        ids = this.multipleSelection.map(item => item.id)
+      } else {
+        ids = [item.id]
+      }
+      this.$confirm('确定要删除该数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteRole({id: ids}).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getList()
+        })
+      }).catch(() => {})
+    }
   }
 }
 </script>

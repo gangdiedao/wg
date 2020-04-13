@@ -170,7 +170,7 @@
       </el-col>
     </el-row>
 
-    <edit-guide :show.sync="showEditGuide"/>
+    <edit-guide :show.sync="showEditGuide" @success="getList"/>
   </div>
 </template>
 
@@ -179,6 +179,7 @@
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import EditGuide from './components/edit-guide'
   import mixin from './mixin'
+  import { guideList } from '@/api/guide'
 
   export default {
     mixins: [mixin],
@@ -226,7 +227,7 @@
         this.activeName = tab
       }
       this.setOptions()
-      // this.getList()
+      this.getList()
     },
     methods: {
       setOptions() {
@@ -234,6 +235,9 @@
       },
       getList() {
         this.listLoading = true
+        guideList(this.listQuery).then(res => {
+          console.log(res)
+        })
       },
       handleFilter() {
         this.listQuery.page = 1

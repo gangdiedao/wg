@@ -8,7 +8,7 @@
           <!-- <el-button type="danger" size="mini">删除</el-button> -->
         </el-col>
         <el-col :span="12" style="text-align: right;">
-          <el-select v-model="listQuery.type" clearable size="mini" @change="getList(1)" placeholder="请选择">
+          <el-select v-model="listQuery.type" clearable size="mini" @change="getList(1)" placeholder="请选择类型">
             <el-option
               v-for="(value, name) in dictTypeList"
               :key="name"

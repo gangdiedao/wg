@@ -112,8 +112,8 @@
           width="100"
           :label="$t('organization.userModules.field.action')">
           <template slot-scope="scope">
-            <el-button @click="handleTransfer(scope.row)" type="text" size="small">{{ $t('actions.transfer') }}</el-button>
             <el-button @click="handleEdit(scope.row)" type="text" size="small">{{ $t('actions.edit') }}</el-button>
+            <el-button @click="handleTransfer(scope.row)" type="text" size="small">{{ $t('actions.transfer') }}</el-button>
           </template>
         </el-table-column>
       </el-table>

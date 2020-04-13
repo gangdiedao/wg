@@ -1,4 +1,4 @@
-import { login, logout, getInfo, update } from '@/api/user'
+import { login, logout, getInfo, update, getUserMenu } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -51,8 +51,13 @@ const actions = {
     })
   },
 
+  async getUserMenu() {
+    let res = await getUserMenu()
+    console.log(res)
+  },
+
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit, dispatch, state }) {
     return new Promise((resolve, reject) => {
       // const data = {
       //   roles: ['admin'],
@@ -66,6 +71,7 @@ const actions = {
       // commit('SET_AVATAR', avatar)
       // commit('SET_INTRODUCTION', introduction)
       // resolve(data)
+      dispatch('getUserMenu')
       getInfo(state.token).then(response => {
         const { data } = response
 
