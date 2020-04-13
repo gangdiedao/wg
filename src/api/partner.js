@@ -24,6 +24,14 @@ export function cityList(query) {
     params: query
   })
 }
+// 锁定,激活,删除
+export function isLockOrDelete(data) {
+  return request({
+    url: '/admin/factordata/company/batsave',
+    method: 'post',
+    data
+  })
+}
 // 上传
 export function upload(data) {
   return request({

@@ -13,8 +13,8 @@
       label-width="120px"
       @keyup.enter.native="dataFormSubmitHandle()"
     >
-      <el-form-item prop="shopspot" :label="$t('i18nView.information.shopspot')">
-        <el-select v-model="dataForm.foundation_shop_point_id" :placeholder="'请选择'+$t('i18nView.information.shopspot')" @change="shopSpotChange">
+      <el-form-item prop="foundation_shop_point_id" :label="$t('i18nView.information.shopspot')">
+        <el-select v-model="dataForm.foundation_shop_point_id" :placeholder="this.$t('i18nView.information.select')+$t('i18nView.information.shopspot')" @change="shopSpotChange">
           <el-option
             v-for="item in shopSpotListData"
             :key="item.id"
@@ -24,22 +24,22 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="this.$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="companyrate" :label="$t('i18nView.information.companyRoyalty')">
-        <el-input v-model="dataForm.companyrate" :placeholder="'请输入'+$t('i18nView.information.companyRoyalty')" type="number" />
+        <el-input v-model="dataForm.companyrate" :placeholder="this.$t('i18nView.information.input')+$t('i18nView.information.companyRoyalty')" type="number" />
       </el-form-item>
       <el-form-item prop="guiderate" :label="$t('i18nView.information.tourGuideRoyalty')">
-        <el-input v-model="dataForm.guiderate" :placeholder="'请输入'+$t('i18nView.information.tourGuideRoyalty')" type="number" />
+        <el-input v-model="dataForm.guiderate" :placeholder="this.$t('i18nView.information.input')+$t('i18nView.information.tourGuideRoyalty')" type="number" />
       </el-form-item>
       <el-form-item prop="leaderrate" :label="$t('i18nView.information.leaderRoyalty')">
-        <el-input v-model="dataForm.leaderrate" :placeholder="'请输入'+$t('i18nView.information.leaderRoyalty')" type="number" />
+        <el-input v-model="dataForm.leaderrate" :placeholder="this.$t('i18nView.information.input')+$t('i18nView.information.leaderRoyalty')" type="number" />
       </el-form-item>
       <el-form-item prop="companyrate2" :label="$t('i18nView.information.companySecondRoyalty')">
-        <el-input v-model="dataForm.companyrate2" :placeholder="'请输入'+$t('i18nView.information.companySecondRoyalty')" type="number" />
+        <el-input v-model="dataForm.companyrate2" :placeholder="this.$t('i18nView.information.input')+$t('i18nView.information.companySecondRoyalty')" type="number" />
       </el-form-item>
       <el-form-item prop="money_type" :label="$t('i18nView.information.calculationType')">
-        <el-select v-model="dataForm.money_type" :placeholder="'请选择'+$t('i18nView.information.calculationType')">
+        <el-select v-model="dataForm.money_type" :placeholder="this.$t('i18nView.information.select')+$t('i18nView.information.calculationType')">
           <el-option
             v-for="item in computedTypeList"
             :key="item.id"
@@ -49,7 +49,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="show_type" :label="$t('i18nView.information.showType')">
-        <el-select v-model="dataForm.show_type" :placeholder="'请选择'+$t('i18nView.information.showType')">
+        <el-select v-model="dataForm.show_type" :placeholder="this.$t('i18nView.information.select')+$t('i18nView.information.showType')">
           <el-option
             v-for="item in showTypeList"
             :key="item.id"
@@ -59,7 +59,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="type" :label="$t('i18nView.information.commissionType')">
-        <el-select v-model="dataForm.type" :placeholder="'请选择'+$t('i18nView.information.commissionType')">
+        <el-select v-model="dataForm.type" :placeholder="this.$t('i18nView.information.select')+$t('i18nView.information.commissionType')">
           <el-option
             v-for="item in commissionTypeList"
             :key="item.id"
@@ -112,7 +112,35 @@ export default {
         comptaxrate2: ''
       },
       returnTypeFlag: 0,
-      dataRule: {},
+      dataRule: {
+        foundation_shop_point_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.shopspot'), trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.name'), trigger: 'blur' }
+        ],
+        companyrate: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.companyRoyalty'), trigger: 'blur' }
+        ],
+        guiderate: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.tourGuideRoyalty'), trigger: 'blur' }
+        ],
+        leaderrate: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.leaderRoyalty'), trigger: 'blur' }
+        ],
+        companyrate2: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.companySecondRoyalty'), trigger: 'blur' }
+        ],
+        money_type: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.calculationType'), trigger: 'blur' }
+        ],
+        show_type: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.showType'), trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.commissionType'), trigger: 'blur' }
+        ]
+      },
       shopSpotListData: [],
       showTypeList: [],
       computedTypeList: [],

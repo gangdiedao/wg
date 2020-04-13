@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="'请选择'+$t('i18nView.information.shop')" @change="handleFilter">
+      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.shop')" @change="handleFilter">
         <el-option v-for="item in infoTypeList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-input v-model="listQuery.title" :placeholder="'请输入'+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
@@ -101,14 +101,14 @@
           <span class="link-type">{{ row.updated_user_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
+          <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
           </el-button>
-          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-                  {{ $t('i18nView.information.delete') }}
-                </el-button> -->
+          <el-button size="mini" type="text" @click="handleDelete(row)">
+            {{ $t('i18nView.information.delete') }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

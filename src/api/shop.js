@@ -16,14 +16,15 @@ export function companyList(query) {
     params: query
   })
 }
-// export function fetchArticle(id) {
-//   return request({
-//     url: '/vue-element-admin/article/detail',
-//     method: 'get',
-//     params: { id }
-//   })
-// }
-
+// 锁定,激活,删除
+export function isLockOrDelete(data) {
+  return request({
+    url: '/admin/factordata/shop/batsave',
+    method: 'post',
+    data
+  })
+}
+// 上传图片、文件
 export function upload(data) {
   return request({
     url: '/admin/system/file/upload',

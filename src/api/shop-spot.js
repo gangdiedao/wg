@@ -16,6 +16,14 @@ export function shopList(query) {
     params: query
   })
 }
+// 锁定,激活,删除
+export function isLockOrDelete(data) {
+  return request({
+    url: '/admin/factordata/shoppoint/batsave',
+    method: 'post',
+    data
+  })
+}
 // 新增
 export function create(data) {
   return request({

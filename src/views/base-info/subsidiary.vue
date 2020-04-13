@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="handleFilter">
+      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.infoType')" @change="handleFilter">
         <el-option v-for="item in infoTypeList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-input v-model="listQuery.title" :placeholder="'请输入'+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
@@ -106,7 +106,7 @@
           <span>{{ row.address }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" class-name="small-padding fixed-width" width="150px">
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center">
         <template slot-scope="{row}">
           <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}

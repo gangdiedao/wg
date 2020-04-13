@@ -14,19 +14,19 @@
       @keyup.enter.native="dataFormSubmitHandle()"
     >
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
-      <el-form-item prop="fullName" :label="$t('i18nView.information.fullName')">
-        <el-input v-model="dataForm.fullname" :placeholder="'请输入'+$t('i18nView.information.fullName')" />
+      <el-form-item prop="fullname" :label="$t('i18nView.information.fullName')">
+        <el-input v-model="dataForm.fullname" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.fullName')" />
       </el-form-item>
       <el-form-item prop="enname" :label="$t('i18nView.information.englishName')">
-        <el-input v-model="dataForm.enname" :placeholder="'请输入'+$t('i18nView.information.englishName')" />
+        <el-input v-model="dataForm.enname" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.englishName')" />
       </el-form-item>
       <el-form-item prop="namekey" :label="$t('i18nView.information.key')">
-        <el-input v-model="dataForm.namekey" :placeholder="'请输入'+$t('i18nView.information.key')" />
+        <el-input v-model="dataForm.namekey" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.key')" />
       </el-form-item>
-      <el-form-item prop="companyManager" :label="$t('i18nView.information.companyManager')">
-        <el-select v-model="dataForm.manager_user_id" :placeholder="'请选择'+$t('i18nView.information.companyManager')" @change="coChange">
+      <el-form-item prop="manager_user_id" :label="$t('i18nView.information.companyManager')">
+        <el-select v-model="dataForm.manager_user_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.companyManager')" @change="coChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -35,8 +35,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item prop="operationsManager" :label="$t('i18nView.information.operationsManager')">
-        <el-select v-model="dataForm.op_manager_user_id" :placeholder="'请选择'+$t('i18nView.information.operationsManager')" @change="opChange">
+      <el-form-item prop="op_manager_user_id" :label="$t('i18nView.information.operationsManager')">
+        <el-select v-model="dataForm.op_manager_user_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.operationsManager')" @change="opChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -46,25 +46,25 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="principal" :label="$t('i18nView.information.charger')">
-        <el-input v-model="dataForm.principal" :placeholder="'请输入'+$t('i18nView.information.charger')" />
+        <el-input v-model="dataForm.principal" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.charger')" />
       </el-form-item>
       <el-form-item prop="tel" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.tel" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+        <el-input v-model="dataForm.tel" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.telePhone')" />
       </el-form-item>
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
-        <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
+        <el-input v-model="dataForm.fax" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.fax')" />
       </el-form-item>
       <el-form-item prop="preffix" :label="$t('i18nView.information.groupNumberPrefix')">
-        <el-input v-model="dataForm.preffix" :placeholder="'请输入'+$t('i18nView.information.groupNumberPrefix')" />
+        <el-input v-model="dataForm.preffix" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.groupNumberPrefix')" />
       </el-form-item>
       <el-form-item prop="licenceno" :label="$t('i18nView.information.businessLicenseNo')">
-        <el-input v-model="dataForm.licenceno" :placeholder="'请输入'+$t('i18nView.information.businessLicenseNo')" />
+        <el-input v-model="dataForm.licenceno" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.businessLicenseNo')" />
       </el-form-item>
       <el-form-item prop="address" :label="$t('i18nView.information.companyAddress')">
-        <el-input v-model="dataForm.address" :placeholder="'请输入'+$t('i18nView.information.companyAddress')" />
+        <el-input v-model="dataForm.address" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.companyAddress')" />
       </el-form-item>
       <el-form-item prop="remark" :label="$t('i18nView.information.maskInfo')">
-        <el-input v-model="dataForm.remark" :placeholder="'请输入'+$t('i18nView.information.maskInfo')" type="textarea" />
+        <el-input v-model="dataForm.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.maskInfo')" type="textarea" />
       </el-form-item>
     </el-form>
     <template slot="footer">
@@ -107,7 +107,47 @@ export default {
         keyword: '',
         status: 1
       },
-      dataRule: {},
+      dataRule: {
+        name: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.name'), trigger: 'blur' }
+        ],
+        fullname: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.companyRoyalty'), trigger: 'blur' }
+        ],
+        enname: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.tourGuideRoyalty'), trigger: 'blur' }
+        ],
+        namekey: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.key'), trigger: 'blur' }
+        ],
+        manager_user_id: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.companyManager'), trigger: 'blur' }
+        ],
+        op_manager_user_id: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.operationsManager'), trigger: 'blur' }
+        ],
+        principal: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.charger'), trigger: 'blur' }
+        ],
+        tel: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.telePhone'), trigger: 'blur' }
+        ],
+        fax: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.fax'), trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.companyAddress'), trigger: 'blur' }
+        ],
+        licenceno: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.businessLicenseNo'), trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.maskInfo'), trigger: 'blur' }
+        ],
+        preffix: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.groupNumberPrefix'), trigger: 'blur' }
+        ]
+      },
       infoTypeList: []
     }
   },

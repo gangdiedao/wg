@@ -85,6 +85,8 @@ export default {
         lock: '锁定',
         unLock: '激活',
         tips: '提示',
+        select: '请选择',
+        input: '请输入',
         pleaseCheckTheData: '请先勾选数据',
         areYouSureDeleteThisData: '确定要删除该数据?'
       },
