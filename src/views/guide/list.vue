@@ -12,7 +12,7 @@
         {{ $t('guide.button.add') }}
       </el-button>
     </div>
-    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+    <el-tabs v-model="activeName" style="margin-top:15px;" @tab-click="getList" type="border-card">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
           <el-table
@@ -84,16 +84,8 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-row type="flex" class="row-bg" justify="space-between">
-      <el-col :span="12">
-        <el-button-group style="padding: 32px 16px; margin-top: 26px;">
-          <el-button type="success" @click="setStatusAll(1)">{{ $t('actions.open') }}</el-button>
-          <el-button @click="setStatusAll(1)"> {{ $t('actions.close') }}</el-button>
-        </el-button-group>
-      </el-col>
-      <el-col :span="12">
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-      </el-col>
+    <el-row type="flex" class="row-bg" justify="end">
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-row>
 
     <edit-guide :show.sync="showEditGuide" :item="guideItem" @success="getList"/>
@@ -116,7 +108,7 @@
       return {
         showEditGuide: false,
         tabMapOptions: [],
-        activeName: 'open',
+        activeName: '1',
         tableKey: 0,
         list: [],
         guideItem: '',
@@ -144,6 +136,7 @@
     watch: {
       activeName(val) {
         this.$router.push(`${this.$route.path}?tab=${val}`)
+        this.listQuery.status = val
       },
       lang() {
         this.setOptions()
@@ -153,6 +146,7 @@
       const tab = this.$route.query.tab
       if (tab) {
         this.activeName = tab
+        this.listQuery.status = tab
       }
       this.setOptions()
       this.getList()
@@ -167,6 +161,7 @@
       getList() {
         this.listLoading = true
         guideList(this.listQuery).then(res => {
+          this.total = res.data.count
           this.list = res.data.data
         }).finally(() => {
           this.listLoading = false

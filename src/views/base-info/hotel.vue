@@ -15,7 +15,7 @@
         {{ $t('i18nView.information.export') }}
       </el-button>
     </div>
-    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" tabPosition="top">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
           <el-table
