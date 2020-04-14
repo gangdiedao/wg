@@ -18,6 +18,12 @@ const router = {
       component: () => import('@/views/system/datadict'),
       name: 'datadict',
       meta: { title: 'datadict' }
+    },
+    {
+      path: 'lang',
+      component: () => import('@/views/system/lang'),
+      name: 'lang',
+      meta: { title: 'lang' }
     }
   ]
 }

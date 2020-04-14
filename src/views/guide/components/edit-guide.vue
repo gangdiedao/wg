@@ -1,52 +1,32 @@
 <template>
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="180px">
-      <el-form-item label="姓名" prop="name">
+      <el-form-item :label="$t('guide.field.name')" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item label="内部代号" prop="">
+      <el-form-item :label="$t('guide.field.insideId')" prop="">
         <el-input v-model="ruleForm.inner_code"></el-input>
       </el-form-item>
-      <el-form-item label="排团经理">
-        <el-select v-model="ruleForm.role" filterable style="width: 100%">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+      <el-form-item :label="$t('guide.field.id')" prop="">
+        <el-input v-model="ruleForm.code"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.arranger')" prop="op_user_id">
+        <el-select v-model="ruleForm.op_user_id" filterable style="width: 100%">
+          <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="编号" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item :label="$t('guide.field.idCard')" prop="passport_no">
+        <el-input v-model="ruleForm.passport_no"></el-input>
       </el-form-item>
-      <el-form-item label="护照号/身份证号" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="国籍">
-        <el-select v-model="ruleForm.role" style="width: 100%">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+      <el-form-item :label="$t('guide.field.nationality')">
+        <el-select v-model="ruleForm.nationality_id" clearable style="width: 100%">
+          <el-option v-for="item in nationalityList" :key="item.id" :label="item.value" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="导游证号" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item :label="$t('guide.field.guideId')" prop="">
+        <el-input v-model="ruleForm.guide_card_no"></el-input>
       </el-form-item>
-      <el-form-item label="导游证照" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="联系号码" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="微信号" prop="">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" prop="">
-        <el-select v-model="ruleForm.role" style="width: 100%">
-          <el-option label="男" value="shanghai"></el-option>
-          <el-option label="女" value="beijing"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="护照" prop="">
+      <el-form-item :label="$t('guide.field.guideImage')"  prop="">
         <el-upload
           class="upload-demo"
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -56,28 +36,59 @@
           <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
         </el-upload>
       </el-form-item>
-      <el-form-item label="出生日期" prop="">
-        <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+      <el-form-item :label="$t('guide.field.phone')" prop="phone">
+        <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item label="等级" prop="">
-        <el-select v-model="ruleForm.role" style="width: 100%">
-          <el-option label="男" value="shanghai"></el-option>
-          <el-option label="女" value="beijing"></el-option>
+      <el-form-item :label="$t('guide.field.wechat')" prop="">
+        <el-input v-model="ruleForm.wechat"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.email')" prop="">
+        <el-input v-model="ruleForm.email"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.sex')" prop="">
+        <el-select v-model="ruleForm.gender" style="width: 100%">
+          <el-option label="男" :value="1"></el-option>
+          <el-option label="女" :value="2"></el-option>
+          <el-option label="其他" :value="3"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="出团状态" prop="">
-        <el-select v-model="ruleForm.role" style="width: 100%">
-          <el-option label="男" value="shanghai"></el-option>
-          <el-option label="女" value="beijing"></el-option>
+      <el-form-item :label="$t('guide.field.passportImage')" prop="">
+        <el-upload
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-change="handleChange"
+          :file-list="fileList">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+        </el-upload>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.birthday')" prop="">
+        <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.level')" prop="">
+        <el-select v-model="ruleForm.level" style="width: 100%">
+          <el-option label="特优" :value="1"></el-option>
+          <el-option label="优秀" :value="2"></el-option>
+          <el-option label="中等" :value="3"></el-option>
+          <el-option label="一般" :value="4"></el-option>
+          <el-option label="差" :value="5"></el-option>
+          <el-option label="实习" :value="6"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="不良记录">
+      <el-form-item :label="$t('guide.field.workStatus')" prop="">
+        <el-select v-model="ruleForm.assign_status" style="width: 100%">
+          <el-option label="正常出团" :value="1"></el-option>
+          <el-option label="请假" :value="2"></el-option>
+          <el-option label="离职" :value="3"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.badRecord')">
+        <el-input type="textarea" v-model="ruleForm.bad_notes"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('guide.field.remark')">
         <el-input type="textarea" v-model="ruleForm.remark"></el-input>
       </el-form-item>
-      <el-form-item label="备注">
-        <el-input type="textarea" v-model="ruleForm.remark"></el-input>
-      </el-form-item>
-      <el-form-item label="历史押金" prop="">
+      <!-- <el-form-item label="历史押金" prop="">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
       <el-form-item label="新押金" prop="">
@@ -85,7 +96,7 @@
       </el-form-item>
       <el-form-item label="总押金" prop="">
         <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false">
@@ -99,6 +110,9 @@
 </template>
 
 <script>
+import { getOtherDictList } from '@/api/system'
+import { getUserList } from '@/api/organization'
+import { addGuide, editGuide } from '@/api/guide'
 export default {
   props: {
     show: {
@@ -115,7 +129,47 @@ export default {
     },
     show(bool) {
       this.dialogFormVisible = bool
+      if (bool) {
+        if (this.item) {
+          Object.assign(this.ruleForm, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.ruleForm = {
+            id: undefined,
+            name: '',
+            inner_code: '',
+            op_user_id: '',
+            op_organization_id: '',
+            op_user_name: '',
+            code: '',
+            passport_no: '',
+            nationality_id: '',
+            nationality_name: '',
+            guide_card_no: '',
+            guide_card_img: '',
+            phone: '',
+            email: '',
+            wechat: '',
+            gender: [],
+            birthday: '',
+            status: 1,
+            login_password: '',
+            level: '',
+            assign_status: '',
+            bad_notes: '',
+            bookremark: '',
+            remark: '',
+            filesArr: [],
+            imagesArr: [],
+            passport_copy_imagesArr: []
+          }
+          this.dialogStatus = 'create'
+        }
+      }
     }
+  },
+  created() {
+    this.init()
   },
   data() {
     return {
@@ -155,28 +209,61 @@ export default {
         imagesArr: [],
         passport_copy_imagesArr: []
       },
+      nationalityList: [],
+      userList: [],
       rules: {
         name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' }
+          { required: true, message: 'required', trigger: 'blur' }
         ],
-        email: [
-          { type: 'email', message: '请选正确的emial', trigger: 'blur' }
+        passport_no: [
+          { required: true, message: 'required', trigger: 'blur' }
+        ],
+        op_user_id: [
+          { required: true, message: 'required', trigger: 'blur' }
         ],
         phone: [
-          { type: 'number', message: '请填写正确的手机号', trigger: 'blur' }
+          { required: true, message: 'required', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    init() {
+      this.getNationality()
+      this.getUserList()
+    },
+    getNationality() {
+      getOtherDictList({type: 'nationality'}).then(res => {
+        this.nationalityList = res.data
+      })
+    },
+    getUserList() {
+      getUserList({page: 1, limit: 1000}).then(res => {
+        this.userList = res.data.data
+      })
+    },
     handleChange() {
 
     },
     createData() {
-
+      addGuide(this.ruleForm).then(() => {
+        this.$message({
+          message: 'success',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.dialogFormVisible = false
+      })
     },
     updateData() {
-
+      editGuide(this.ruleForm).then(() => {
+        this.$message({
+          message: 'success',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.dialogFormVisible = false
+      })
     }
   }
 }

@@ -158,6 +158,7 @@ export default {
       this.visible = true
       this.companyListData() // 操作经理，公司经理数据
       this.$nextTick(() => {
+        this.$refs.dataForm.resetFields()
         // 编辑
         if (item) {
           this.dataForm = item

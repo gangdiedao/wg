@@ -14,7 +14,7 @@
       @keyup.enter.native="dataFormSubmitHandle()"
     >
       <el-form-item prop="info_type_id" :label="$t('i18nView.information.infoType')">
-        <el-select v-model="dataForm.info_type_id" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="typeChange">
+        <el-select v-model="dataForm.info_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.infoType')" @change="typeChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -24,7 +24,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
         <el-image
@@ -48,7 +48,7 @@
         </el-upload>
         <el-button type="text" size="small" style="display:inline-block" @click="deleteIcon">删除</el-button>
       </el-form-item>
-      <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
+      <el-form-item prop="imagesArr" :label="$t('i18nView.information.pic')">
         <el-upload
           class="upload-demo"
           action="string"
@@ -67,21 +67,21 @@
         </el-dialog>
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
+        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.url')" />
       </el-form-item>
       <el-form-item prop="intro" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.intro" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+        <el-input v-model="dataForm.intro" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
       </el-form-item>
       <el-form-item prop="contact" :label="$t('i18nView.information.contacts')">
-        <el-input v-model="dataForm.contact" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
+        <el-input v-model="dataForm.contact" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.contacts')" />
       </el-form-item>
       <el-form-item prop="telphone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telphone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+        <el-input v-model="dataForm.telphone" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.telePhone')" />
       </el-form-item>
       <el-form-item prop="email" :label="$t('i18nView.information.email')">
-        <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
+        <el-input v-model="dataForm.email" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.email')" />
       </el-form-item>
-      <el-form-item prop="files" :label="$t('i18nView.information.files')">
+      <el-form-item prop="filesArr" :label="$t('i18nView.information.files')">
         <el-upload
           class="upload-demo"
           action="string"
@@ -126,7 +126,38 @@ export default {
         email: '',
         logo: ''
       },
-      dataRule: {},
+      dataRule: {
+        info_type_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.infoType'), trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.name'), trigger: 'blur' }
+        ],
+        logo: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.icon'), trigger: 'blur' }
+        ],
+        imagesArr: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.pic'), trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.url'), trigger: 'blur' }
+        ],
+        intro: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.introduce'), trigger: 'blur' }
+        ],
+        contact: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.contacts'), trigger: 'blur' }
+        ],
+        telphone: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.telePhone'), trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.email'), trigger: 'blur' }
+        ],
+        filesArr: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.files'), trigger: 'blur' }
+        ]
+      },
       infoTypeList: [],
       dialogImageUrl: ''
     }
@@ -139,6 +170,7 @@ export default {
     init(item) {
       this.visible = true
       this.$nextTick(() => {
+        this.$refs.dataForm.resetFields()
         if (item) {
           this.dataForm = item
         } else {

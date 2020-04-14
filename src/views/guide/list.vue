@@ -25,6 +25,7 @@
             highlight-current-row
             :summary-method="getSummaries"
             show-summary
+            @selection-change="handleSelectionChange"
             style="width: 100%;"
           >
             <el-table-column
@@ -32,125 +33,50 @@
               align="center"
               width="55"
             />
-            <el-table-column :label="$t('guide.field.name')" width="150px" align="center">
-              <template slot-scope="{row}">
+            <el-table-column :label="$t('guide.field.name')" fixed prop="name" width="150px" align="center">
+              <!-- <template slot-scope="{row}">
                 <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+              </template> -->
+            </el-table-column>
+            <el-table-column :label="$t('guide.field.id')" prop="code" align="center" width="80"></el-table-column>
+            <el-table-column :label="$t('guide.field.insideId')" prop="inner_code" width="110px"></el-table-column>
+            <el-table-column :label="$t('guide.field.arranger')" prop="op_user_name" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.idCard')" prop="passport_no" width="180px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.nationality')" prop="nationality_name" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.guideId')" prop="guide_card_no" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.phone')" prop="phone" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.email')" prop="email" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.wechat')" prop="wechat" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.sex')" prop="gender" width="110px" align="center">
+              <template slot-scope="scope">
+                <span>{{ {1: '男', 2: '女', 3: '其他'}[scope.row.gender]}}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('guide.field.id')" prop="id" align="center" width="80">
-              <template slot-scope="{row}">
-                <span>{{ row.id }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.insideId')" width="110px">
-              <template slot-scope="{row}">
-                <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.arranger')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.idCard')" width="180px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.nationality')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.guideId')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.phone')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.wechat')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.sex')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.birthday')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.level')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.workStatus')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.guideImage')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.badRecord')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.passportImage')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.remark')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.historicalDeposit')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.deposit')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.totalDeposit')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('guide.field.log')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column :label="$t('guide.field.birthday')" prop="birthday" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.level')" prop="level" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.workStatus')" prop="assign_status" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.guideImage')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.badRecord')" prop="bad_notes" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.passportImage')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.remark')" prop="remark" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.historicalDeposit')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.deposit')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.totalDeposit')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.log')" prop="inner_code" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('guide.field.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
-              <template slot-scope="{row,$index}">
+              <template slot-scope="{row}">
                 <el-button type="primary" size="mini" @click="handleUpdate(row)">
                   {{ $t('actions.edit') }}
                 </el-button>
-                <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
+                <el-button v-if="row.status!='1'" size="mini" type="success" @click="setStatus(row, 1)">
                   {{ $t('actions.open') }}
                 </el-button>
-                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
+                <el-button v-if="row.status!='2'" size="mini" @click="setStatus(row, 2)">
                   {{ $t('actions.close') }}
                 </el-button>
-                <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+                <!-- <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
                   {{ $t('actions.delete') }}
-                </el-button>
+                </el-button> -->
               </template>
             </el-table-column>
           </el-table>
@@ -161,8 +87,8 @@
     <el-row type="flex" class="row-bg" justify="space-between">
       <el-col :span="12">
         <el-button-group style="padding: 32px 16px; margin-top: 26px;">
-          <el-button type="success">{{ $t('actions.open') }}</el-button>
-          <el-button> {{ $t('actions.close') }}</el-button>
+          <el-button type="success" @click="setStatusAll(1)">{{ $t('actions.open') }}</el-button>
+          <el-button @click="setStatusAll(1)"> {{ $t('actions.close') }}</el-button>
         </el-button-group>
       </el-col>
       <el-col :span="12">
@@ -170,7 +96,7 @@
       </el-col>
     </el-row>
 
-    <edit-guide :show.sync="showEditGuide" @success="getList"/>
+    <edit-guide :show.sync="showEditGuide" :item="guideItem" @success="getList"/>
   </div>
 </template>
 
@@ -179,7 +105,7 @@
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import EditGuide from './components/edit-guide'
   import mixin from './mixin'
-  import { guideList } from '@/api/guide'
+  import { guideList, setGuideStatus } from '@/api/guide'
 
   export default {
     mixins: [mixin],
@@ -192,7 +118,9 @@
         tabMapOptions: [],
         activeName: 'open',
         tableKey: 0,
-        list: null,
+        list: [],
+        guideItem: '',
+        multipleSelection: [],
         total: 0,
         listLoading: false,
         listQuery: {
@@ -230,13 +158,18 @@
       this.getList()
     },
     methods: {
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
       setOptions() {
         this.tabMapOptions = this.setTabOptions()
       },
       getList() {
         this.listLoading = true
         guideList(this.listQuery).then(res => {
-          console.log(res)
+          this.list = res.data.data
+        }).finally(() => {
+          this.listLoading = false
         })
       },
       handleFilter() {
@@ -251,22 +184,40 @@
         row.status = status
       },
       handleCreate() {
+        this.guideItem = ''
         this.showEditGuide = true
         // this.$nextTick(() => {
         //   this.$refs['dataForm'].clearValidate()
         // })
       },
       handleUpdate(row) {
+        this.guideItem = row
         this.showEditGuide = true
       },
-      handleDelete(row, index) {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      setStatusAll(status) {
+        let data = this.multipleSelection.map(item => {
+          return {
+            id: item.id,
+            status: status
+          }
         })
-        this.list.splice(index, 1)
+        setGuideStatus({listData: data}).then(() => {
+          this.$message({
+            type: 'success',
+            message: 'success!'
+          })
+          this.getList()
+        }).catch(() => {})
+      },
+      setStatus(row, status) {
+        let listData = {listData: [{id: row.id, status: status}]}
+        setGuideStatus(listData).then(() => {
+          this.$message({
+            type: 'success',
+            message: 'success!'
+          })
+          this.getList()
+        }).catch(() => {})
       },
       getSummaries(param) {
         const { columns, data } = param
