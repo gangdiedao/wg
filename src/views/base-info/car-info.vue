@@ -14,6 +14,15 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         {{ $t('i18nView.information.export') }}
       </el-button>
+      <el-button class="filter-item" type="danger" icon="el-icon-lock" @click="handleLock">
+        {{ $t('i18nView.information.lock') }}
+      </el-button>
+      <el-button class="filter-item" type="success" icon="el-icon-unlock" @click="handleUnLock">
+        {{ $t('i18nView.information.unLock') }}
+      </el-button>
+      <el-button class="filter-item" type="danger" icon="el-icon-circle-close" @click="handleDelete()">
+        {{ $t('i18nView.information.delete') }}
+      </el-button>
     </div>
     <el-table
       :key="tableKey"
@@ -25,6 +34,7 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
         type="selection"
@@ -116,9 +126,9 @@
           <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
           </el-button>
-          <!-- <el-button v-if="row.status!='deleted'" size="mini" type="text" @click="handleDelete(row,$index)">
+          <el-button size="mini" type="text" @click="handleDelete(row)">
             {{ $t('i18nView.information.delete') }}
-          </el-button> -->
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -128,7 +138,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/car-info'
+import { fetchList, isLockOrDelete } from '@/api/car-info'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -200,7 +210,8 @@ export default {
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      listData: []
     }
   },
   computed: {},
@@ -227,6 +238,72 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
+      })
+    },
+    // 勾选
+    handleSelectionChange(e) {
+      e.map(item => {
+        this.listData.push({
+          id: item.id,
+          status: item.status,
+          is_delete: item.is_delete
+        })
+      })
+    },
+    // 锁定
+    handleLock() {
+      if (this.listData.length === 0) {
+        this.$message({
+          type: 'warning',
+          duration: 1000,
+          message: this.$t('i18nView.information.pleaseCheckTheData')
+        })
+        return
+      }
+      this.listData.map(item => {
+        item.status = 2
+      })
+      isLockOrDelete({ listData: this.listData }).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.lock') + this.$t('i18nView.information.success'),
+            onClose: () => {
+              this.getList()
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
+    // 激活
+    handleUnLock() {
+      if (this.listData.length === 0) {
+        this.$message({
+          type: 'warning',
+          duration: 1000,
+          message: this.$t('i18nView.information.pleaseCheckTheData')
+        })
+        return
+      }
+      this.listData.map(item => {
+        item.status = 1
+      })
+      isLockOrDelete({ listData: this.listData }).then(response => {
+        if (response.code === 2000) {
+          this.$message({
+            type: 'success',
+            duration: 1000,
+            message: this.$t('i18nView.information.unLock') + this.$t('i18nView.information.success'),
+            onClose: () => {
+              this.getList()
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
       })
     },
     handleFilter() {
@@ -259,18 +336,51 @@ export default {
       this.$refs.carInfoAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
     },
     // 删除
-    handleDelete(row, index) {
-      this.$confirm('确定要删除该数据?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+    handleDelete(row) {
+      if (row) {
+        // 单删
+        this.listData = []
+        this.listData.push({
+          id: row.id,
+          status: row.status,
+          is_delete: row.is_delete
+        })
+      } else {
+        // 多删
+        if (this.listData.length === 0) {
+          this.$message({
+            type: 'warning',
+            duration: 1000,
+            message: this.$t('i18nView.information.pleaseCheckTheData')
+          })
+          return
+        }
+      }
+      this.$confirm(this.$t('i18nView.information.areYouSureDeleteThisData'), this.$t('i18nView.information.tips'), {
+        confirmButtonText: this.$t('i18nView.information.confirm'),
+        cancelButtonText: this.$t('i18nView.information.cancel'),
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        this.listData.map(item => {
+          item.is_delete = 2
         })
-        this.list.splice(index, 1)
-      }).catch(() => {})
+        isLockOrDelete({ listData: this.listData }).then(response => {
+          if (response.code === 2000) {
+            this.$message({
+              type: 'success',
+              duration: 1000,
+              message: this.$t('i18nView.information.delete') + this.$t('i18nView.information.success'),
+              onClose: () => {
+                this.getList()
+              }
+            })
+          } else {
+            this.$message.error(response.msg)
+          }
+        })
+      }).catch((e) => {
+        this.$message.error(e.msg)
+      })
     },
     // 导出
     handleDownload() {

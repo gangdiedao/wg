@@ -87,6 +87,10 @@ export default {
         tips: '提示',
         select: '请选择',
         input: '请输入',
+        calculationDays: '天数计算',
+        systemSetup: '系统设置',
+        countingDays: '算天数',
+        countingNights: '算晚数',
         pleaseCheckTheData: '请先勾选数据',
         areYouSureDeleteThisData: '确定要删除该数据?'
       },

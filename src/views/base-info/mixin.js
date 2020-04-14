@@ -181,6 +181,23 @@ export default {
           name: this.$t('i18nView.commissionType.leader')
         }
       ]
+    },
+    // 天数计算
+    prorateTypeListData() {
+      return [
+        {
+          id: 0,
+          name: this.$t('i18nView.information.systemSetup')
+        },
+        {
+          id: 1,
+          name: this.$t('i18nView.information.countingDays')
+        },
+        {
+          id: 2,
+          name: this.$t('i18nView.information.countingNights')
+        }
+      ]
     }
   }
 }
