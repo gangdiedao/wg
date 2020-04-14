@@ -8,10 +8,14 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('guide.button.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        {{ $t('guide.button.add') }}
-      </el-button>
     </div>
+    <el-row type="flex" class="row-bg" justify="start">
+      <el-col :span="12">
+        <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
+        <el-button type="success" @click="setStatusAll(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
+        <el-button size="mini" @click="setStatusAll(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
+      </el-col>
+    </el-row>
     <el-tabs v-model="activeName" style="margin-top:15px;" @tab-click="getList" type="border-card">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
@@ -59,10 +63,10 @@
             <el-table-column :label="$t('guide.field.badRecord')" prop="bad_notes" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('guide.field.passportImage')" prop="inner_code" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('guide.field.remark')" prop="remark" width="110px" align="center"></el-table-column>
-            <el-table-column :label="$t('guide.field.historicalDeposit')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <!-- <el-table-column :label="$t('guide.field.historicalDeposit')" prop="inner_code" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('guide.field.deposit')" prop="inner_code" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('guide.field.totalDeposit')" prop="inner_code" width="110px" align="center"></el-table-column>
-            <el-table-column :label="$t('guide.field.log')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.log')" prop="inner_code" width="110px" align="center"></el-table-column> -->
             <el-table-column :label="$t('guide.field.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
               <template slot-scope="{row}">
                 <el-button type="primary" size="mini" @click="handleUpdate(row)">
