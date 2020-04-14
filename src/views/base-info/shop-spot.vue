@@ -71,7 +71,7 @@
           <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="text" @click="handleDelete(row)">
+          <el-button size="mini" type="text" @click="handleDelete(row)">
             {{ $t('i18nView.information.delete') }}
           </el-button>
         </template>

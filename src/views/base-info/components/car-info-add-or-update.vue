@@ -14,7 +14,7 @@
       @keyup.enter.native="dataFormSubmitHandle()"
     >
       <el-form-item prop="info_type_id" :label="$t('i18nView.information.infoType')">
-        <el-select v-model="dataForm.info_type_id" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="typeChange">
+        <el-select v-model="dataForm.info_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.infoType')" @change="typeChange">
           <el-option
             v-for="item in infoTypeList"
             :key="item.id"
@@ -24,7 +24,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
-        <el-input v-model="dataForm.name" :placeholder="'请输入'+$t('i18nView.information.name')" />
+        <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
         <el-image
@@ -67,25 +67,25 @@
         </el-dialog>
       </el-form-item>
       <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.url" :placeholder="'请输入'+$t('i18nView.information.url')" />
+        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.url')" />
       </el-form-item>
       <el-form-item prop="intro" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.intro" :placeholder="'请输入'+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
+        <el-input v-model="dataForm.intro" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
       </el-form-item>
       <el-form-item prop="address" :label="$t('i18nView.information.address')">
-        <el-input v-model="dataForm.address" :placeholder="'请输入'+$t('i18nView.information.address')" />
+        <el-input v-model="dataForm.address" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.address')" />
       </el-form-item>
       <el-form-item prop="contact" :label="$t('i18nView.information.contacts')">
-        <el-input v-model="dataForm.contact" :placeholder="'请输入'+$t('i18nView.information.contacts')" />
+        <el-input v-model="dataForm.contact" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.contacts')" />
       </el-form-item>
       <el-form-item prop="telphone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telphone" :placeholder="'请输入'+$t('i18nView.information.telePhone')" />
+        <el-input v-model="dataForm.telphone" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.telePhone')" />
       </el-form-item>
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
-        <el-input v-model="dataForm.fax" :placeholder="'请输入'+$t('i18nView.information.fax')" />
+        <el-input v-model="dataForm.fax" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.fax')" />
       </el-form-item>
-      <el-form-item prop="source" :label="$t('i18nView.information.touristDestination')">
-        <el-select v-model="dataForm.source" :placeholder="'请选择'+$t('i18nView.information.touristDestination')">
+      <el-form-item prop="source" :label="$t('i18nView.information.city')">
+        <el-select v-model="dataForm.source" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.city')">
           <el-option
             v-for="item in cityListData"
             :key="item.id"
@@ -95,7 +95,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="input_user_id" :label="$t('i18nView.information.creator')">
-        <el-select v-model="dataForm.input_user_id" :placeholder="'请选择'+$t('i18nView.information.creator')" @change="userChange">
+        <el-select v-model="dataForm.input_user_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.creator')">
           <el-option
             v-for="item in userListData"
             :key="item.id"
@@ -104,8 +104,18 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item prop="pay_type_id" :label="$t('i18nView.information.payType')">
+        <el-select v-model="dataForm.pay_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.payType')">
+          <el-option
+            v-for="item in payTypeListDatas"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item prop="email" :label="$t('i18nView.information.email')">
-        <el-input v-model="dataForm.email" :placeholder="'请输入'+$t('i18nView.information.email')" />
+        <el-input v-model="dataForm.email" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.email')" />
       </el-form-item>
       <el-form-item prop="files" :label="$t('i18nView.information.files')">
         <el-upload
@@ -120,13 +130,66 @@
           <el-button type="primary" size="small">添加文件</el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item prop="remark" :label="$t('i18nView.information.remarks')">
-        <el-input v-model="dataForm.remark" :placeholder="'请输入'+$t('i18nView.information.remarks')" type="textarea" :rows="2" />
+      <el-form-item prop="prorate_type" :label="$t('i18nView.information.calculationDays')">
+        <el-select v-model="dataForm.prorate_type" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.calculationDays')">
+          <el-option
+            v-for="item in prorateTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item prop="bookremark" :label="$t('i18nView.information.AccountBookRemark')">
-        <el-input v-model="dataForm.bookremark" :placeholder="'请输入'+$t('i18nView.information.AccountBookRemark')" type="textarea" :rows="2" />
+      <el-form-item prop="remark" :label="$t('i18nView.information.remarks')">
+        <el-input v-model="dataForm.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.remarks')" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item prop="ukey" :label="$t('i18nView.information.UKey')">
+        <el-input v-model="dataForm.ukey" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.UKey')" />
       </el-form-item>
     </el-form>
+    <el-divider content-position="left">价格信息</el-divider>
+    <carInfoPriceInfo ref="carInfoPriceInfo" />
+    <el-divider content-position="left">车辆信息</el-divider>
+    <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreateUpdate()">
+      {{ $t('i18nView.information.add') }}
+    </el-button>
+    <el-table :data="tableData" border style="width: 100%">
+      <el-table-column prop="date" label="车编号" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.date" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" label="车牌号" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.name" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="司机" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.name" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="电话" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.name" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="类型" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.name" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="状态" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.name" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="备注" align="center">
+        <template slot-scope="{row}">
+          <el-input v-model="row.name" />
+        </template>
+      </el-table-column>
+    </el-table>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
@@ -136,9 +199,11 @@
 
 <script>
 import { create, update, upload, userList, cityList } from '@/api/car-info'
+import carInfoPriceInfo from './car-info-price-info'
 import mixin from '../mixin'
 
 export default {
+  components: { carInfoPriceInfo },
   mixins: [mixin],
   data() {
     return {
@@ -157,6 +222,7 @@ export default {
         input_user_id: '',
         input_organization_id: '',
         input_user_name: '',
+        pay_type_id: '',
         logo: '',
         source: '',
         email: '',
@@ -168,6 +234,7 @@ export default {
         intro: '',
         remark: '',
         bookremark: '',
+        ukey: '',
         filesArr: [],
         imagesArr: []
       },
@@ -176,18 +243,50 @@ export default {
       infoTypeList: [],
       userListData: [],
       dialogImageUrl: '',
-      cityListData: []
+      cityListData: [],
+      payTypeListDatas: [],
+      prorateTypeList: [],
+      priceTableData: [
+        {
+          id: 1,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        },
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        },
+        {
+          date: '',
+          name: '',
+          address: '',
+          flag: 0
+        }
+      ],
+      tableData: []
     }
   },
   computed: {},
   created() {
     this.infoTypeList = this.infoTypeListData()
+    this.prorateTypeList = this.prorateTypeListData()
   },
   methods: {
     init(item) {
       this.visible = true
       this.getUserList()
       this.getCityList()
+      this.getPayTypeList()
       this.$nextTick(() => {
         if (item) {
           this.dataForm = item
@@ -225,10 +324,16 @@ export default {
         this.userListData = response.data.data
       })
     },
-    // 客源地列表
+    // 城市列表
     getCityList() {
-      cityList({ type: 'customersource' }).then(response => {
+      cityList({ type: 'city' }).then(response => {
         this.cityListData = response.data
+      })
+    },
+    // 支付类型列表
+    getPayTypeList() {
+      cityList({ type: 'paymenttype' }).then(response => {
+        this.payTypeListDatas = response.data
       })
     },
     // 信息类型改变

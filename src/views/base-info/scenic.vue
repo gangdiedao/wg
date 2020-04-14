@@ -35,10 +35,10 @@
               align="center"
               width="55"
             />
-            <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-              <template slot-scope="{row}">
+            <el-table-column :label="$t('i18nView.information.id')" type="index" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+              <!-- <template slot-scope="{row}">
                 <span>{{ row.id }}</span>
-              </template>
+              </template> -->
             </el-table-column>
             <el-table-column :label="$t('i18nView.information.name')" width="150px" align="center">
               <template slot-scope="{row}">
