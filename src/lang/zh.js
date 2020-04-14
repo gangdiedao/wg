@@ -84,8 +84,8 @@ export default {
     edit: '编辑',
     update: '修改',
     delete: '删除',
-    open: '开启',
-    close: '关闭',
+    open: '激活',
+    close: '锁定',
     search: '搜索',
     transfer: '转移'
   },

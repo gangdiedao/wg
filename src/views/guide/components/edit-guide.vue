@@ -11,7 +11,7 @@
         <el-input v-model="ruleForm.code"></el-input>
       </el-form-item>
       <el-form-item :label="$t('guide.field.arranger')" prop="op_user_id">
-        <el-select v-model="ruleForm.op_user_id" filterable style="width: 100%">
+        <el-select v-model="ruleForm.op_user_id" filterable @change="handleChangeUser" style="width: 100%">
           <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -19,7 +19,7 @@
         <el-input v-model="ruleForm.passport_no"></el-input>
       </el-form-item>
       <el-form-item :label="$t('guide.field.nationality')">
-        <el-select v-model="ruleForm.nationality_id" clearable style="width: 100%">
+        <el-select v-model="ruleForm.nationality_id" @change="handleChangeNationality" clearable style="width: 100%">
           <el-option v-for="item in nationalityList" :key="item.id" :label="item.value" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -27,14 +27,7 @@
         <el-input v-model="ruleForm.guide_card_no"></el-input>
       </el-form-item>
       <el-form-item :label="$t('guide.field.guideImage')"  prop="">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-change="handleChange"
-          :file-list="fileList">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
+        <uploadImage />
       </el-form-item>
       <el-form-item :label="$t('guide.field.phone')" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
@@ -113,7 +106,11 @@
 import { getOtherDictList } from '@/api/system'
 import { getUserList } from '@/api/organization'
 import { addGuide, editGuide } from '@/api/guide'
+import uploadImage from '@/components/Upload/image'
 export default {
+  components: {
+    uploadImage
+  },
   props: {
     show: {
       type: Boolean,
@@ -154,8 +151,8 @@ export default {
             birthday: '',
             status: 1,
             login_password: '',
-            level: '',
-            assign_status: '',
+            level: 3,
+            assign_status: 1,
             bad_notes: '',
             bookremark: '',
             remark: '',
@@ -200,8 +197,8 @@ export default {
         birthday: '',
         status: 1,
         login_password: '',
-        level: '',
-        assign_status: '',
+        level: 3,
+        assign_status: 1,
         bad_notes: '',
         bookremark: '',
         remark: '',
@@ -241,6 +238,20 @@ export default {
       getUserList({page: 1, limit: 1000}).then(res => {
         this.userList = res.data.data
       })
+    },
+    // 选择排团经理
+    handleChangeUser(id) {
+      let res = this.userList.filter(item => item.id === id)
+      if (res.length > 0) {
+        this.ruleForm.op_organization_id = res[0]['department_id']
+        this.ruleForm.op_user_name = res[0]['name']
+      }
+    },
+    handleChangeNationality(id) {
+      let res = this.nationalityList.filter(item => item.id === id)
+      if (res.length > 0) {
+        this.ruleForm.nationality_name = res[0]['value']
+      }
     },
     handleChange() {
 
