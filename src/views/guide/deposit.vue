@@ -1,17 +1,30 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('guide.field.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
+    <el-row type="flex" class="filter-container">
+      <el-select v-model="listQuery.date_type" style="width: 140px" class="filter-item">
+        <el-option v-for="item in [{id: 1, label: '支票日期'}, {id: 2, label: '支付日期'}, {id: 3, label: '创建日期'}]" :key="item.id" :label="item.label" :value="item.id" />
       </el-select>
+      <el-date-picker
+        v-model="listQuery.date"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions">
+      </el-date-picker>
+      <el-input v-model="listQuery.keyword" :placeholder="$t('guide.field.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('guide.button.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        {{ $t('guide.button.add') }}
-      </el-button>
-    </div>
+    </el-row>
+    <el-row type="flex" class="row-bg" justify="start">
+      <el-col :span="12">
+        <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
+        <el-button type="danger" size="mini" :disabled="!multipleSelection.length">{{ $t('actions.delete') }}</el-button>
+      </el-col>
+    </el-row>
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -22,7 +35,7 @@
       highlight-current-row
       :summary-method="getSummaries"
       show-summary
-      style="width: 100%;"
+      style="margin-top:15px;"
     >
       <el-table-column
         type="selection"
@@ -95,7 +108,7 @@
           <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
             {{ $t('actions.close') }}
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
             {{ $t('actions.delete') }}
           </el-button>
         </template>
@@ -109,25 +122,26 @@
       </el-col>
     </el-row>
 
-    <edit-guide :show.sync="showEditGuide"/>
+    <!-- <edit-guide :show.sync="showEditGuide"/> -->
   </div>
 </template>
 
 <script>
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-  import EditGuide from './components/edit-guide'
+  // import EditGuide from './components/edit-guide'
   import mixin from './mixin'
+  import { depositList, setDepositStatus } from '@/api/guide'
 
   export default {
     mixins: [mixin],
     name: 'settlement',
-    components: { Pagination, EditGuide },
+    components: { Pagination },
     directives: { waves },
     data() {
       return {
         showEditGuide: false,
-        tabMapOptions: [],
+        multipleSelection: [],
         activeName: 'open',
         tableKey: 0,
         list: null,
@@ -136,12 +150,8 @@
         listQuery: {
           page: 1,
           limit: 10,
-          status: ''
-        },
-        statusOptions: [{
-          key: 'china',
-          label: '中国'
-        }]
+          date_type: 3,
+        }
       }
     },
     computed: {
@@ -156,7 +166,7 @@
         this.$router.push(`${this.$route.path}?tab=${val}`)
       },
       lang() {
-        this.setOptions()
+        // this.setOptions()
       }
     },
     created() {
@@ -164,44 +174,41 @@
       if (tab) {
         this.activeName = tab
       }
-      this.setOptions()
-      // this.getList()
+      this.getList()
     },
     methods: {
-      setOptions() {
-        this.tabMapOptions = this.setTabOptions()
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
       },
       getList() {
         this.listLoading = true
+        depositList(this.listQuery).then(res => {
+          this.total = res.data.count
+          this.list = res.data.data
+        }).finally(() => {
+          this.listLoading = false
+        })
       },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
       },
-      handleModifyStatus(row, status) {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-        row.status = status
-      },
       handleCreate() {
         this.showEditGuide = true
-        // this.$nextTick(() => {
-        //   this.$refs['dataForm'].clearValidate()
-        // })
       },
       handleUpdate(row) {
         this.showEditGuide = true
       },
       handleDelete(row, index) {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+        let listData = {listData: [{id: row.id, status: status}]}
+        setDepositStatus(listData).then(() => {
+          this.$message({
+            type: 'success',
+            message: 'success!'
+          })
+          this.getList()
         })
-        this.list.splice(index, 1)
       },
       getSummaries(param) {
         const { columns, data } = param

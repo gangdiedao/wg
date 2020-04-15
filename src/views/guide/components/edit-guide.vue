@@ -49,7 +49,7 @@
         <upload :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.passport_copy_imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.birthday')" prop="">
-        <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
+        <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
       </el-form-item>
       <el-form-item :label="$t('guide.field.level')" prop="">
         <el-select v-model="ruleForm.level" style="width: 100%">
@@ -140,7 +140,7 @@ export default {
             phone: '',
             email: '',
             wechat: '',
-            gender: [],
+            gender: '',
             birthday: '',
             status: 1,
             login_password: '',
@@ -185,7 +185,7 @@ export default {
         phone: '',
         email: '',
         wechat: '',
-        gender: [],
+        gender: '',
         birthday: '',
         status: 1,
         login_password: '',

@@ -1,17 +1,30 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('guide.field.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
+    <el-row type="flex" class="filter-container">
+      <el-select v-model="listQuery.date_type" style="width: 140px" class="filter-item">
+        <el-option v-for="item in [{id: 1, label: '支票日期'}, {id: 2, label: '支付日期'}, {id: 3, label: '创建日期'}]" :key="item.id" :label="item.label" :value="item.id" />
       </el-select>
+      <el-date-picker
+        v-model="listQuery.date"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions">
+      </el-date-picker>
+      <el-input v-model="listQuery.keyword" :placeholder="$t('guide.field.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('guide.button.search') }}
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        {{ $t('guide.button.add') }}
-      </el-button>
-    </div>
+    </el-row>
+    <el-row type="flex" class="row-bg" justify="start">
+      <el-col :span="12">
+        <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
+        <el-button type="danger" size="mini" :disabled="!multipleSelection.length">{{ $t('actions.delete') }}</el-button>
+      </el-col>
+    </el-row>
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -22,41 +35,38 @@
       highlight-current-row
       :summary-method="getSummaries"
       show-summary
-      style="width: 100%;"
+      style="margin-top:15px;"
     >
       <el-table-column
         type="selection"
         align="center"
         width="55"
       />
-      <el-table-column :label="$t('guide.field.createDate')" width="150px" align="center">
+      <el-table-column :label="$t('guide.field.date')" prop="bill_date" width="150px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.guide')" width="140px">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span class="link-type">{{ row.guide.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('guide.field.guide')" width="110px">
+      <el-table-column :label="$t('guide.field.groupNumber')" prop="group_code" width="180px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.amount')" prop="amount" width="140px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.yuzhihao')" prop="advance_no" width="180px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.credentials')" width="140px" align="center">
+         <template slot-scope="scope">
+            <viewer :images="scope.row.imagesArr">
+              <el-avatar v-for="item in scope.row.imagesArr" fit="cover" :key="item.url" shape="square" :src="item.url"></el-avatar>
+            </viewer>
+          </template>
+      </el-table-column>
+      <el-table-column :label="$t('guide.field.remark')" prop="remark" width="140px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.reviewer')" width="180px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
+          <!-- <span>{{ row.author }}</span> -->
         </template>
       </el-table-column>
-      <el-table-column :label="$t('guide.field.credentials')" width="110px" align="center">
+      <el-table-column :label="$t('guide.field.log')" width="140px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('guide.field.remark')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('guide.field.reviewer')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('guide.field.log')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <!-- <span>{{ row.author }}</span> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('guide.field.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
@@ -64,11 +74,8 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             {{ $t('actions.edit') }}
           </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            {{ $t('actions.open') }}
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            {{ $t('actions.close') }}
+          <el-button size="mini" type="success">
+            {{ $t('actions.reviewer') }}
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
             {{ $t('actions.delete') }}
@@ -84,7 +91,7 @@
       </el-col>
     </el-row>
 
-    <edit-advance :show.sync="showEditAdvance"/>
+    <edit-advance :show.sync="showEditAdvance" :item="advanceItem" @success="getList"/>
   </div>
 </template>
 
@@ -93,6 +100,7 @@
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import EditAdvance from './components/edit-advance'
   import mixin from './mixin'
+  import { advanceList, setAdvanceStatus } from '@/api/guide'
 
   export default {
     mixins: [mixin],
@@ -102,7 +110,8 @@
     data() {
       return {
         showEditAdvance: false,
-        tabMapOptions: [],
+        advanceItem: '',
+        multipleSelection: [],
         activeName: 'open',
         tableKey: 0,
         list: null,
@@ -111,12 +120,7 @@
         listQuery: {
           page: 1,
           limit: 10,
-          status: ''
-        },
-        statusOptions: [{
-          key: 'china',
-          label: '中国'
-        }]
+        }
       }
     },
     computed: {
@@ -131,7 +135,7 @@
         this.$router.push(`${this.$route.path}?tab=${val}`)
       },
       lang() {
-        this.setOptions()
+        // this.setOptions()
       }
     },
     created() {
@@ -139,34 +143,28 @@
       if (tab) {
         this.activeName = tab
       }
-      this.setOptions()
-      // this.getList()
+      this.getList()
     },
     methods: {
-      setOptions() {
-        this.tabMapOptions = this.setTabOptions()
-      },
       getList() {
         this.listLoading = true
+        advanceList(this.listQuery).then(res => {
+          this.total = res.data.count
+          this.list = res.data.data
+        }).finally(() => {
+          this.listLoading = false
+        })
       },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
       },
-      handleModifyStatus(row, status) {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-        row.status = status
-      },
       handleCreate() {
+        this.advanceItem = ''
         this.showEditAdvance = true
-        // this.$nextTick(() => {
-        //   this.$refs['dataForm'].clearValidate()
-        // })
       },
       handleUpdate(row) {
+        this.advanceItem = row
         this.showEditAdvance = true
       },
       handleDelete(row, index) {
