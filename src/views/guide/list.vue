@@ -73,7 +73,7 @@
             <el-table-column :label="$t('guide.field.guideImage')" prop="" width="110px" align="center">
               <template slot-scope="scope">
                 <viewer :images="scope.row.imagesArr">
-                  <el-avatar v-for="item in scope.row.imagesArr" :key="item.url" shape="square" :src="item.url"></el-avatar>
+                  <el-avatar v-for="item in scope.row.imagesArr" fit="cover" :key="item.url" shape="square" :src="item.url"></el-avatar>
                 </viewer>
               </template>
             </el-table-column>
@@ -81,7 +81,7 @@
             <el-table-column :label="$t('guide.field.passportImage')" prop="" width="110px" align="center">
               <template slot-scope="scope">
                 <viewer :images="scope.row.passport_copy_imagesArr">
-                  <el-avatar v-for="item in scope.row.passport_copy_imagesArr" :key="item.url" shape="square" :src="item.url"></el-avatar>
+                  <el-avatar v-for="item in scope.row.passport_copy_imagesArr" fit="cover" :key="item.url" shape="square" :src="item.url"></el-avatar>
                 </viewer>
               </template>
             </el-table-column>
