@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="180px">
       <el-form-item :label="$t('guide.field.name')" prop="name">
         <el-input v-model="ruleForm.name"></el-input>

@@ -35,7 +35,7 @@
         action: process.env.VUE_APP_BASE_API + '/admin/system/file/upload',
         dialogImageUrl: '',
         dialogVisible: false,
-        fileList: this.fileList
+        fileList: this.files
       };
     },
     watch: {
