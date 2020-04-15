@@ -15,9 +15,14 @@
     ref="upload">
     <i class="el-icon-plus"></i>
   </el-upload>
-  <el-dialog :visible.sync="dialogVisible" append-to-body>
+  <viewer :images="images" ref="viewer"
+    @inited="inited"
+  >
+    <img v-for="src in images" :src="src" :key="src" style="display: none;">
+  </viewer>
+  <!-- <el-dialog :visible.sync="dialogVisible" append-to-body>
     <img width="100%" :src="dialogImageUrl" alt="">
-  </el-dialog>
+  </el-dialog> -->
   </div>
 </template>
 <script>
@@ -33,9 +38,10 @@
     data() {
       return {
         action: process.env.VUE_APP_BASE_API + '/admin/system/file/upload',
-        dialogImageUrl: '',
-        dialogVisible: false,
-        fileList: this.files
+        // dialogImageUrl: '',
+        // dialogVisible: false,
+        fileList: this.files,
+        images: []
       };
     },
     watch: {
@@ -52,6 +58,12 @@
       }
     },
     methods: {
+      inited (viewer) {
+        this.$viewer = viewer
+      },
+      showViewer() {
+        this.$viewer.show()
+      },
       setFiles(fileList) {
         let list = fileList.map(item => {
           return item.response.data
@@ -63,8 +75,10 @@
         this.setFiles(fileList)
       },
       handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
+        this.images = [file.url]
+        // this.dialogImageUrl = file.url;
+        // this.dialogVisible = true;
+        this.showViewer()
       },
       handleSuccess(response, file, fileList) {
         this.fileList = fileList
