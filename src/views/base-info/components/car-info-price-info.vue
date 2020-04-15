@@ -8,7 +8,7 @@
           <el-button v-else-if="row.flag === 0 && index != 0" type="text" @click="XDelete(index)">-删除</el-button>
           <el-input v-else-if="index == 0" v-model="row.name" />
           <el-input v-else-if="$index == 0" v-model="item.name" />
-          <el-input v-else v-model="data[$index-1][item.col-1]['value']" :value="item.col-1"/>
+          <el-input v-else v-model="data[$index-1][item.col-1]['value']" :value="item.col-1" />
         </template>
       </el-table-column>
       <el-table-column prop="date" label="xxx" align="center">
@@ -66,9 +66,9 @@ export default {
     // 横坐标的添加
     XAdd() {
       this.y += 1
-      let _arr = []
-      for(let i = 0; i < this.x; i++) {
-        _arr.push({value: `${this.y}-${this.x}`})
+      const _arr = []
+      for (let i = 0; i < this.x; i++) {
+        _arr.push({ value: `${this.y}-${this.x}` })
       }
       this.data.push(_arr)
       var obj = { ...this.priceTableData[0], ...{ id: this.priceTableData.length - 1, name: '新类型' }}
@@ -86,7 +86,7 @@ export default {
     YAdd() {
       this.x += 1
       this.data.forEach(item => {
-        item.push({value: `${this.y}-${this.x}`})
+        item.push({ value: `${this.y}-${this.x}` })
       })
       this.priceTableData.map((item, index) => {
         item.num = item.num + 1
