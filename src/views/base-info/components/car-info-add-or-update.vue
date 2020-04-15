@@ -48,7 +48,7 @@
         </el-upload>
         <el-button type="text" size="small" style="display:inline-block" @click="deleteIcon">删除</el-button>
       </el-form-item>
-      <el-form-item prop="pic" :label="$t('i18nView.information.pic')">
+      <el-form-item prop="imagesArr" :label="$t('i18nView.information.pic')">
         <el-upload
           class="upload-demo"
           action="string"
@@ -84,18 +84,18 @@
       <el-form-item prop="fax" :label="$t('i18nView.information.fax')">
         <el-input v-model="dataForm.fax" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.fax')" />
       </el-form-item>
-      <el-form-item prop="source" :label="$t('i18nView.information.city')">
-        <el-select v-model="dataForm.source" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.city')">
+      <el-form-item prop="city_id" :label="$t('i18nView.information.city')">
+        <el-select v-model="dataForm.city_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.city')" @change="cityChange">
           <el-option
             v-for="item in cityListData"
             :key="item.id"
             :label="item.value"
-            :value="item.value"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
       <el-form-item prop="input_user_id" :label="$t('i18nView.information.creator')">
-        <el-select v-model="dataForm.input_user_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.creator')">
+        <el-select v-model="dataForm.input_user_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.creator')" @change="userChange">
           <el-option
             v-for="item in userListData"
             :key="item.id"
@@ -105,7 +105,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="pay_type_id" :label="$t('i18nView.information.payType')">
-        <el-select v-model="dataForm.pay_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.payType')">
+        <el-select v-model="dataForm.pay_type_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.payType')" @change="payChange">
           <el-option
             v-for="item in payTypeListDatas"
             :key="item.id"
@@ -117,7 +117,7 @@
       <el-form-item prop="email" :label="$t('i18nView.information.email')">
         <el-input v-model="dataForm.email" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.email')" />
       </el-form-item>
-      <el-form-item prop="files" :label="$t('i18nView.information.files')">
+      <el-form-item prop="filesArr" :label="$t('i18nView.information.files')">
         <el-upload
           class="upload-demo"
           action="string"
@@ -148,45 +148,64 @@
       </el-form-item>
     </el-form>
     <el-divider content-position="left">价格信息</el-divider>
-    <carInfoPriceInfo ref="carInfoPriceInfo" />
+    <carInfoPriceInfo ref="carInfoPriceInfo" :types="types" @refreshDataList="refreshDataList" />
     <el-divider content-position="left">车辆信息</el-divider>
-    <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreateUpdate()">
+    <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate()">
       {{ $t('i18nView.information.add') }}
     </el-button>
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column prop="date" label="车编号" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.date" />
+          <el-input v-model="row.busno" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="车牌号" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.name" />
+          <el-input v-model="row.carno" />
         </template>
       </el-table-column>
       <el-table-column prop="date" label="司机" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.name" />
+          <el-input v-model="row.driver" />
         </template>
       </el-table-column>
       <el-table-column prop="date" label="电话" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.name" />
+          <el-input v-model="row.telphone" />
         </template>
       </el-table-column>
       <el-table-column prop="date" label="类型" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.name" />
+          <el-select v-model="row.bustype">
+            <el-option
+              v-for="item in busTypeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            />
+          </el-select>
         </template>
       </el-table-column>
       <el-table-column prop="date" label="状态" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.name" />
+          <el-select v-model="row.busstatus">
+            <el-option
+              v-for="item in busStatus"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            />
+          </el-select>
         </template>
       </el-table-column>
       <el-table-column prop="date" label="备注" align="center">
         <template slot-scope="{row}">
-          <el-input v-model="row.name" />
+          <el-input v-model="row.remark" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="操作" align="center">
+        <template slot-scope="{row,$index}">
+          <el-button type="text" @click="deleteData($index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -215,28 +234,30 @@ export default {
       dataForm: {
         status: 1, // 状态 1:激活 2：锁定
         name: '',
-        enname: '',
         info_type_id: '',
         info_type_name: '',
         fax: '',
         input_user_id: '',
         input_organization_id: '',
         input_user_name: '',
-        pay_type_id: '',
+        city_id: '',
+        city_name: '',
         logo: '',
-        source: '',
         email: '',
-        payType: '',
+        pay_type_id: '',
+        pay_type_name: '',
         address: '',
         url: '',
         contact: '',
         telphone: '',
+        prorate_type: '',
         intro: '',
         remark: '',
-        bookremark: '',
         ukey: '',
         filesArr: [],
-        imagesArr: []
+        imagesArr: [],
+        pricesArr: [],
+        busesArr: []
       },
       returnTypeFlag: 0,
       dataRule: {},
@@ -246,37 +267,51 @@ export default {
       cityListData: [],
       payTypeListDatas: [],
       prorateTypeList: [],
-      priceTableData: [
+      tableData: [],
+      busTypeList: [],
+      busStatus: [
         {
           id: 1,
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
+          name: '正常'
         },
         {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
+          id: 2,
+          name: '维修'
         },
         {
-          date: '',
-          name: '',
-          address: '',
-          flag: 0
+          id: 3,
+          name: '废弃'
         }
       ],
-      tableData: []
+      types: [ // 传给子组件 方便值实时更新
+        {
+          id: 0,
+          name: '新车型',
+          prop: ''
+        }
+      ],
+      price_info: [],
+      datas: []
     }
   },
   computed: {},
+  watch: {
+    // 深度监听types的变化，动态车辆信息里的类型列表
+    types: {
+      handler(val, oldVal) {
+        this.busTypeList = []
+        val.map(item => {
+          if (item.id !== 0) {
+            this.busTypeList.push({
+              id: item.id,
+              name: item.name
+            })
+          }
+        })
+      },
+      deep: true
+    }
+  },
   created() {
     this.infoTypeList = this.infoTypeListData()
     this.prorateTypeList = this.prorateTypeListData()
@@ -294,29 +329,56 @@ export default {
           this.dataForm = {
             status: 1, // 状态 1:激活 2：锁定
             name: '',
-            enname: '',
             info_type_id: '',
             info_type_name: '',
             fax: '',
             input_user_id: '',
             input_organization_id: '',
             input_user_name: '',
+            city_id: '',
+            city_name: '',
             logo: '',
-            source: '',
             email: '',
-            payType: '',
+            pay_type_id: '',
+            pay_type_name: '',
             address: '',
             url: '',
             contact: '',
             telphone: '',
+            prorate_type: '',
             intro: '',
             remark: '',
-            bookremark: '',
+            ukey: '',
             filesArr: [],
-            imagesArr: []
+            imagesArr: [],
+            pricesArr: [],
+            busesArr: []
           }
         }
       })
+    },
+    // 价格信息子组件返回
+    refreshDataList(data, price_info) {
+      this.datas = data
+      this.price_info = price_info
+    },
+    // 车辆信息新增
+    handleCreate() {
+      this.tableData.push(
+        {
+          busno: '',
+          carno: '',
+          driver: '',
+          telphone: '',
+          bustype: '',
+          busstatus: '',
+          remark: ''
+        }
+      )
+    },
+    // 车辆信息删除
+    deleteData(index) {
+      this.tableData.splice(index, 1)
     },
     // 用户列表
     getUserList() {
@@ -344,6 +406,22 @@ export default {
       })
       this.dataForm.info_type_name = obj.name
     },
+    // 支付信息改变
+    payChange(id) {
+      let obj = {}
+      obj = this.payTypeListDatas.find(item => {
+        return item.id === id
+      })
+      this.dataForm.pay_type_name = obj.name
+    },
+    // 城市信息改变
+    cityChange(id) {
+      let obj = {}
+      obj = this.cityListData.find(item => {
+        return item.id === id
+      })
+      this.dataForm.city_name = obj.name
+    },
     // 创建者改变
     userChange(id) {
       let obj = {}
@@ -351,6 +429,7 @@ export default {
         return item.id === id
       })
       this.dataForm.input_user_name = obj.name
+      this.dataForm.input_organization_id = obj.department.id
     },
     // 上传图片、图标之前
     onBeforeUploadImage(file) {
@@ -458,6 +537,28 @@ export default {
     },
     // 表单提交
     dataFormSubmitHandle() {
+      this.$nextTick(() => {
+        const newArr = []
+        const newArrs = []
+        this.price_info.map((item, index) => {
+          if (item.id !== 0 && item.id !== 999) {
+            newArr.push({
+              id: item.id,
+              name: item.name
+            })
+          }
+        })
+        newArr.map((item, index) => {
+          newArrs.push({
+            type: item.name,
+            cols: this.datas[index]
+          })
+        })
+        this.dataForm.pricesArr.push({ price_info: newArrs })
+        this.dataForm.pricesArr.push({ types: this.types })
+        this.dataForm.busesArr = this.tableData
+      })
+      console.log(this.dataForm.pricesArr)
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
           if (this.dataForm.id) {

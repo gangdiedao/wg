@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-table :data="priceTableData" border style="width: 100%" :show-header="false">
-      <el-table-column v-for="(item,index) in tableLabel" :key="index" :prop="item.prop" :label="item.name" align="center">
+    <el-table :data="price_info" border style="width: 100%" :show-header="false">
+      <el-table-column v-for="(item,index) in types" :key="index" :prop="item.prop" :label="item.name" align="center">
         <template slot-scope="{row,$index}">
           <span v-if="index == 0 && $index == 0">类型/车型</span>
           <el-button v-else-if="row.flag === 0 && index == 0" type="text" @click="XAdd">+添加</el-button>
@@ -14,15 +14,11 @@
       <el-table-column prop="date" label="xxx" align="center">
         <template slot-scope="{row,$index}">
           <el-button v-if="$index === 0" type="text" @click="YAdd">+添加</el-button>
-          <el-button v-else-if="$index === priceTableData.length-1" type="text" @click="clearAll">-清空</el-button>
+          <el-button v-else-if="$index === price_info.length-1" type="text" @click="clearAll">-清空</el-button>
           <el-button v-else type="text" @click="YDelete($index)">-删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <template slot="footer">
-      <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
-    </template>
   </div>
 </template>
 
@@ -31,6 +27,12 @@ import mixin from '../mixin'
 
 export default {
   mixins: [mixin],
+  props: {
+    types: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       data: [],
@@ -38,24 +40,15 @@ export default {
       nameArr: '新车型',
       x: 0,
       y: 0,
-      priceTableData: [
+      price_info: [
         {
           id: 0,
-          num: 0,
           name: '新类型'
         },
         {
           id: 999,
-          num: 0,
           name: '占位',
           flag: 0
-        }
-      ],
-      tableLabel: [
-        {
-          id: 0,
-          name: '新车型',
-          prop: ''
         }
       ]
     }
@@ -68,15 +61,15 @@ export default {
       this.y += 1
       const _arr = []
       for (let i = 0; i < this.x; i++) {
-        _arr.push({ value: `${this.y}-${this.x}` })
+        _arr.push({ value: '' })
       }
       this.data.push(_arr)
-      var obj = { ...this.priceTableData[0], ...{ id: this.priceTableData.length - 1, name: '新类型' }}
-      this.priceTableData.splice(this.priceTableData.length - 1, 0, obj)
-      this.priceTableData = JSON.parse(JSON.stringify(this.priceTableData))
-      // console.log(this.priceTableData)
-      // console.log(this.tableLabel)
-      console.log(this.data)
+      var obj = { ...this.price_info[0], ...{ id: this.price_info.length - 1, name: '新类型' }}
+      this.price_info.splice(this.price_info.length - 1, 0, obj)
+      this.price_info = JSON.parse(JSON.stringify(this.price_info))
+      this.$emit('refreshDataList', this.types, this.data, this.price_info)
+      // console.log(this.data)
+      // console.log(this.price_info)
     },
     // 横坐标的删除
     XDelete() {
@@ -86,26 +79,26 @@ export default {
     YAdd() {
       this.x += 1
       this.data.forEach(item => {
-        item.push({ value: `${this.y}-${this.x}` })
+        item.push({ value: '' })
       })
-      this.priceTableData.map((item, index) => {
-        item.num = item.num + 1
-        item['name' + item.num] = '新类型'
-      })
-      this.priceTableData = JSON.parse(JSON.stringify(this.priceTableData))
-      this.tableLabel.push({ id: this.tableLabel.length, name: '新车型', prop: '', col: this.x })
-      // console.log(this.priceTableData)
-      // console.log(this.tableLabel)
-      console.log(this.data)
+      // this.price_info.map((item, index) => {
+      //   item.num = item.num + 1
+      //   item['name' + item.num] = '新类型'
+      // })
+      // this.price_info = JSON.parse(JSON.stringify(this.price_info))
+      this.types.push({ id: this.types.length, name: '新车型', prop: '', col: this.x })
+      // console.log(this.types)
+      // console.log(this.data)
+      this.$emit('refreshDataList', this.data, this.price_info)
     },
     // 纵坐标的删除
     YDelete(i) {
       console.log(i)
-      this.priceTableData.splice(i, 1)
+      this.price_info.splice(i, 1)
     },
     // 清空
     clearAll() {
-      this.priceTableData = [
+      this.price_info = [
         {
           id: 1,
           name: '新类型'
@@ -115,15 +108,14 @@ export default {
           flag: 0
         }
       ]
-      this.tableLabel = [
+      this.types = [
         {
           id: 0,
           name: '新车型',
           prop: ''
         }
       ]
-    },
-    dataFormSubmitHandle() {}
+    }
   }
 }
 </script>
