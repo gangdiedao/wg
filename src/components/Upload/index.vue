@@ -66,7 +66,11 @@
       },
       setFiles(fileList) {
         let list = fileList.map(item => {
-          return item.response.data
+          if (item.response) {
+            return item.response.data
+          } else {
+            return item
+          }
         })
         this.$emit('update:files', list)
       },

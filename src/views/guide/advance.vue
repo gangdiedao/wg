@@ -22,7 +22,7 @@
     <el-row type="flex" class="row-bg" justify="start">
       <el-col :span="12">
         <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
-        <el-button type="danger" size="mini" :disabled="!multipleSelection.length">{{ $t('actions.delete') }}</el-button>
+        <el-button type="danger" size="mini" @click="setStatusAll" :disabled="!multipleSelection.length">{{ $t('actions.delete') }}</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -35,6 +35,7 @@
       highlight-current-row
       :summary-method="getSummaries"
       show-summary
+      @selection-change="handleSelectionChange"
       style="margin-top:15px;"
     >
       <el-table-column
@@ -70,14 +71,14 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('guide.field.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             {{ $t('actions.edit') }}
           </el-button>
           <el-button size="mini" type="success">
             {{ $t('actions.reviewer') }}
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button size="mini" type="danger" @click="setStatus(row)">
             {{ $t('actions.delete') }}
           </el-button>
         </template>
@@ -155,6 +156,9 @@
           this.listLoading = false
         })
       },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -167,14 +171,32 @@
         this.advanceItem = row
         this.showEditAdvance = true
       },
-      handleDelete(row, index) {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      setStatusAll() {
+        let data = this.multipleSelection.map(item => {
+          return {
+            id: item.id,
+            is_delete: 2
+          }
         })
-        this.list.splice(index, 1)
+        this.updateStatus({listData: data})
+      },
+      setStatus(row) {
+        this.updateStatus({listData: [{id: row.id, is_delete: 2}]})
+      },
+      updateStatus(params) {
+        this.$confirm('确定要删除该数据?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          setAdvanceStatus(params).then(() => {
+            this.$message({
+              type: 'success',
+              message: 'success!'
+            })
+            this.getList()
+          })
+        })
       },
       getSummaries(param) {
         const { columns, data } = param
