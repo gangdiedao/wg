@@ -27,7 +27,7 @@
         <el-input v-model="ruleForm.guide_card_no"></el-input>
       </el-form-item>
       <el-form-item :label="$t('guide.field.guideImage')"  prop="">
-        <uploadImage :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.imagesArr"/>
+        <upload :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.phone')" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
@@ -46,7 +46,7 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('guide.field.passportImage')" prop="">
-        <uploadImage :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.passport_copy_imagesArr"/>
+        <upload :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.passport_copy_imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.birthday')" prop="">
         <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
@@ -99,10 +99,10 @@
 import { getOtherDictList } from '@/api/system'
 import { getUserList } from '@/api/organization'
 import { addGuide, editGuide } from '@/api/guide'
-import uploadImage from '@/components/Upload/image'
+import upload from '@/components/Upload/index'
 export default {
   components: {
-    uploadImage
+    upload
   },
   props: {
     show: {

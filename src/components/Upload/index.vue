@@ -79,7 +79,7 @@
       beforeUpdate(file) {
         if (file.size > this.$config.uploadFileMaxSize) {
           this.$notify({
-            title: '上传文件过大',
+            title: 'error',
             message: `${file.name}文件过大`,
             type: 'warning'
           })
@@ -88,7 +88,7 @@
       },
       handleExceed(files) {
         this.$notify({
-          title: '',
+          title: 'error',
           message: `最多能上传${this.$attrs.limit}张图片`,
           type: 'warning'
         })
