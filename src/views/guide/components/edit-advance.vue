@@ -1,9 +1,9 @@
 <template>
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="180px">
-      <el-form-item label="选择导游">
+      <el-form-item label="选择导游" prop="foundation_guide_id">
         <el-select
-          v-model="ruleForm.guide"
+          v-model="ruleForm.foundation_guide_id"
           filterable
           remote
           reserve-keyword
@@ -12,31 +12,24 @@
           :loading="loading"
           style="width: 100%">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in guideUserList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="出生日期" prop="name">
-        <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+      <el-form-item label="日期" prop="bill_date">
+        <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="选择日期" v-model="ruleForm.bill_date" style="width: 100%;"></el-date-picker>
       </el-form-item>
-      <el-form-item label="金额" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item label="金额">
+        <el-input type="number" v-model="ruleForm.amount"></el-input>
       </el-form-item>
-      <el-form-item label="预支号" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+      <el-form-item label="预支号">
+        <el-input v-model="ruleForm.advance_no"></el-input>
       </el-form-item>
-      <el-form-item label="相关凭证" prop="name">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-change="handleChange"
-          :file-list="fileList">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
+      <el-form-item label="相关凭证">
+        <upload :accept="$config.imageAccept" list-type="picture-card" :files.sync="ruleForm.imagesArr"/>
       </el-form-item>
       <el-form-item label="备注">
         <el-input type="textarea" v-model="ruleForm.remark"></el-input>
@@ -54,7 +47,13 @@
 </template>
 
 <script>
+import upload from '@/components/Upload/index'
+import { guideList, addAdvance, editAdvance } from '@/api/guide'
+
 export default {
+  components: {
+    upload
+  },
   props: {
     show: {
       type: Boolean,
@@ -70,12 +69,32 @@ export default {
     },
     show(bool) {
       this.dialogFormVisible = bool
+      if (bool) {
+        if (this.item) {
+          Object.assign(this.ruleForm, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.ruleForm = {
+            id: undefined,
+            foundation_guide_id: '',
+            bill_date: '',
+            amount: '',
+            advance_no: '',
+            imagesArr: [],
+            remark: ''
+          }
+          this.dialogStatus = 'create'
+        }
+      }
     }
+  },
+  created() {
+    this.init()
   },
   data() {
     return {
       loading: false,
-      options: [],
+      guideUserList: [],
       fileList: [],
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
@@ -84,53 +103,61 @@ export default {
         create: `${this.$t('actions.create')}`,
       },
       ruleForm: {
-        id: '',
-        name: '',
-        username: '',
-        email: '',
-        phone: '',
-        role: [],
-        status: 1,
+        id: undefined,
+        foundation_guide_id: '',
+        bill_date: '',
+        amount: '',
+        advance_no: '',
+        imagesArr: [],
         remark: ''
       },
       rules: {
-        name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        foundation_guide_id: [
+          { required: true, message: 'required', trigger: 'blur' },
         ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, message: '长度最少3个字符', trigger: 'blur' }
-        ],
-        email: [
-          { type: 'email', message: '请选正确的emial', trigger: 'blur' }
-        ],
-        phone: [
-          { type: 'phone', message: '请填写正确的手机号', trigger: 'blur' }
+        bill_date: [
+          { required: true, message: 'required', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    init() {
+      guideList({page: 1, limit: 1000}).then(res => {
+        this.guideUserList = res.data.data
+      })
+    },
     remoteMethod(query) {
       if (query !== '') {
         this.loading = true
-        setTimeout(() => {
+        guideList({page: 1, limit: 100, keyword: query}).then(res => {
+          this.guideUserList = res.data.data
+        }).finally(() => {
           this.loading = false
-          this.options = []
-        }, 200);
+        })
       } else {
-        this.options = []
+        this.guideUserList = []
       }
     },
-    handleChange() {
-
-    },
     createData() {
-
+      addAdvance(this.ruleForm).then(() => {
+        this.$message({
+          message: 'success',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.dialogFormVisible = false
+      })
     },
     updateData() {
-
+      editAdvance(this.ruleForm).then(() => {
+        this.$message({
+          message: 'success',
+          type: 'success'
+        })
+        this.$emit('success')
+        this.dialogFormVisible = false
+      })
     }
   }
 }

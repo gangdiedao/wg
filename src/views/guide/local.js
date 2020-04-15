@@ -41,7 +41,11 @@ export default {
         payDate: '支付日期',
         credentials: '相关凭证',
         depositDoc: '押金单',
-        reviewer: '审核人'
+        reviewer: '审核人',
+        date: '日期',
+        groupNumber: '团号',
+        yuzhihao: '预支号',
+        amount: '金额',
       },
       status: {
         open: '已激活',

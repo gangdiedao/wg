@@ -1,10 +1,13 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('guide.field.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-select v-model="listQuery.op_user_id" style="width: 180px" class="filter-item" @change="handleFilter" placeholder="按排团经理搜索">
+        <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" clearable/>
       </el-select>
+      <el-select v-model="listQuery.nationality_id" style="width: 140px" class="filter-item" clearable @change="handleFilter" placeholder="按国籍搜索">
+        <el-option v-for="item in nationalityList" :key="item.id" :label="item.value" :value="item.id" />
+      </el-select>
+      <el-input v-model="listQuery.keyword" :placeholder="$t('guide.field.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('guide.button.search') }}
       </el-button>
@@ -12,8 +15,8 @@
     <el-row type="flex" class="row-bg" justify="start">
       <el-col :span="12">
         <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
-        <el-button type="success" @click="setStatusAll(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
-        <el-button size="mini" @click="setStatusAll(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
+        <el-button type="success" @click="setStatusAll(1)" v-if="activeName == 2" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
+        <el-button size="mini" @click="setStatusAll(2)" v-if="activeName == 1" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
       </el-col>
     </el-row>
     <el-tabs v-model="activeName" style="margin-top:15px;" @tab-click="getList" type="border-card">
@@ -57,11 +60,31 @@
               </template>
             </el-table-column>
             <el-table-column :label="$t('guide.field.birthday')" prop="birthday" width="110px" align="center"></el-table-column>
-            <el-table-column :label="$t('guide.field.level')" prop="level" width="110px" align="center"></el-table-column>
-            <el-table-column :label="$t('guide.field.workStatus')" prop="assign_status" width="110px" align="center"></el-table-column>
-            <el-table-column :label="$t('guide.field.guideImage')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.level')" prop="level" width="110px" align="center">
+              <template slot-scope="scope">
+                <span>{{ {1: '特优', 2: '优秀', 3: '中等', 4: '一般', 5: '差', 6: '实习'}[scope.row.level]}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('guide.field.workStatus')" prop="assign_status" width="110px" align="center">
+              <template slot-scope="scope">
+                <span>{{ {1: '正常出团', 2: '请假', 3: '离职'}[scope.row.assign_status]}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('guide.field.guideImage')" prop="" width="110px" align="center">
+              <template slot-scope="scope">
+                <viewer :images="scope.row.imagesArr">
+                  <el-avatar v-for="item in scope.row.imagesArr" fit="cover" :key="item.url" shape="square" :src="item.url"></el-avatar>
+                </viewer>
+              </template>
+            </el-table-column>
             <el-table-column :label="$t('guide.field.badRecord')" prop="bad_notes" width="110px" align="center"></el-table-column>
-            <el-table-column :label="$t('guide.field.passportImage')" prop="inner_code" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('guide.field.passportImage')" prop="" width="110px" align="center">
+              <template slot-scope="scope">
+                <viewer :images="scope.row.passport_copy_imagesArr">
+                  <el-avatar v-for="item in scope.row.passport_copy_imagesArr" fit="cover" :key="item.url" shape="square" :src="item.url"></el-avatar>
+                </viewer>
+              </template>
+            </el-table-column>
             <el-table-column :label="$t('guide.field.remark')" prop="remark" width="110px" align="center"></el-table-column>
             <!-- <el-table-column :label="$t('guide.field.historicalDeposit')" prop="inner_code" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('guide.field.deposit')" prop="inner_code" width="110px" align="center"></el-table-column>
@@ -102,6 +125,8 @@
   import EditGuide from './components/edit-guide'
   import mixin from './mixin'
   import { guideList, setGuideStatus } from '@/api/guide'
+  import { getOtherDictList } from '@/api/system'
+  import { getUserList } from '@/api/organization'
 
   export default {
     mixins: [mixin],
@@ -122,12 +147,12 @@
         listQuery: {
           page: 1,
           limit: 10,
-          status: ''
+          op_user_id: undefined,
+          nationality_id: undefined,
+          keyword: undefined
         },
-        statusOptions: [{
-          key: 'china',
-          label: '中国'
-        }]
+        nationalityList: [],
+        userList: []
       }
     },
     computed: {
@@ -152,10 +177,25 @@
         this.activeName = tab
         this.listQuery.status = tab
       }
+      this.init()
       this.setOptions()
       this.getList()
     },
     methods: {
+      init() {
+        this.getNationality()
+        this.getUserList()
+      },
+      getNationality() {
+        getOtherDictList({type: 'nationality'}).then(res => {
+          this.nationalityList = res.data
+        })
+      },
+      getUserList() {
+        getUserList({page: 1, limit: 1000}).then(res => {
+          this.userList = res.data.data
+        })
+      },
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
@@ -200,23 +240,19 @@
             status: status
           }
         })
-        setGuideStatus({listData: data}).then(() => {
-          this.$message({
-            type: 'success',
-            message: 'success!'
-          })
-          this.getList()
-        }).catch(() => {})
+        this.updateStatus({listData: data})
       },
       setStatus(row, status) {
-        let listData = {listData: [{id: row.id, status: status}]}
-        setGuideStatus(listData).then(() => {
+        this.updateStatus({listData: [{id: row.id, status: status}]})
+      },
+      updateStatus(params) {
+        setGuideStatus(params).then(() => {
           this.$message({
             type: 'success',
             message: 'success!'
           })
           this.getList()
-        }).catch(() => {})
+        })
       },
       getSummaries(param) {
         const { columns, data } = param

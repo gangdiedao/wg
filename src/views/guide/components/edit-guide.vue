@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
+  <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="180px">
       <el-form-item :label="$t('guide.field.name')" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
@@ -27,7 +27,7 @@
         <el-input v-model="ruleForm.guide_card_no"></el-input>
       </el-form-item>
       <el-form-item :label="$t('guide.field.guideImage')"  prop="">
-        <uploadImage />
+        <upload :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.phone')" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
@@ -46,17 +46,10 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('guide.field.passportImage')" prop="">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-change="handleChange"
-          :file-list="fileList">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
+        <upload :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.passport_copy_imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.birthday')" prop="">
-        <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
+        <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
       </el-form-item>
       <el-form-item :label="$t('guide.field.level')" prop="">
         <el-select v-model="ruleForm.level" style="width: 100%">
@@ -106,10 +99,10 @@
 import { getOtherDictList } from '@/api/system'
 import { getUserList } from '@/api/organization'
 import { addGuide, editGuide } from '@/api/guide'
-import uploadImage from '@/components/Upload/image'
+import upload from '@/components/Upload/index'
 export default {
   components: {
-    uploadImage
+    upload
   },
   props: {
     show: {
@@ -147,7 +140,7 @@ export default {
             phone: '',
             email: '',
             wechat: '',
-            gender: [],
+            gender: '',
             birthday: '',
             status: 1,
             login_password: '',
@@ -170,7 +163,6 @@ export default {
   },
   data() {
     return {
-      fileList: [],
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
@@ -193,7 +185,7 @@ export default {
         phone: '',
         email: '',
         wechat: '',
-        gender: [],
+        gender: '',
         birthday: '',
         status: 1,
         login_password: '',
