@@ -19,6 +19,9 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
+import config from './config'
+
+Vue.prototype.$config = config
 
 /**
  * If you don't want to use mock-server

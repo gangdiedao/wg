@@ -1,38 +1,103 @@
 <template>
-  <div>
+  <div :class="{'hidden': !showIcon}">
     <el-upload
-    v-bind="$attrs"
     :action="action"
-    list-type="picture-card"
+    name="Filedata"
+    :with-credentials="true"
+    :before-upload="beforeUpdate"
     :on-preview="handlePictureCardPreview"
-    :on-remove="handleRemove">
+    :on-remove="handleRemove"
+    :on-success="handleSuccess"
+    :on-error="handleError"
+    :on-exceed="handleExceed"
+    :file-list="fileList"
+    v-bind="$attrs"
+    ref="upload">
     <i class="el-icon-plus"></i>
   </el-upload>
-  <el-dialog :visible.sync="dialogVisible">
+  <el-dialog :visible.sync="dialogVisible" append-to-body>
     <img width="100%" :src="dialogImageUrl" alt="">
   </el-dialog>
   </div>
 </template>
 <script>
   export default {
-    mounted() {
-      console.log(this)
+    props: {
+      files: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      }
     },
     data() {
       return {
         action: process.env.VUE_APP_BASE_API + '/admin/system/file/upload',
         dialogImageUrl: '',
-        dialogVisible: false
+        dialogVisible: false,
+        fileList: this.fileList
       };
     },
+    watch: {
+      files(value) {
+        this.fileList = value || []
+      }
+    },
+    computed: {
+      showIcon() {
+        if (this.$attrs.limit && this.fileList) {
+          return this.fileList.length < this.$attrs.limit
+        }
+        return true
+      }
+    },
     methods: {
+      setFiles(fileList) {
+        let list = fileList.map(item => {
+          return item.response.data
+        })
+        this.$emit('update:files', list)
+      },
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+        this.fileList = fileList
+        this.setFiles(fileList)
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      handleSuccess(response, file, fileList) {
+        this.fileList = fileList
+        this.setFiles(fileList)
+      },
+      handleError(err, file, fileList) {
+        this.$message({
+          message: err,
+          type: 'error'
+        })
+      },
+      beforeUpdate(file) {
+        if (file.size > this.$config.uploadFileMaxSize) {
+          this.$notify({
+            title: '上传文件过大',
+            message: `${file.name}文件过大`,
+            type: 'warning'
+          })
+          return false
+        }
+      },
+      handleExceed(files) {
+        this.$notify({
+          title: '',
+          message: `最多能上传${this.$attrs.limit}张图片`,
+          type: 'warning'
+        })
       }
     }
   }
 </script>
+<style>
+  .hidden .el-upload {
+    display: none !important;
+  }
+</style>

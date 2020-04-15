@@ -27,7 +27,7 @@
         <el-input v-model="ruleForm.guide_card_no"></el-input>
       </el-form-item>
       <el-form-item :label="$t('guide.field.guideImage')"  prop="">
-        <uploadImage />
+        <uploadImage :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.phone')" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
@@ -46,14 +46,7 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('guide.field.passportImage')" prop="">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-change="handleChange"
-          :file-list="fileList">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
+        <uploadImage :accept="$config.imageAccept" list-type="picture-card" :limit="1" :files.sync="ruleForm.passport_copy_imagesArr"/>
       </el-form-item>
       <el-form-item :label="$t('guide.field.birthday')" prop="">
         <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthday" style="width: 100%;"></el-date-picker>
@@ -170,7 +163,6 @@ export default {
   },
   data() {
     return {
-      fileList: [],
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
