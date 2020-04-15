@@ -15,7 +15,7 @@
         <template slot-scope="{row,$index}">
           <el-button v-if="$index === 0" type="text" @click="YAdd">+添加</el-button>
           <el-button v-else-if="$index === price_info.length-1" type="text" @click="clearAll">-清空</el-button>
-          <el-button v-else type="text" @click="YDelete($index)">-删除</el-button>
+          <el-button v-else type="text" @click="YDelete(index)">-删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,8 +72,10 @@ export default {
       // console.log(this.price_info)
     },
     // 横坐标的删除
-    XDelete() {
-      alert(333)
+    XDelete(e) {
+      console.log(e)
+       this.types.splice(e,1)
+       console.log(this.types)
     },
     // 纵坐标的添加
     YAdd() {
@@ -104,6 +106,7 @@ export default {
           name: '新类型'
         },
         {
+          id: 999,
           name: '占位',
           flag: 0
         }
