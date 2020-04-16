@@ -126,7 +126,7 @@
   import mixin from './mixin'
   import { guideList, setGuideStatus } from '@/api/guide'
   import { getOtherDictList } from '@/api/system'
-import { getUserList } from '@/api/organization'
+  import { getUserList } from '@/api/organization'
 
   export default {
     mixins: [mixin],
@@ -240,23 +240,19 @@ import { getUserList } from '@/api/organization'
             status: status
           }
         })
-        setGuideStatus({listData: data}).then(() => {
-          this.$message({
-            type: 'success',
-            message: 'success!'
-          })
-          this.getList()
-        }).catch(() => {})
+        this.updateStatus({listData: data})
       },
       setStatus(row, status) {
-        let listData = {listData: [{id: row.id, status: status}]}
-        setGuideStatus(listData).then(() => {
+        this.updateStatus({listData: [{id: row.id, status: status}]})
+      },
+      updateStatus(params) {
+        setGuideStatus(params).then(() => {
           this.$message({
             type: 'success',
             message: 'success!'
           })
           this.getList()
-        }).catch(() => {})
+        })
       },
       getSummaries(param) {
         const { columns, data } = param

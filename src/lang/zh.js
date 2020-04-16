@@ -87,7 +87,8 @@ export default {
     open: '激活',
     close: '锁定',
     search: '搜索',
-    transfer: '转移'
+    transfer: '转移',
+    reviewer: '审核'
   },
   rules: {
     required: '必填'
