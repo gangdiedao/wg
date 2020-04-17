@@ -88,7 +88,12 @@ export default {
     close: '锁定',
     search: '搜索',
     transfer: '转移',
-    reviewer: '审核'
+    reviewer: '审核',
+    export: '导出',
+    import: '导入'
+  },
+  other: {
+    keyword: '关键字'
   },
   rules: {
     required: '必填'
