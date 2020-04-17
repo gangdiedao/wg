@@ -8,6 +8,7 @@ export default {
     subsidiaryManage: '子公司管理',
     partnerManage: '合作伙伴管理',
     carInfoManage: '车辆信息管理',
+    productManage: '产品套餐管理',
     organization: '权限管理',
     userManage: '用户管理',
     menuManage: '菜单管理',

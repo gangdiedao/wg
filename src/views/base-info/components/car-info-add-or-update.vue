@@ -148,7 +148,7 @@
       </el-form-item>
     </el-form>
     <el-divider content-position="left">价格信息</el-divider>
-    <carInfoPriceInfo ref="carInfoPriceInfo" :types="types" @refreshDataList="refreshDataList" />
+    <carInfoPriceInfo ref="carInfoPriceInfo" :types="types" :price_info="price_info" :data="datas" @refreshDataList="refreshDataList" />
     <el-divider content-position="left">车辆信息</el-divider>
     <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate()">
       {{ $t('i18nView.information.add') }}
@@ -260,7 +260,62 @@ export default {
         busesArr: []
       },
       returnTypeFlag: 0,
-      dataRule: {},
+      dataRule: {
+        info_type_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.infoType'), trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.name'), trigger: 'blur' }
+        ],
+        logo: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.icon'), trigger: 'blur' }
+        ],
+        imagesArr: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.pic'), trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.url'), trigger: 'blur' }
+        ],
+        intro: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.introduce'), trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.address'), trigger: 'blur' }
+        ],
+        contact: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.contacts'), trigger: 'blur' }
+        ],
+        telphone: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.telePhone'), trigger: 'blur' }
+        ],
+        fax: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.fax'), trigger: 'blur' }
+        ],
+        city_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.city'), trigger: 'blur' }
+        ],
+        input_user_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.creator'), trigger: 'blur' }
+        ],
+        pay_type_id: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.payType'), trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.email'), trigger: 'blur' }
+        ],
+        filesArr: [
+          { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.files'), trigger: 'blur' }
+        ],
+        prorate_type: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.calculationDays'), trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.remarks'), trigger: 'blur' }
+        ],
+        ukey: [
+          { required: true, message: this.$t('i18nView.information.input') + this.$t('i18nView.information.UKey'), trigger: 'blur' }
+        ]
+      },
       infoTypeList: [],
       userListData: [],
       dialogImageUrl: '',
@@ -290,7 +345,17 @@ export default {
           prop: ''
         }
       ],
-      price_info: [],
+      price_info: [
+        {
+          id: 0,
+          name: '新类型'
+        },
+        {
+          id: 999,
+          name: '占位',
+          flag: 0
+        }
+      ],
       datas: []
     }
   },
@@ -323,9 +388,43 @@ export default {
       this.getCityList()
       this.getPayTypeList()
       this.$nextTick(() => {
-        if (item) {
+        if (item) { // 编辑
+          console.log(item)
           this.dataForm = item
-        } else {
+          this.types = item.pricesArr[1].types
+          this.tableData = item.busesArr
+          this.price_info = [
+            {
+              id: 0,
+              name: '新类型'
+            }
+          ]
+          item.pricesArr[0].price_info.map((item, index) => {
+            this.price_info.push({
+              name: item.type,
+              id: index + 1
+            })
+          })
+          this.price_info.push(
+            {
+              id: 999,
+              name: '占位',
+              flag: 0
+            }
+          )
+          console.log(this.price_info)
+        } else { // 新增
+          this.price_info = [
+            {
+              id: 0,
+              name: '新类型'
+            },
+            {
+              id: 999,
+              name: '占位',
+              flag: 0
+            }
+          ]
           this.dataForm = {
             status: 1, // 状态 1:激活 2：锁定
             name: '',
@@ -358,7 +457,8 @@ export default {
       })
     },
     // 价格信息子组件返回
-    refreshDataList(data, price_info) {
+    refreshDataList(types, data, price_info) {
+      this.types = types
       this.datas = data
       this.price_info = price_info
     },
@@ -558,7 +658,6 @@ export default {
         this.dataForm.pricesArr.push({ types: this.types })
         this.dataForm.busesArr = this.tableData
       })
-      console.log(this.dataForm.pricesArr)
       this.$refs['dataForm'].validate(async valid => {
         if (valid) {
           if (this.dataForm.id) {

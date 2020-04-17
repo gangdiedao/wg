@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-select v-model="listQuery.sort" class="filter-item" :placeholder="'请选择'+$t('i18nView.information.infoType')" @change="handleFilter">
+        <el-option v-for="item in infoTypeList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
+      <el-input v-model="listQuery.title" :placeholder="'请输入'+$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('i18nView.information.search') }}
       </el-button>
@@ -51,84 +51,59 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.infoType')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.infoType')" align="center">
         <template slot-scope="{row}">
           <span>{{ row.info_type_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.icon')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.plan_group')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.plan_group }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.code')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.code }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.operator')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.op_user_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.seller')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.sale_user_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.company_name')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.company_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.icon')" align="center">
         <template slot-scope="{row}">
           <el-avatar fit="cover" shape="square" :src="row.logo" />
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.pic')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.pic')" align="center">
         <template slot-scope="{row}">
           <viewer :images="row.imagesArr">
             <el-avatar v-for="item in row.imagesArr" :key="item.url" fit="cover" shape="square" :src="item.url" />
           </viewer>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.url')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.url }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.city')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.city_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.telphone }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.fax }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.payType')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.pay_type_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.calculationDays')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.prorate_type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.contact }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.address')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.address }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.email')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.email }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.creator')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.input_user_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.files')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.files')" align="center">
         <template slot-scope="{row}">
           <span><i v-if="row.filesArr.length != 0" class="el-icon-folder" /></span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.remarks')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.modifier')" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.remark }}</span>
+          <span>{{ row.updated_user_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="150">
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center">
         <template slot-scope="{row}">
           <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
@@ -140,22 +115,24 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <carInfoAddOrUpdate ref="carInfoAddOrUpdate" @callBcak="callBcak" />
+    <productAddOrUpdate ref="productAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
 <script>
-import { fetchList, isLockOrDelete } from '@/api/car-info'
+import { fetchList, isLockOrDelete } from '@/api/product'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import carInfoAddOrUpdate from './components/car-info-add-or-update' // secondary package based on el-pagination
+import productAddOrUpdate from './components/product-add-or-update' // secondary package based on el-pagination
+import mixin from './mixin'
 
 export default {
   name: 'HotelMange',
-  components: { Pagination, carInfoAddOrUpdate },
+  components: { Pagination, productAddOrUpdate },
   directives: { waves },
   filters: {},
+  mixins: [mixin],
   data() {
     return {
       tabMapOptions: [],
@@ -167,29 +144,28 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        name: '',
         start_date: '',
         end_date: '',
         orderByColumn: 'updated_at',
         orderByDirection: 'desc',
-        name: '',
-        status: 1, // 状态 1:激活 2：锁定
-        enname: '',
+        code: '',
+        status: '', // 状态 1:激活 2：锁定
         info_type_id: '',
         info_type_name: '',
-        fax: '',
-        input_user_id: '',
-        input_organization_id: '',
-        input_user_name: '',
         logo: '',
-        source: '',
-        email: '',
-        address: '',
-        url: '',
-        contact: '',
-        telphone: '',
+        plan_group: '',
         intro: '',
-        remark: '',
-        bookremark: ''
+        fax: '',
+        op_user_id: '',
+        op_organization_id: '',
+        op_user_name: '',
+        sale_user_id: '',
+        sale_organization_id: '',
+        sale_user_name: '',
+        company_id: '',
+        company_name: '',
+        remark: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -212,19 +188,20 @@ export default {
       },
       dialogPvVisible: false,
       pvData: [],
+      infoTypeList: [], // 信息类型
       rules: {
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       downloadLoading: false,
-      listData: [],
-      logoArr: []
+      listData: []
     }
   },
   computed: {},
   watch: {},
   created() {
+    this.infoTypeList = this.infoTypeListData()
     this.getList()
   },
   methods: {
@@ -241,7 +218,7 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.count
-        response.data.data.logo ? this.logoArr = [{ url: response.data.data.logo }] : this.logoArr = []
+
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -318,13 +295,6 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
-    },
     sortChange(data) {
       const { prop, order } = data
       if (prop === 'id') {
@@ -341,7 +311,7 @@ export default {
     },
     // 新增、编辑
     handleCreateUpdate(item) {
-      this.$refs.carInfoAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
+      this.$refs.productAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : '')
     },
     // 删除
     handleDelete(row) {

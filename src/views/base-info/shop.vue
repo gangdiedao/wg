@@ -58,12 +58,14 @@
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.icon')" align="center">
         <template slot-scope="{row}">
-          <span><i v-if="row.logo != ''" class="el-icon-picture" /></span>
+          <el-avatar fit="cover" shape="square" :src="row.logo" />
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.pic')" align="center">
         <template slot-scope="{row}">
-          <span><i v-if="row.imagesArr.length != 0" class="el-icon-picture" /></span>
+          <viewer :images="row.imagesArr">
+            <el-avatar v-for="item in row.imagesArr" :key="item.url" fit="cover" shape="square" :src="item.url" />
+          </viewer>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.url')" align="center">
