@@ -12,8 +12,9 @@
     <el-row type="flex" class="row-bg" justify="start">
       <el-col :span="12">
         <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
-        <el-button type="danger" size="mini" @click="setStatusAll" :disabled="!multipleSelection.length">{{ $t('actions.delete') }}</el-button>
-        <el-button size="mini" @click="setStatusAll">{{ $t('actions.export') }}</el-button>
+        <el-button type="success" @click="setStatusAll(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
+        <el-button size="mini" @click="setStatusAll(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
+        <el-button size="mini" @click="setStatusAll" :disabled="total < 1">{{ $t('actions.export') }}</el-button>
         <el-button size="mini" @click="setStatusAll">{{ $t('actions.import') }}</el-button>
       </el-col>
     </el-row>
@@ -30,101 +31,42 @@
             highlight-current-row
             style="width: 100%;"
             @selection-change="handleSelectionChange"
-            @sort-change="sortChange"
           >
             <el-table-column
               type="selection"
               align="center"
               width="55"
             />
-            <el-table-column :label="$t('i18nView.information.id')" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+            <el-table-column :label="$t('i18nView.information.id')" fixed prop="id" align="center" width="80" :class-name="getSortClass('id')"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.hotelName')" fixed prop="name"  width="180px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.company')" prop="company" min-width="250px"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.price')" prop="company" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.telePhone')" prop="telphone" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.fax')" prop="fax" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.contacts')" prop="contact" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.city')" prop="city_name" width="240px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.hotelType')" prop="hotel_type_name" width="180px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.hotelLevel')" prop="level" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.address')" prop="address" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.email')" prop="email" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.website')" prop="url" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.payType')" prop="pay_type_name" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.creator')" prop="created_user_name" width="140px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.files')" width="140px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.id }}</span>
+                <div v-for="item in row.filesArr" :key="item.url">
+                  <a class="link-type" :href="item.url" :download="item.name">{{item.name}}</a>
+                </div>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.name')" width="150px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.company')" min-width="250px">
-              <template slot-scope="{row}">
-                <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.price')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.city')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.hotelType')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.hotelLevel')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.address')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.email')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.website')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.payType')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.creator')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.files')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.remarks')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.modifier')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
+            <el-table-column :label="$t('i18nView.information.remarks')" prop="remark" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.modifier')" prop="updated_user_name" width="110px" align="center"></el-table-column>
+            <el-table-column
+              prop="status"
+              :label="$t('i18nView.information.status')"
+              width="80">
+              <template slot-scope="scope">
+                <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
@@ -132,14 +74,11 @@
                 <el-button type="primary" size="mini" @click="handleUpdate(row)">
                   {{ $t('i18nView.information.edit') }}
                 </el-button>
-                <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
+                <el-button v-if="row.status == 2" size="mini" type="success" @click="setStatus(row, 1)">
                   {{ $t('i18nView.status.publish') }}
                 </el-button>
-                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
+                <el-button v-if="row.status == 1" size="mini" @click="setStatus(row, 2)">
                   {{ $t('i18nView.status.draft') }}
-                </el-button>
-                <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-                  {{ $t('i18nView.information.delete') }}
                 </el-button>
               </template>
             </el-table-column>
@@ -152,7 +91,7 @@
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-row>
 
-    <edit-hotel :show.sync="showEditHotel"/>
+    <edit-hotel :show.sync="showEditHotel" :item="hotelItem" @success="getList"/>
 
   </div>
 </template>
@@ -163,7 +102,7 @@ import { parseTime } from '@/utils'
 import EditHotel from './components/edit-hotel'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import mixin from './mixin'
-import { getHotelList } from '@/api/hotel'
+import { getHotelList, setStatus } from '@/api/hotel'
 
 export default {
   mixins: [mixin],
@@ -175,6 +114,7 @@ export default {
     return {
       tabMapOptions: [],
       multipleSelection: [],
+      hotelItem: '',
       activeName: 'all',
       tableKey: 0,
       list: null,
@@ -186,7 +126,7 @@ export default {
         importance: undefined,
         title: undefined,
         type: undefined,
-        status: 'all'
+        // status: 'all'
       },
       statusOptions: [],
       showEditHotel: false,
@@ -215,25 +155,18 @@ export default {
       this.activeName = tab
     }
     this.setOptions()
-    this.setStatusOptions()
+    // this.setStatusOptions()
     this.getList()
   },
   methods: {
     setOptions() {
       this.tabMapOptions = this.setCityOptions()
     },
-    setStatusOptions() {
-      this.statusOptions = [
-        { key: 'all', label: this.$t('i18nView.status.all') },
-        { key: 'publish', label: this.$t('i18nView.status.publish') },
-        { key: 'draft', label: this.$t('i18nView.status.draft') }
-      ]
-    },
     getList() {
       this.listLoading = true
       getHotelList(this.listQuery).then(response => {
-        this.list = response.data.data
         this.total = response.data.count
+        this.list = response.data.data
       }).finally(() => {
         this.listLoading = false
       })
@@ -242,15 +175,8 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-    handleSelectionChange() {
+    handleSelectionChange(val) {
       this.multipleSelection = val;
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -267,22 +193,33 @@ export default {
       this.handleFilter()
     },
     handleCreate() {
+      this.hotelItem = ''
       this.showEditHotel = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
     },
     handleUpdate(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      // this.temp.timestamp = new Date(this.temp.timestamp)
-      // this.dialogStatus = 'update'
+      this.hotelItem = row
       this.showEditHotel = true
-      // this.$nextTick(() => {
-      //   this.$refs['dataForm'].clearValidate()
-      // })
     },
-    setStatusAll() {
-
+    setStatusAll(status) {
+      let data = this.multipleSelection.map(item => {
+        return {
+          id: item.id,
+          status: status
+        }
+      })
+      this.updateStatus({listData: data})
+    },
+    setStatus(row, status) {
+      this.updateStatus({listData: [{id: row.id, status: status}]})
+    },
+    updateStatus(params) {
+      setStatus(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: 'success!'
+        })
+        this.getList()
+      })
     },
     handleDelete(row, index) {
       this.$notify({

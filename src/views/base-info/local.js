@@ -10,6 +10,7 @@ export default {
         export: '导出',
         id: '序号',
         name: '名称',
+        hotelName: '酒店名称',
         company: '公司名称',
         infoType: '信息类型',
         icon: '图标',
@@ -92,7 +93,8 @@ export default {
         countingDays: '算天数',
         countingNights: '算晚数',
         pleaseCheckTheData: '请先勾选数据',
-        areYouSureDeleteThisData: '确定要删除该数据?'
+        areYouSureDeleteThisData: '确定要删除该数据?',
+        status: '状态'
       },
       areas: {
         all: '全部',

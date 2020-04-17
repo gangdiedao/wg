@@ -13,7 +13,9 @@
     :file-list="fileList"
     v-bind="$attrs"
     ref="upload">
-    <i class="el-icon-plus"></i>
+    <slot>
+      <i class="el-icon-plus"></i>
+    </slot>
   </el-upload>
   <viewer :images="images" ref="viewer"
     @inited="inited"
