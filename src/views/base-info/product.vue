@@ -56,6 +56,31 @@
           <span>{{ row.info_type_name }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('i18nView.information.plan_group')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.plan_group }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.code')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.code }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.operator')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.op_user_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.seller')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.sale_user_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.company_name')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.company_name }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('i18nView.information.icon')" align="center">
         <template slot-scope="{row}">
           <el-avatar fit="cover" shape="square" :src="row.logo" />
@@ -68,29 +93,14 @@
           </viewer>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.url')" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.url }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.contacts')" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.contact }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.telePhone')" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.telphone }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.email')" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.email }}</span>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('i18nView.information.files')" align="center">
         <template slot-scope="{row}">
           <span><i v-if="row.filesArr.length != 0" class="el-icon-folder" /></span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.modifier')" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.updated_user_name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center">
@@ -105,21 +115,21 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <shopAddOrUpdate ref="shopAddOrUpdate" @callBcak="callBcak" />
+    <productAddOrUpdate ref="productAddOrUpdate" @callBcak="callBcak" />
   </div>
 </template>
 
 <script>
-import { fetchList, isLockOrDelete } from '@/api/shop'
+import { fetchList, isLockOrDelete } from '@/api/product'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import shopAddOrUpdate from './components/shop-add-or-update' // secondary package based on el-pagination
+import productAddOrUpdate from './components/product-add-or-update' // secondary package based on el-pagination
 import mixin from './mixin'
 
 export default {
   name: 'HotelMange',
-  components: { Pagination, shopAddOrUpdate },
+  components: { Pagination, productAddOrUpdate },
   directives: { waves },
   filters: {},
   mixins: [mixin],
@@ -135,15 +145,27 @@ export default {
         page: 1,
         limit: 10,
         name: '',
+        start_date: '',
+        end_date: '',
+        orderByColumn: 'updated_at',
+        orderByDirection: 'desc',
+        code: '',
         status: '', // 状态 1:激活 2：锁定
         info_type_id: '',
         info_type_name: '',
         logo: '',
-        url: '',
+        plan_group: '',
         intro: '',
-        contact: '',
-        telphone: '',
-        email: ''
+        fax: '',
+        op_user_id: '',
+        op_organization_id: '',
+        op_user_name: '',
+        sale_user_id: '',
+        sale_organization_id: '',
+        sale_user_name: '',
+        company_id: '',
+        company_name: '',
+        remark: ''
       },
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -289,7 +311,7 @@ export default {
     },
     // 新增、编辑
     handleCreateUpdate(item) {
-      this.$refs.shopAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : '')
+      this.$refs.productAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : '')
     },
     // 删除
     handleDelete(row) {
