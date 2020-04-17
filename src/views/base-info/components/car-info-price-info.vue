@@ -15,7 +15,7 @@
         <template slot-scope="{row,$index}">
           <el-button v-if="$index === 0" type="text" @click="YAdd">+添加</el-button>
           <el-button v-else-if="$index === priceinfo.length-1" type="text" @click="clearAll">-清空</el-button>
-          <el-button v-else type="text" @click="YDelete(index)">-删除</el-button>
+          <el-button v-else type="text" @click="YDelete($index)">-删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,13 +72,10 @@ export default {
     },
     // 横坐标的删除
     XDelete(e) {
-      this.datas.map(item => {
+      this.datas.forEach(item => {
         item.splice(e, 1)
       })
       this.typess.splice(e, 1)
-      console.log(this.datas)
-      console.log(this.typess)
-      console.log(this.priceinfo)
     },
     // 纵坐标的添加
     YAdd() {
