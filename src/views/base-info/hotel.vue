@@ -1,20 +1,22 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+        <!-- <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" /> -->
       </el-select>
+      <el-input v-model="listQuery.title" :placeholder="$t('other.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        {{ $t('i18nView.information.search') }}
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        {{ $t('i18nView.information.add') }}
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        {{ $t('i18nView.information.export') }}
+        {{ $t('actions.search') }}
       </el-button>
     </div>
+    <el-row type="flex" class="row-bg" justify="start">
+      <el-col :span="12">
+        <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
+        <el-button type="danger" size="mini" @click="setStatusAll" :disabled="!multipleSelection.length">{{ $t('actions.delete') }}</el-button>
+        <el-button size="mini" @click="setStatusAll">{{ $t('actions.export') }}</el-button>
+        <el-button size="mini" @click="setStatusAll">{{ $t('actions.import') }}</el-button>
+      </el-col>
+    </el-row>
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" tabPosition="top">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
@@ -27,6 +29,7 @@
             fit
             highlight-current-row
             style="width: 100%;"
+            @selection-change="handleSelectionChange"
             @sort-change="sortChange"
           >
             <el-table-column
@@ -145,16 +148,8 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-row type="flex" class="row-bg" justify="space-between">
-      <el-col :span="12">
-        <el-button-group style="padding: 32px 16px; margin-top: 26px;">
-          <el-button type="success">开启</el-button>
-          <el-button>关闭</el-button>
-        </el-button-group>
-      </el-col>
-      <el-col :span="12">
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-      </el-col>
+    <el-row type="flex" class="row-bg" justify="end">
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-row>
 
     <edit-hotel :show.sync="showEditHotel"/>
@@ -163,12 +158,12 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import EditHotel from './components/edit-hotel'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import mixin from './mixin'
+import { getHotelList } from '@/api/hotel'
 
 export default {
   mixins: [mixin],
@@ -179,11 +174,12 @@ export default {
   data() {
     return {
       tabMapOptions: [],
+      multipleSelection: [],
       activeName: 'all',
       tableKey: 0,
       list: null,
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 10,
@@ -235,19 +231,19 @@ export default {
     },
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+      getHotelList(this.listQuery).then(response => {
+        this.list = response.data.data
+        this.total = response.data.count
+      }).finally(() => {
+        this.listLoading = false
       })
     },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handleSelectionChange() {
+      this.multipleSelection = val;
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -284,6 +280,9 @@ export default {
       // this.$nextTick(() => {
       //   this.$refs['dataForm'].clearValidate()
       // })
+    },
+    setStatusAll() {
+
     },
     handleDelete(row, index) {
       this.$notify({
