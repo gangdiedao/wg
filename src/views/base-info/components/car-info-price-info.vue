@@ -45,23 +45,13 @@ export default {
   },
   data() {
     return {
-      // data: [],
+      datas: this.data,
+      typess: this.types,
       visible: false,
       nameArr: '新车型',
       x: 0,
       y: 0,
       priceinfo: this.price_info
-      // priceinfo: [
-      //   {
-      //     id: 0,
-      //     name: '新类型'
-      //   },
-      //   {
-      //     id: 999,
-      //     name: '占位',
-      //     flag: 0
-      //   }
-      // ]
     }
   },
   computed: {},
@@ -74,30 +64,30 @@ export default {
       for (let i = 0; i < this.x; i++) {
         _arr.push({ value: '' })
       }
-      this.data.push(_arr)
+      this.datas.push(_arr)
       var obj = { ...this.priceinfo[0], ...{ id: this.priceinfo.length - 1, name: '新类型' }}
       this.priceinfo.splice(this.priceinfo.length - 1, 0, obj)
       this.priceinfo = JSON.parse(JSON.stringify(this.priceinfo))
-      this.$emit('refreshDataList', this.priceinfo)
+      this.$emit('refreshDataList', this.typess, this.datas, this.priceinfo)
     },
     // 横坐标的删除
     XDelete(e) {
-      this.data.map(item => {
+      this.datas.map(item => {
         item.splice(e, 1)
       })
-      this.types.splice(e, 1)
-      console.log(this.data)
-      console.log(this.types)
+      this.typess.splice(e, 1)
+      console.log(this.datas)
+      console.log(this.typess)
       console.log(this.priceinfo)
     },
     // 纵坐标的添加
     YAdd() {
       this.x += 1
-      this.data.forEach(item => {
+      this.datas.forEach(item => {
         item.push({ value: '' })
       })
-      this.types.push({ id: this.types.length, name: '新车型', prop: '', col: this.x })
-      this.$emit('refreshDataList', this.priceinfo)
+      this.typess.push({ id: this.typess.length, name: '新车型', prop: '', col: this.x })
+      this.$emit('refreshDataList', this.typess, this.datas, this.priceinfo)
     },
     // 纵坐标的删除
     YDelete(i) {
@@ -116,7 +106,7 @@ export default {
           flag: 0
         }
       ]
-      this.types = [
+      this.typess = [
         {
           id: 0,
           name: '新车型',
