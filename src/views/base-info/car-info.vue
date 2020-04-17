@@ -71,9 +71,9 @@
           <span>{{ row.url }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.touristDestination')" width="110px" align="center">
+      <el-table-column :label="$t('i18nView.information.city')" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.source }}</span>
+          <span>{{ row.city_name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
@@ -84,6 +84,16 @@
       <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.fax }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.payType')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.pay_type_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('i18nView.information.calculationDays')" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.prorate_type }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
@@ -116,12 +126,7 @@
           <span>{{ row.remark }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('i18nView.information.AccountBookRemark')" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.bookremark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="150">
         <template slot-scope="{row}">
           <el-button type="text" size="mini" @click="handleCreateUpdate(row)">
             {{ $t('i18nView.information.edit') }}
