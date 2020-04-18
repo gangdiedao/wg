@@ -55,8 +55,8 @@
         <el-input v-model="formData.remark" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
       </el-form-item>
 
-      <el-divider content-position="left">价格信息</el-divider>
-      <el-calendar v-model="calendar">
+      <el-divider hidden content-position="left">价格信息</el-divider>
+      <el-calendar hidden v-model="calendar">
          <template
           slot="dateCell"
           slot-scope="{date, data}">
@@ -65,9 +65,9 @@
               {{ data.day.split('-').slice(1)[1] }}
             </b>
             <div style="margin-top: 10px;">
-              <small>小孩价：10</small><br>
               <small>成人价：10</small><br>
-              <small>预定数量：10</small>
+              <small>小孩价：10</small><br>
+              <small>限预定数量：10</small>
             </div>
           </div>
         </template>
@@ -200,9 +200,10 @@ export default {
         filesArr: [],
         imagesArr: [],
         hotel_type_id: undefined,
-        hotel_type_name: ''
+        hotel_type_name: '',
+        num: [],
+        priceDate: []
       },
-      fileList: [],
       rules: {
         name: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
         city_id: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
@@ -247,9 +248,6 @@ export default {
       this.calendarData.daterange = [day, day]
       this.innerVisible = true
     },
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
-    },
     resetformData() {
       this.formData = {
         id: undefined,
@@ -273,7 +271,9 @@ export default {
         filesArr: [],
         imagesArr: [],
         hotel_type_id: undefined,
-        hotel_type_name: ''
+        hotel_type_name: '',
+        num: [],
+        priceDate: []
       }
     },
     createData() {
@@ -337,12 +337,24 @@ export default {
         return {
           start_date: m.format('YYYY-MM-DD'),
           end_date: m.format('YYYY-MM-DD'),
-          detail: {
+          detail: [{
             price: this.calendarData.price,
-            
-          }
+            kid_price: this.calendarData.childprice,
+            cost: this.calendarData.price,
+            kid_cost: this.calendarData.childprice
+          }]
         }
       })
+      const num = days.map(m => {
+        return {
+          start_date: m.format('YYYY-MM-DD'),
+          end_date: m.format('YYYY-MM-DD'),
+          num: this.calendarData.num
+        }
+      })
+      this.formData.priceDate = data
+      this.formData.num = num
+      this.innerVisible = false
     }
   }
 }

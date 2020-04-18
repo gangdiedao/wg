@@ -37,7 +37,7 @@
               align="center"
               width="55"
             />
-            <el-table-column :label="$t('i18nView.information.id')" fixed prop="id" align="center" width="80" :class-name="getSortClass('id')"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.id')" fixed prop="id" align="center" width="80"></el-table-column>
             <el-table-column :label="$t('i18nView.information.hotelName')" fixed prop="name"  width="180px" align="center"></el-table-column>
             <el-table-column :label="$t('i18nView.information.company')" prop="company" min-width="250px"></el-table-column>
             <el-table-column :label="$t('i18nView.information.price')" prop="company" width="140px" align="center"></el-table-column>
@@ -72,13 +72,13 @@
             <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
               <template slot-scope="{row,$index}">
                 <el-button type="primary" size="mini" @click="handleUpdate(row)">
-                  {{ $t('i18nView.information.edit') }}
+                  {{ $t('actions.edit') }}
                 </el-button>
                 <el-button v-if="row.status == 2" size="mini" type="success" @click="setStatus(row, 1)">
-                  {{ $t('i18nView.status.publish') }}
+                  {{ $t('actions.open') }}
                 </el-button>
                 <el-button v-if="row.status == 1" size="mini" @click="setStatus(row, 2)">
-                  {{ $t('i18nView.status.draft') }}
+                  {{ $t('actions.close') }}
                 </el-button>
               </template>
             </el-table-column>
@@ -123,12 +123,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
         // status: 'all'
       },
-      statusOptions: [],
       showEditHotel: false,
       
       downloadLoading: false
@@ -221,42 +217,33 @@ export default {
         this.getList()
       })
     },
-    handleDelete(row, index) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    }
+    // handleDownload() {
+    //   this.downloadLoading = true
+    //   import('@/vendor/Export2Excel').then(excel => {
+    //     const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+    //     const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+    //     const data = this.formatJson(filterVal)
+    //     excel.export_json_to_excel({
+    //       header: tHeader,
+    //       data,
+    //       filename: 'table-list'
+    //     })
+    //     this.downloadLoading = false
+    //   })
+    // },
+    // formatJson(filterVal) {
+    //   return this.list.map(v => filterVal.map(j => {
+    //     if (j === 'timestamp') {
+    //       return parseTime(v[j])
+    //     } else {
+    //       return v[j]
+    //     }
+    //   }))
+    // },
+    // getSortClass: function(key) {
+    //   const sort = this.listQuery.sort
+    //   return sort === `+${key}` ? 'ascending' : 'descending'
+    // }
   }
 }
 </script>
