@@ -38,8 +38,8 @@
               align="center"
               width="55"
             />
-            <el-table-column :label="$t('i18nView.information.id')" type="index" sortable="custom" align="center" prop="id" width="80"></el-table-column>
-            <el-table-column :label="$t('i18nView.information.name')" prop="name" width="150px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.id')" fixed type="index" sortable="custom" align="center" prop="id" width="60"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.name')" fixed prop="name" width="150px" align="center"></el-table-column>
             <!-- <el-table-column :label="$t('i18nView.information.infoType')" prop="" width="110px" align="center"></el-table-column> -->
             <el-table-column :label="$t('i18nView.information.pic')" width="110px" align="center">
               <template slot-scope="scope">
