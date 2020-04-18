@@ -62,9 +62,13 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('i18nView.information.pic')" align="center">
-        <template slot-scope="{row}">
-          <viewer :images="row.imagesArr">
-            <el-avatar v-for="item in row.imagesArr" :key="item.url" fit="cover" shape="square" :src="item.url" />
+        <template slot-scope="scope">
+          <viewer :images="scope.row.imagesArr">
+            <el-row type="flex" style="overflow-x: auto;">
+              <div v-for="item in scope.row.imagesArr" :key="item.url" style="margin-right: 10px;width: 80px;" >
+                <el-avatar fit="cover"  shape="square" :src="item.url"></el-avatar>
+              </div>
+            </el-row>
           </viewer>
         </template>
       </el-table-column>
