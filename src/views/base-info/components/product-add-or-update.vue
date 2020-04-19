@@ -23,8 +23,24 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item prop="plan_group" :label="$t('i18nView.information.plan_group')">
+        <el-input v-model="dataForm.plan_group" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.plan_group')" />
+      </el-form-item>
+      <el-form-item prop="code" :label="$t('i18nView.information.code')">
+        <el-input v-model="dataForm.code" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.code')" />
+      </el-form-item>
       <el-form-item prop="name" :label="$t('i18nView.information.name')">
         <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
+      </el-form-item>
+      <el-form-item prop="op_organization_id" :label="$t('i18nView.information.operator')">
+        <el-select v-model="dataForm.op_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.operator')" @change="coChange">
+          <el-option
+            v-for="item in infoTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item prop="logo" :label="$t('i18nView.information.icon')">
         <el-image
@@ -66,21 +82,6 @@
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
       </el-form-item>
-      <el-form-item prop="url" :label="$t('i18nView.information.url')">
-        <el-input v-model="dataForm.url" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.url')" />
-      </el-form-item>
-      <el-form-item prop="intro" :label="$t('i18nView.information.introduce')">
-        <el-input v-model="dataForm.intro" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.introduce')" type="textarea" :rows="2" />
-      </el-form-item>
-      <el-form-item prop="contact" :label="$t('i18nView.information.contacts')">
-        <el-input v-model="dataForm.contact" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.contacts')" />
-      </el-form-item>
-      <el-form-item prop="telphone" :label="$t('i18nView.information.telePhone')">
-        <el-input v-model="dataForm.telphone" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.telePhone')" />
-      </el-form-item>
-      <el-form-item prop="email" :label="$t('i18nView.information.email')">
-        <el-input v-model="dataForm.email" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.email')" />
-      </el-form-item>
       <el-form-item prop="filesArr" :label="$t('i18nView.information.files')">
         <el-upload
           class="upload-demo"
@@ -95,6 +96,7 @@
         </el-upload>
       </el-form-item>
     </el-form>
+    <el-divider content-position="left">计划信息</el-divider>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
@@ -163,12 +165,11 @@ export default {
     }
   },
   computed: {},
-  created() {
-    this.infoTypeList = this.infoTypeListData()
-  },
+  created() {},
   methods: {
     init(item) {
       this.visible = true
+      this.userListData()
       this.$nextTick(() => {
         this.$refs.dataForm.resetFields()
         if (item) {
@@ -189,6 +190,12 @@ export default {
             logo: ''
           }
         }
+      })
+    },
+    // 操作者
+    userListData() {
+      userList(this.listQuery).then(response => {
+        this.infoTypeList = response.data.data
       })
     },
     // 信息类型改变
