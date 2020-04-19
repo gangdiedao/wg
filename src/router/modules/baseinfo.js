@@ -67,6 +67,12 @@ const router = {
       meta: { title: 'carInfoManage' }
     },
     {
+      path: 'product',
+      component: () => import('@/views/base-info/product'),
+      name: 'productManage',
+      meta: { title: 'productManage' }
+    },
+    {
       path: 'guide',
       name: 'guide',
       meta: { title: 'guide' },

@@ -457,7 +457,9 @@ export default {
       })
     },
     // 价格信息子组件返回
-    refreshDataList(price_info) {
+    refreshDataList(types, data, price_info) {
+      this.types = types
+      this.datas = data
       this.price_info = price_info
     },
     // 车辆信息新增
