@@ -1,20 +1,23 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" :placeholder="$t('i18nView.information.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+        <!-- <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" /> -->
       </el-select>
+      <el-input v-model="listQuery.title" :placeholder="$t('other.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        {{ $t('i18nView.information.search') }}
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreateUpdate">
-        {{ $t('i18nView.information.add') }}
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        {{ $t('i18nView.information.export') }}
+        {{ $t('actions.search') }}
       </el-button>
     </div>
+    <el-row type="flex" class="row-bg" justify="start">
+      <el-col :span="12">
+        <el-button type="primary" size="mini" @click="handleCreateUpdate('')">{{ $t('actions.create') }}</el-button>
+        <el-button type="success" @click="setStatusAll(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
+        <el-button size="mini" @click="setStatusAll(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
+        <el-button size="mini" @click="setStatusAll" :disabled="total < 1">{{ $t('actions.export') }}</el-button>
+        <el-button size="mini" @click="setStatusAll">{{ $t('actions.import') }}</el-button>
+      </el-col>
+    </el-row>
     <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
       <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
         <keep-alive>
@@ -28,141 +31,66 @@
             fit
             highlight-current-row
             style="width: 100%;"
-            @sort-change="sortChange"
+            @selection-change="handleSelectionChange"
           >
             <el-table-column
               type="selection"
               align="center"
               width="55"
             />
-            <el-table-column :label="$t('i18nView.information.id')" type="index" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-              <!-- <template slot-scope="{row}">
-                <span>{{ row.id }}</span>
-              </template> -->
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.name')" width="150px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.infoType')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.icon')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column :label="$t('i18nView.information.id')" fixed type="index" sortable="custom" align="center" prop="id" width="60"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.name')" fixed prop="name" width="150px" align="center"></el-table-column>
+            <!-- <el-table-column :label="$t('i18nView.information.infoType')" prop="" width="110px" align="center"></el-table-column> -->
             <el-table-column :label="$t('i18nView.information.pic')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
+              <template slot-scope="scope">
+                <viewer :images="scope.row.imagesArr">
+                  <el-row type="flex" style="overflow-x: auto;">
+                    <div v-for="item in scope.row.imagesArr" :key="item.url" style="margin-right: 10px;width: 80px;" >
+                      <el-avatar fit="cover"  shape="square" :src="item.url"></el-avatar>
+                    </div>
+                  </el-row>
+                </viewer>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.url')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.company')" min-width="250px">
-              <template slot-scope="{row}">
-                <span class="link-type">{{ row.title }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.price')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.ValuationMethod')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.telePhone')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.fax')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.contacts')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.city')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.hotelType')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.hotelLevel')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.address')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.email')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.website')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.payType')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.creator')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column :label="$t('i18nView.information.website')" prop="url" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.company')" prop="company" min-width="250px"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.city')" prop="city_name" width="240px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.address')" prop="address" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.contacts')" prop="contact" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.telePhone')" prop="telphone" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.fax')" prop="fax" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.email')" prop="email" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.price')" prop="" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.valuationMethod')" prop="money_type_name" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.payType')" prop="pay_type_name" width="110px" align="center"></el-table-column>
             <el-table-column :label="$t('i18nView.information.files')" width="110px" align="center">
               <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
+                <div v-for="item in row.filesArr" :key="item.url">
+                  <a class="link-type" :href="item.url" :download="item.name">{{item.name}}</a>
+                </div>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.remarks')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
+            <el-table-column :label="$t('i18nView.information.remarks')" prop="remark" width="110px" align="center"></el-table-column>
+            <el-table-column
+              prop="status"
+              :label="$t('i18nView.information.status')"
+              width="80">
+              <template slot-scope="scope">
+                <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.modifier')" width="110px" align="center">
-              <template slot-scope="{row}">
-                <span>{{ row.author }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
+            <el-table-column :label="$t('i18nView.information.creator')" prop="created_user_name" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.modifier')" prop="updated_user_name" width="110px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="160px" class-name="small-padding fixed-width">
               <template slot-scope="{row,$index}">
                 <el-button type="primary" size="mini" @click="handleCreateUpdate(row)">
-                  {{ $t('i18nView.information.edit') }}
+                  {{ $t('actions.edit') }}
                 </el-button>
-                <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-                  {{ $t('table.publish') }}
+                <el-button v-if="row.status == 2" size="mini" type="success" @click="setStatus(row, 1)">
+                  {{ $t('actions.open') }}
                 </el-button>
-                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-                  {{ $t('table.draft') }}
-                </el-button> -->
-                <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-                  {{ $t('i18nView.information.delete') }}
+                <el-button v-if="row.status == 1" size="mini" @click="setStatus(row, 2)">
+                  {{ $t('actions.close') }}
                 </el-button>
               </template>
             </el-table-column>
@@ -170,65 +98,42 @@
         </keep-alive>
       </el-tab-pane>
     </el-tabs>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <scenicAddOrUpdate ref="scenicAddOrUpdate" />
+    <el-row type="flex" class="row-bg" justify="end">
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    </el-row>
+    <scenicAddOrUpdate :show.sync="showEditScenic" :item="scenicItem" @success="getList" />
   </div>
 </template>
 
 <script>
+import mixin from './mixin'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import scenicAddOrUpdate from './components/scenic-add-or-update' // secondary package based on el-pagination
+import scenicAddOrUpdate from './components/scenic-add-or-update'
+import { getScenicList, setStatus } from '@/api/scenic'
 
 export default {
+  mixins: [mixin],
   name: 'HotelMange',
   components: { Pagination, scenicAddOrUpdate },
   directives: { waves },
   filters: {},
   data() {
     return {
+      showEditScenic: false,
+      scenicItem: '',
       tabMapOptions: [],
+      multipleSelection: [],
       activeName: 'all',
       tableKey: 0,
       list: null,
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
       },
-      importanceOptions: [1, 2, 3],
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create'
-      },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
-      downloadLoading: false
     }
   },
   computed: {
@@ -252,7 +157,7 @@ export default {
       this.activeName = tab
     }
     this.setOptions()
-    // this.getList()
+    this.getList()
   },
   methods: {
     setOptions() {
@@ -272,15 +177,15 @@ export default {
     },
     getList() {
       this.listLoading = true
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.total = response.data.total
-
-      //   // Just to simulate the time of the request
-      //   setTimeout(() => {
-      //     this.listLoading = false
-      //   }, 1.5 * 1000)
-      // })
+      getScenicList(this.listQuery).then(response => {
+        this.total = response.data.count
+        this.list = response.data.data
+      }).finally(() => {
+        this.listLoading = false
+      })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -293,66 +198,32 @@ export default {
       })
       row.status = status
     },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
     // 新增、编辑
     handleCreateUpdate(item) {
-      this.$refs.scenicAddOrUpdate.init(item ? JSON.parse(JSON.stringify(item)) : item)
+      this.scenicItem = item
+      this.showEditScenic = true
     },
-    // 删除
-    handleDelete(row, index) {
-      this.$confirm('确定要删除该数据?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+    setStatusAll(status) {
+      let data = this.multipleSelection.map(item => {
+        return {
+          id: item.id,
+          status: status
+        }
+      })
+      this.updateStatus({listData: data})
+    },
+    setStatus(row, status) {
+      this.updateStatus({listData: [{id: row.id, status: status}]})
+    },
+    updateStatus(params) {
+      setStatus(params).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: 'success!'
         })
-        this.list.splice(index, 1)
-      }).catch(() => {})
-    },
-    // 导出
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
+        this.getList()
       })
     },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    }
   }
 }
 </script>

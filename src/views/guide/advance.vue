@@ -53,15 +53,15 @@
       <el-table-column :label="$t('guide.field.amount')" prop="amount" width="140px" align="center"></el-table-column>
       <el-table-column :label="$t('guide.field.yuzhihao')" prop="advance_no" width="180px" align="center"></el-table-column>
       <el-table-column :label="$t('guide.field.credentials')" width="140px" align="center">
-         <template slot-scope="scope">
-            <viewer :images="scope.row.imagesArr">
-              <el-row type="flex" style="overflow-x: auto;">
-                <div v-for="item in scope.row.imagesArr" :key="item.url" style="margin-right: 10px;width: 80px;" >
-                  <el-avatar fit="cover"  shape="square" :src="item.url"></el-avatar>
-                </div>
-              </el-row>
-            </viewer>
-          </template>
+        <template slot-scope="scope">
+          <viewer :images="scope.row.imagesArr">
+            <el-row type="flex" style="overflow-x: auto;">
+              <div v-for="item in scope.row.imagesArr" :key="item.url" style="margin-right: 10px;width: 80px;" >
+                <el-avatar fit="cover"  shape="square" :src="item.url"></el-avatar>
+              </div>
+            </el-row>
+          </viewer>
+        </template>
       </el-table-column>
       <el-table-column :label="$t('guide.field.remark')" prop="remark" width="140px" align="center"></el-table-column>
       <el-table-column :label="$t('guide.field.reviewer')" width="180px" align="center">

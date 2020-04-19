@@ -1,69 +1,62 @@
 <template>
-  <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
-    <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="80px">
+  <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
+    <el-form ref="dataForm" :rules="rules" :model="formData" label-position="right" label-width="80px">
       <el-form-item :label="$t('i18nView.information.name')" prop="name">
-        <el-input v-model="temp.name"/>
+        <el-input v-model="formData.name"/>
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.company')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.company')">
+        <el-input v-model="formData.company" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.telePhone')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.telePhone')">
+        <el-input v-model="formData.telphone" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.fax')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.fax')">
+        <el-input v-model="formData.fax" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.contacts')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.contacts')">
+        <el-input v-model="formData.contact" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.city')" prop="title">
-        <el-select v-model="temp.city" class="filter-item" placeholder="">
-          <el-option v-for="item in cityOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-form-item :label="$t('i18nView.information.city')" prop="city_id">
+        <el-select v-model="formData.city_id" class="filter-item" @change="handleChangeCity" placeholder="选择城市 ">
+          <el-option v-for="item in cityOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.hotelType')" prop="title">
-        <el-select v-model="temp.hotelType" class="filter-item" placeholder="">
-          <el-option key="" label="未选择" value="" />
-          <el-option v-for="item in hotelTypeOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-form-item :label="$t('i18nView.information.hotelType')">
+        <el-select v-model="formData.hotel_type_id" class="filter-item" @change="handleChangeHotel" placeholder="选择酒店类别">
+          <el-option v-for="item in hotelTypeOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.hotelLevel')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.hotelLevel')">
+        <el-input v-model="formData.level" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.address')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.address')">
+        <el-input v-model="formData.address" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.email')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.email')">
+        <el-input v-model="formData.email" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.website')" prop="title">
-        <el-input v-model="temp.title" />
+      <el-form-item :label="$t('i18nView.information.website')">
+        <el-input v-model="formData.url" />
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.payType')" prop="title">
-        <el-select v-model="temp.payType" class="filter-item" placeholder="">
-          <el-option key="" label="未指定" value="" />
-          <el-option v-for="item in payOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-form-item :label="$t('i18nView.information.payType')">
+        <el-select v-model="formData.pay_type_id" class="filter-item" @change="handleChangePayType" placeholder="选择支付类型">
+          <el-option v-for="item in payOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t('i18nView.information.files')" prop="title">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-change="handleChange"
-          :file-list="fileList">
+      <el-form-item :label="$t('i18nView.information.files')">
+        <upload :files.sync="formData.filesArr">
           <el-button size="small" type="primary">点击上传</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
+        </upload>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.introduce')">
-        <el-input v-model="temp.remark" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
+        <el-input v-model="formData.intro" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.remarks')">
-        <el-input v-model="temp.remark" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
+        <el-input v-model="formData.remark" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
       </el-form-item>
 
-      <el-divider content-position="left">价格信息</el-divider>
-      <el-calendar v-model="calendar">
+      <el-divider hidden content-position="left">价格信息</el-divider>
+      <el-calendar hidden v-model="calendar">
          <template
           slot="dateCell"
           slot-scope="{date, data}">
@@ -72,9 +65,9 @@
               {{ data.day.split('-').slice(1)[1] }}
             </b>
             <div style="margin-top: 10px;">
-              <small>小孩价：10</small><br>
               <small>成人价：10</small><br>
-              <small>预定数量：10</small>
+              <small>小孩价：10</small><br>
+              <small>限预定数量：10</small>
             </div>
           </div>
         </template>
@@ -96,10 +89,9 @@
       <el-form label-width="100px">
         <el-form-item label="选择日期">
           <el-date-picker
-            v-model="daterange"
+            v-model="calendarData.daterange"
             type="daterange"
             value-format="yyyy-MM-dd"
-            @change="handleChangeDate"
             :editable="false"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -108,28 +100,36 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="小孩价">
-          <el-input></el-input>
+          <el-input type="number" v-model="calendarData.childprice"></el-input>
         </el-form-item>
         <el-form-item label="成人价">
-          <el-input></el-input>
+          <el-input type="number" v-model="calendarData.price"></el-input>
         </el-form-item>
         <el-form-item label="控制预定数量">
-          <el-input></el-input>
+          <el-input type="number" v-model="calendarData.num"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button @click="innerVisible = false">取 消</el-button>
+        <el-button @click="saveCalendar" type="primary">确 定</el-button>
       </span>
     </el-dialog>
   </el-dialog>
-</template>
+</template>>
 
 <script>
-import mixin from '../mixin'
+import { getOtherDictList } from '@/api/system'
+import { addHotel, editHotel } from '@/api/hotel'
+import Moment from 'moment'
+import { extendMoment } from 'moment-range'
+import upload from '@/components/Upload/index'
+
+const moment = extendMoment(Moment)
 
 export default {
-  mixins: [mixin],
+  components: {
+    upload
+  },
   props: {
     show: {
       type: Boolean,
@@ -144,22 +144,33 @@ export default {
       }
     },
     show(bool) {
+      // this.$refs['dataForm'].clearValidate()
       this.dialogFormVisible = bool
+      if (this.item) {
+          Object.assign(this.formData, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.resetformData()
+          this.dialogStatus = 'create'
+        }
     },
     innerVisible(bool) {
       if (!bool) {
         this.daterange = ''
       }
-    },
-    calendar(val) {
-      console.log(val)
     }
   },
   data() {
     return {
-      calendar: '',
       currentDate: '',
       daterange: '',
+      calendar: '',
+      calendarData: {
+        daterange: '',
+        price: '',
+        childprice: '',
+        num: ''
+      },
       innerVisible: false,
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
@@ -167,18 +178,35 @@ export default {
         update: `${this.$t('actions.edit')} ${this.$t('i18nView.information.hotel')}`,
         create: `${this.$t('actions.create')} ${this.$t('i18nView.information.hotel')}`,
       },
-      temp: {
+      formData: {
         id: undefined,
         name: '',
-        city: '',
-        hotelType: '',
-        payType: '',
+        intro: '',
+        info_type_id: undefined,
+        info_type_name: '',
+        pay_type_id: undefined,
+        pay_type_name: '',
+        city_id: undefined,
+        city_name: '',
+        company: '',
+        address: '',
         remark: '',
-        status: 'published'
+        url: '',
+        level: '',
+        fax: '',
+        telphone: '',
+        contact: '',
+        email: '',
+        filesArr: [],
+        imagesArr: [],
+        hotel_type_id: undefined,
+        hotel_type_name: '',
+        num: [],
+        priceDate: []
       },
-      fileList: [],
       rules: {
         name: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
+        city_id: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
       },
       cityOptions: [],
       hotelTypeOptions: [],
@@ -192,43 +220,72 @@ export default {
     }
   },
   created() {
-    this.cityOptions = this.setCityOptions().filter(item => item.key !== 'all')
-    this.hotelTypeOptions = this.setHotelTypeOptions()
-    this.payOptions = this.setPayOptions()
+    this.init()
   },
   methods: {
-    handleChangeDate(val) {
-      console.log(val)
+    init() {
+      this.getCity()
+      this.getPayType()
+      this.getHotelType()
+    },
+    getPayType() {
+      getOtherDictList({type: 'paymenttype'}).then(res => {
+        this.payOptions = res.data
+      })
+    },
+    getCity() {
+      getOtherDictList({type: 'city'}).then(res => {
+        this.cityOptions = res.data
+      })
+    },
+    getHotelType() {
+      getOtherDictList({type: 'hoteltype'}).then(res => {
+        this.hotelTypeOptions = res.data
+      })
     },
     handleCaledar(day, date) {
       this.currentDate = date
-      this.daterange = [day, day]
+      this.calendarData.daterange = [day, day]
       this.innerVisible = true
     },
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
-    },
-    resetTemp() {
-      this.temp = {
-        id: '',
-        name: undefined,
-        remark: ''
+    resetformData() {
+      this.formData = {
+        id: undefined,
+        name: '',
+        intro: '',
+        info_type_id: undefined,
+        info_type_name: '',
+        pay_type_id: undefined,
+        pay_type_name: '',
+        city_id: undefined,
+        city_name: '',
+        company: '',
+        address: '',
+        remark: '',
+        url: '',
+        level: '',
+        fax: '',
+        telphone: '',
+        contact: '',
+        email: '',
+        filesArr: [],
+        imagesArr: [],
+        hotel_type_id: undefined,
+        hotel_type_name: '',
+        num: [],
+        priceDate: []
       }
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
+          addHotel(this.formData).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
             })
+            this.$emit('success')
+            this.dialogFormVisible = false
           })
         }
       })
@@ -236,22 +293,69 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+          editHotel(this.formData).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
             })
+            this.$emit('success')
+            this.dialogFormVisible = false
           })
         }
       })
     },
+    // 选择城市
+    handleChangeCity(id) {
+      let res = this.cityOptions.filter(item => item.id === id)
+      if (res.length > 0) {
+        this.formData.city_name = res[0]['value']
+      }
+    },
+    handleChangePayType(id) {
+      let res = this.payOptions.filter(item => item.id === id)
+      if (res.length > 0) {
+        this.formData.pay_type_name = res[0]['value']
+      }
+    },
+    handleChangeHotel(id) {
+      let res = this.hotelTypeOptions.filter(item => item.id === id)
+      if (res.length > 0) {
+        this.formData.hotel_type_name = res[0]['value']
+      }
+    },
+    saveCalendar() {
+      // console.log(this.calendarData)
+      // let res = moment.range(this.calendarData.daterange[0], this.calendarData.daterange[1])
+      // for (let m of res.by('day')) {
+      //   console.log(m)
+      // }
+      const start = moment(this.calendarData.daterange[0], 'YYYY-MM-DD')
+      const end = moment(this.calendarData.daterange[1], 'YYYY-MM-DD')
+      const range = moment.range(start, end)
+      const days = Array.from(range.by('days'))
+      const data = days.map(m => {
+        return {
+          start_date: m.format('YYYY-MM-DD'),
+          end_date: m.format('YYYY-MM-DD'),
+          detail: [{
+            price: this.calendarData.price,
+            kid_price: this.calendarData.childprice,
+            cost: this.calendarData.price,
+            kid_cost: this.calendarData.childprice
+          }]
+        }
+      })
+      const num = days.map(m => {
+        return {
+          start_date: m.format('YYYY-MM-DD'),
+          end_date: m.format('YYYY-MM-DD'),
+          num: this.calendarData.num
+        }
+      })
+      this.formData.priceDate = data
+      this.formData.num = num
+      this.innerVisible = false
+    }
   }
 }
 </script>

@@ -8,3 +8,29 @@ export function getHotelList(params) {
     params
   })
 }
+
+// 酒店创建
+export function addHotel(data) {
+  return request({
+    url: '/admin/factordata/hotel/add',
+    method: 'post',
+    data
+  })
+}
+
+// 酒店编辑
+export function editHotel(data) {
+  return request({
+    url: '/admin/factordata/hotel/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function setStatus(data) {
+  return request({
+    url: '/admin/factordata/hotel/batsave',
+    method: 'post',
+    data
+  })
+}

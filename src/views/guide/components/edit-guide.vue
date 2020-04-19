@@ -249,23 +249,31 @@ export default {
 
     },
     createData() {
-      addGuide(this.ruleForm).then(() => {
-        this.$message({
-          message: 'success',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.dialogFormVisible = false
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          addGuide(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.dialogFormVisible = false
+          })
+        }
       })
     },
     updateData() {
-      editGuide(this.ruleForm).then(() => {
-        this.$message({
-          message: 'success',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.dialogFormVisible = false
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          editGuide(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.dialogFormVisible = false
+          })
+        }
       })
     }
   }
