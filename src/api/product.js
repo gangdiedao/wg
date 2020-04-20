@@ -16,6 +16,14 @@ export function userList(query) {
     params: query
   })
 }
+// 组团社列表
+export function companyList(query) {
+  return request({
+    url: '/admin/factordata/company/search',
+    method: 'get',
+    params: query
+  })
+}
 // 锁定,激活,删除
 export function isLockOrDelete(data) {
   return request({

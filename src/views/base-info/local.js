@@ -96,6 +96,10 @@ export default {
         systemSetup: '系统设置',
         countingDays: '算天数',
         countingNights: '算晚数',
+        origin: '始发地',
+        flight: '航班',
+        firstPartyOperation: '甲方操作',
+        tripDays: '行程天数',
         pleaseCheckTheData: '请先勾选数据',
         areYouSureDeleteThisData: '确定要删除该数据?',
         status: '状态'

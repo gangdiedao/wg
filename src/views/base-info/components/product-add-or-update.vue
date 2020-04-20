@@ -35,7 +35,27 @@
       <el-form-item prop="op_organization_id" :label="$t('i18nView.information.operator')">
         <el-select v-model="dataForm.op_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.operator')" @change="coChange">
           <el-option
-            v-for="item in infoTypeList"
+            v-for="item in userListArr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="sale_organization_id" :label="$t('i18nView.information.seller')">
+        <el-select v-model="dataForm.sale_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.seller')" @change="coChange">
+          <el-option
+            v-for="item in userListArr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="company_id" :label="$t('i18nView.information.company_name')">
+        <el-select v-model="dataForm.company_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.company_name')" @change="coChange">
+          <el-option
+            v-for="item in companyListArr"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -95,8 +115,26 @@
           <el-button type="primary" size="small">添加文件</el-button>
         </el-upload>
       </el-form-item>
-    </el-form>
     <el-divider content-position="left">计划信息</el-divider>
+      <el-form-item prop="plan_day" :label="$t('i18nView.information.tripDays')">
+        <el-input v-model="dataForm.plan_day" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.tripDays')">
+          <template slot="append">(Exp:2-2-1 5N7D)</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="from_city" :label="$t('i18nView.information.origin')">
+        <el-input v-model="dataForm.from_city" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.origin')">
+          <template slot="append">(Exp: 杭州 - 曼谷)</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="flight" :label="$t('i18nView.information.flight')">
+        <el-input v-model="dataForm.flight" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.flight')">
+          <template slot="append">(Exp:FT1 1530/1700; FT3 2300/0100+1 次日凌晨1点)</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="party_op" :label="$t('i18nView.information.firstPartyOperation')">
+        <el-input v-model="dataForm.party_op" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.firstPartyOperation')" />
+      </el-form-item>
+    </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
@@ -105,7 +143,7 @@
 </template>
 
 <script>
-import { createArticle, updateArticle, upload } from '@/api/shop'
+import { createArticle, updateArticle, upload, userList, companyList } from '@/api/product'
 import mixin from '../mixin'
 
 export default {
@@ -127,6 +165,16 @@ export default {
         telphone: '',
         email: '',
         logo: ''
+      },
+      listQuery: {
+        page: 1,
+        limit: 1000,
+        keyword: '',
+        status: 1
+      },
+      listQuery2: {
+        page: 1,
+        limit: 1000,
       },
       dataRule: {
         info_type_id: [
@@ -160,16 +208,21 @@ export default {
           { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.files'), trigger: 'blur' }
         ]
       },
+      userListArr: [],
       infoTypeList: [],
+      companyListArr: [],
       dialogImageUrl: ''
     }
   },
   computed: {},
-  created() {},
+  created() {
+    this.infoTypeList = this.infoTypeListData()
+  },
   methods: {
     init(item) {
       this.visible = true
       this.userListData()
+      this.companyListData()
       this.$nextTick(() => {
         this.$refs.dataForm.resetFields()
         if (item) {
@@ -195,7 +248,13 @@ export default {
     // 操作者
     userListData() {
       userList(this.listQuery).then(response => {
-        this.infoTypeList = response.data.data
+        this.userListArr = response.data.data
+      })
+    },
+    // 组团社列表
+    companyListData() {
+      companyList(this.listQuery2).then(response => {
+        this.companyListArr = response.data.data
       })
     },
     // 信息类型改变
@@ -206,6 +265,7 @@ export default {
       })
       this.dataForm.info_type_name = obj.name
     },
+    coChange(){},
     // 上传图片、图标之前
     onBeforeUploadImage(file) {
       if (
