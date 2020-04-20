@@ -31,7 +31,11 @@ export default {
     updatePwd: '修改密码',
     system: '系统管理',
     datadict: '数据字典',
-    lang: '多语言'
+    lang: '多语言',
+    plan: '总计划模块',
+    planList: '总计划列表',
+    group: '团业务模块',
+    groupList: '团期列表'
   },
   navbar: {
     dashboard: '首页',
