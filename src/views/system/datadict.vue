@@ -52,7 +52,7 @@
           prop="status"
           :label="$t('system.field.status')">
             <template slot-scope="scope">
-              <span>{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</span>
+              <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</el-tag>
             </template>
         </el-table-column>
         <el-table-column

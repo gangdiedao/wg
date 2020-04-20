@@ -34,8 +34,8 @@
         <el-input v-model="formData.fax" />
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.valuationMethod')">
-        <el-select v-model="formData.money_type_id" class="filter-item" @change="handleChangePayType" placeholder="选择计价方式">
-          <el-option v-for="item in [{id: 1, value: '单价'}, {id: 2, value: '套餐价'}]" :key="item.id" :label="item.value" :value="item.id" />
+        <el-select v-model="formData.money_type_id" class="filter-item" @change="handleChangeValuation" placeholder="选择计价方式">
+          <el-option v-for="item in valuationOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.payType')">
@@ -212,6 +212,7 @@ export default {
       cityOptions: [],
       hotelTypeOptions: [],
       payOptions: [],
+      valuationOptions: [],
       pickerOptions: {
         disabledDate: (date) => {
           return new Date(new Date(this.currentDate).setHours(0)).getTime() > new Date(date).getTime()
@@ -226,7 +227,7 @@ export default {
     init() {
       this.getCity()
       this.getPayType()
-      this.getHotelType()
+      this.getValuation()
     },
     getPayType() {
       getOtherDictList({type: 'paymenttype'}).then(res => {
@@ -241,6 +242,11 @@ export default {
     getHotelType() {
       getOtherDictList({type: 'hoteltype'}).then(res => {
         this.hotelTypeOptions = res.data
+      })
+    },
+    getValuation() {
+      getOtherDictList({type: 'valuation_mode'}).then(res => {
+        this.valuationOptions = res.data
       })
     },
     handleCaledar(day, date) {
@@ -318,10 +324,10 @@ export default {
         this.formData.pay_type_name = res[0]['value']
       }
     },
-    handleChangeHotel(id) {
-      let res = this.hotelTypeOptions.filter(item => item.id === id)
+    handleChangeValuation(id) {
+      let res = this.valuationOptions.filter(item => item.id === id)
       if (res.length > 0) {
-        this.formData.hotel_type_name = res[0]['value']
+        this.formData.money_type_name = res[0]['value']
       }
     },
     saveCalendar() {
