@@ -1,15 +1,17 @@
 <template>
   <div class="app-container">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" style="width: 680px;">
-      <el-form-item label="活动形式" prop="code_sign1">
-        <el-input type="textarea" :rows="3" v-model="ruleForm.code_sign1"></el-input>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="140px">
+      <el-form-item :label="$t('plan.field.code_sign1')" prop="code_sign1">
+        <el-input type="textarea" :rows="3" v-model="ruleForm.code_sign1" style="width: 480px;"></el-input>
+        <span style="color: #C0C4CC">(用 ; 号间隔)</span>
       </el-form-item>
-      <el-form-item label="活动形式" prop="code_sign2">
-        <el-input type="textarea" :rows="3" v-model="ruleForm.code_sign2"></el-input>
+      <el-form-item :label="$t('plan.field.code_sign2')" prop="code_sign2">
+        <el-input type="textarea" :rows="3" v-model="ruleForm.code_sign2" style="width: 480px;"></el-input>
+        <span style="color: #C0C4CC">(用 ; 号间隔)</span>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-        <el-button @click="$closeTag()">关闭页面</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">{{ $t('plan.action.saveOrUpdate') }}</el-button>
+        <el-button @click="$closeTag()">{{ $t('plan.action.closePage') }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -17,6 +19,7 @@
 
 <script>
 import mixin from './mixin'
+import { setPlanCode, getPlanCodeDetail } from '@/api/plan'
 export default {
   name: 'setplan',
   mixins: [mixin],
@@ -36,16 +39,27 @@ export default {
       }
     }
   },
+  created() {
+    this.getPlanCodeDetail()
+  },
   methods: {
+    getPlanCodeDetail() {
+      getPlanCodeDetail().then(res => {
+        this.ruleForm.code_sign1 = res.data.code_sign1
+        this.ruleForm.code_sign2 = res.data.code_sign2
+      })
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
+          setPlanCode(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+          })
         }
-      });
+      })
     }
   }
 }

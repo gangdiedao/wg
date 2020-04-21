@@ -39,9 +39,13 @@ export default {
         roomRemark: '订房说明',
         outlayRemark: '团费备注',
         remark: '备注',
+        code_sign1: '团号前缀(首选)',
+        code_sign2: '团号前缀(次选)'
       },
       action: {
-        create: '新建计划'
+        create: '新建计划',
+        saveOrUpdate: '保存修改',
+        closePage: '关闭页面'
       }
     }
   },
