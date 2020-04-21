@@ -35,7 +35,8 @@ export default {
     plan: '总计划模块',
     planList: '总计划列表',
     group: '团业务模块',
-    groupList: '团期列表'
+    groupList: '团期列表',
+    setplan: '团号设置'
   },
   navbar: {
     dashboard: '首页',

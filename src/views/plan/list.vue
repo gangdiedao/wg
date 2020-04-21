@@ -76,7 +76,7 @@ import mixin from './mixin'
 import Pagination from '@/components/Pagination'
 // import { getRoleList, deleteRole } from '@/api/organization'
 export default {
-  name: 'roleManage',
+  name: 'planList',
   mixins: [mixin],
   components: {
     Pagination,

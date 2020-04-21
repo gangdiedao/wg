@@ -8,3 +8,12 @@ export function getPlanCodeDetail(params) {
     params
   })
 }
+
+// 设置团号
+export function setPlanCode(data) {
+  return request({
+    url: '/admin/factordata/plansetting/save',
+    method: 'post',
+    data
+  })
+}

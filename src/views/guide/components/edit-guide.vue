@@ -124,6 +124,7 @@ export default {
           Object.assign(this.ruleForm, this.item)
           this.dialogStatus = 'update'
         } else {
+          this.$refs[formName].resetFields();
           this.ruleForm = {
             id: undefined,
             name: '',

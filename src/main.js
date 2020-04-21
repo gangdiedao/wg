@@ -25,6 +25,9 @@ import config from './config'
 
 Vue.prototype.$config = config
 
+import closeTag from '@/plugin/closeTag'
+Vue.use(closeTag)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

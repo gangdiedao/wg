@@ -18,6 +18,12 @@ const router = {
       component: () => import('@/views/plan/list'),
       name: 'planList',
       meta: { title: 'planList' }
+    },
+    {
+      path: 'setting',
+      component: () => import('@/views/plan/setting'),
+      name: 'setplan',
+      meta: { title: 'setplan' }
     }
   ]
 }
