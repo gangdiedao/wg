@@ -24,6 +24,14 @@ export function companyList(query) {
     params: query
   })
 }
+// 客源地列表
+export function cityList(query) {
+  return request({
+    url: '/admin/system/datadict/listbytype',
+    method: 'get',
+    params: query
+  })
+}
 // 锁定,激活,删除
 export function isLockOrDelete(data) {
   return request({

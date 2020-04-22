@@ -134,6 +134,36 @@
       <el-form-item prop="party_op" :label="$t('i18nView.information.firstPartyOperation')">
         <el-input v-model="dataForm.party_op" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.firstPartyOperation')" />
       </el-form-item>
+      <el-form-item prop="source" :label="$t('i18nView.information.touristDestination')">
+        <el-select v-model="dataForm.source" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.touristDestination')" @change="coChange">
+          <el-option
+            v-for="item in cityListData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="market" :label="$t('i18nView.information.market')">
+        <el-select v-model="dataForm.market" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.market')" @change="coChange">
+          <el-option
+            v-for="item in marketListData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="shopping" :label="$t('i18nView.information.buy')">
+        <el-select v-model="dataForm.shopping" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.buy')" @change="coChange">
+          <el-option
+            v-for="item in buyListDatas"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
@@ -143,7 +173,7 @@
 </template>
 
 <script>
-import { createArticle, updateArticle, upload, userList, companyList } from '@/api/product'
+import { createArticle, updateArticle, upload, userList, companyList, cityList } from '@/api/product'
 import mixin from '../mixin'
 
 export default {
@@ -211,6 +241,9 @@ export default {
       userListArr: [],
       infoTypeList: [],
       companyListArr: [],
+      cityListData: [],
+      marketListData: [],
+      buyListDatas: [],
       dialogImageUrl: ''
     }
   },
@@ -223,6 +256,8 @@ export default {
       this.visible = true
       this.userListData()
       this.companyListData()
+      this.getCityList()
+      this.buyListData()
       this.$nextTick(() => {
         this.$refs.dataForm.resetFields()
         if (item) {
@@ -255,6 +290,24 @@ export default {
     companyListData() {
       companyList(this.listQuery2).then(response => {
         this.companyListArr = response.data.data
+      })
+    },
+    // 客源地列表
+    getCityList() {
+      cityList({ type: 'customersource' }).then(response => {
+        this.cityListData = response.data
+      })
+    },
+    // 市场列表
+    getCityList() {
+      cityList({ type: 'shichangrex' }).then(response => {
+        this.marketListData = response.data
+      })
+    },
+    // 购物列表
+    buyListData() {
+      cityList({ type: 'shopping' }).then(response => {
+        this.buyListDatas = response.data
       })
     },
     // 信息类型改变
