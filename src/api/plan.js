@@ -17,3 +17,21 @@ export function setPlanCode(data) {
     data
   })
 }
+
+// 创建计划
+export function addPlan(data) {
+  return request({
+    url: '/admin/factordata/plan/add',
+    method: 'post',
+    data
+  })
+}
+
+// 编辑计划
+export function editPlan(data) {
+  return request({
+    url: '/admin/factordata/plan/edit',
+    method: 'post',
+    data
+  })
+}

@@ -5,7 +5,7 @@
         <el-option v-for="item in []" :key="item.id" :label="item.name" :value="item.id" clearable/>
       </el-select>
       <el-input v-model="listQuery.keyword" :placeholder="$t('other.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-checkbox v-model="checked">仅显示我的</el-checkbox>
+      <el-checkbox v-model="listQuery.ismy">仅显示我的</el-checkbox>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('actions.search') }}
       </el-button>
