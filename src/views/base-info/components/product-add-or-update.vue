@@ -121,6 +121,53 @@
           <template slot="append">(Exp:2-2-1 5N7D)</template>
         </el-input>
       </el-form-item>
+      <el-form-item prop="outlay" :label="$t('i18nView.information.outlay')">
+        <el-input v-model="dataForm.outlay" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.outlay')" />
+      </el-form-item>
+      <el-form-item prop="outlay" :label="$t('i18nView.information.tourFee')">
+        <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate()">
+        {{ $t('i18nView.information.add') }}
+      </el-button>
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column prop="date" label="项目" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.busno" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="价格" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.carno" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="数量" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.driver" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="小计" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.telphone" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="类型" align="center">
+          <template slot-scope="{row}">
+            <el-select v-model="row.bustype">
+              <el-option
+                v-for="item in busTypeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="操作" align="center">
+          <template slot-scope="{row,$index}">
+            <el-button type="text" @click="deleteData($index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      </el-form-item>
       <el-form-item prop="from_city" :label="$t('i18nView.information.origin')">
         <el-input v-model="dataForm.from_city" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.origin')">
           <template slot="append">(Exp: 杭州 - 曼谷)</template>
@@ -164,6 +211,127 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item prop="self_cost" :label="$t('i18nView.information.selfcost')">
+        <el-select v-model="dataForm.self_cost" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.selfcost')" @change="coChange">
+          <el-option
+            v-for="item in selFcostData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="one_price" :label="$t('i18nView.information.one_price')">
+        <el-input v-model="dataForm.one_price" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.one_price')" />
+      </el-form-item>
+      <el-form-item prop="passport" :label="$t('i18nView.information.passport')">
+        <el-input v-model="dataForm.passport" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.passport')" />
+      </el-form-item>
+      <el-form-item prop="leader_expense" :label="$t('i18nView.information.leader_expense')">
+        <el-select v-model="dataForm.leader_expense" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.leader_expense')" @change="coChange">
+          <el-option
+            v-for="item in payTypeData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="service_expense" :label="$t('i18nView.information.service_expense')">
+        <el-select v-model="dataForm.service_expense" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.service_expense')" @change="coChange">
+          <el-option
+            v-for="item in serviceData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="pay_type" :label="$t('i18nView.information.payType')">
+        <el-select v-model="dataForm.pay_type" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.payType')" @change="coChange">
+          <el-option
+            v-for="item in payTypeData"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="shopping_team_no" :label="$t('i18nView.information.shopping_team_no')">
+        <el-input v-model="dataForm.shopping_team_no" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.shopping_team_no')" />
+      </el-form-item>
+      <el-form-item prop="kingpower_team_no" :label="$t('i18nView.information.kingpower_team_no')">
+        <el-input v-model="dataForm.kingpower_team_no" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.kingpower_team_no')" />
+      </el-form-item>
+      <el-form-item prop="car_explain" :label="$t('i18nView.information.car_explain')">
+        <el-input v-model="dataForm.car_explain" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.car_explain')" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="room_explain" :label="$t('i18nView.information.room_explain')">
+        <el-input v-model="dataForm.room_explain" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.room_explain')" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="remark" :label="$t('i18nView.information.remarks')">
+        <el-input v-model="dataForm.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.remarks')" type="textarea" />
+      </el-form-item>
+      <el-divider content-position="left">行程信息</el-divider>
+      <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate()">
+        {{ $t('i18nView.information.add') }}
+      </el-button>
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column prop="date" label="天数" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.busno" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="行程" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.carno" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="用餐" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.driver" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="餐厅" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.telphone" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="景点" align="center">
+          <template slot-scope="{row}">
+            <el-select v-model="row.bustype">
+              <el-option
+                v-for="item in busTypeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="酒店" align="center">
+          <template slot-scope="{row}">
+            <el-select v-model="row.busstatus">
+              <el-option
+                v-for="item in busStatus"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="备注" align="center">
+          <template slot-scope="{row}">
+            <el-input v-model="row.remark" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="操作" align="center">
+          <template slot-scope="{row,$index}">
+            <el-button type="text" @click="deleteData($index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-form>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
@@ -244,6 +412,10 @@ export default {
       cityListData: [],
       marketListData: [],
       buyListDatas: [],
+      selFcostData: [],
+      payTypeData: [],
+      serviceData: [],
+      tableData: [],
       dialogImageUrl: ''
     }
   },
@@ -258,6 +430,9 @@ export default {
       this.companyListData()
       this.getCityList()
       this.buyListData()
+      this.selFcostList()
+      this.payTypeListData()
+      this.serviceListData()
       this.$nextTick(() => {
         this.$refs.dataForm.resetFields()
         if (item) {
@@ -304,10 +479,28 @@ export default {
         this.marketListData = response.data
       })
     },
+    // 自费列表
+    selFcostList() {
+      cityList({ type: 'selfcost' }).then(response => {
+        this.selFcostData = response.data
+      })
+    },
     // 购物列表
     buyListData() {
       cityList({ type: 'shopping' }).then(response => {
         this.buyListDatas = response.data
+      })
+    },
+    // 结算方式列表
+    payTypeListData() {
+      cityList({ type: 'settlement' }).then(response => {
+        this.payTypeData = response.data
+      })
+    },
+    // 服务费列表
+    serviceListData() {
+      cityList({ type: 'service' }).then(response => {
+        this.serviceData = response.data
       })
     },
     // 信息类型改变
