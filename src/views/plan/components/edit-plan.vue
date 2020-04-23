@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
+  <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="1280px" center>
     <el-form style="height: 80vh;overflow-y: auto" ref="dataForm" :rules="rules" :model="formData" label-position="right" label-width="160px">
       <el-form-item :label="$t('plan.field.product')">
         <el-input v-model="formData.foundation_prodcut_name" v-show="false"/>
@@ -12,6 +12,33 @@
         <el-select v-if="formData.code_sign1" v-model="formData.code_sign2" class="filter-item" clearable placeholder="选择副团号">
           <el-option v-for="item in planCodeOptions2" :key="item" :label="item" :value="item" />
         </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('plan.field.dateNum')">
+        <div>
+          <label>日期:</label><el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="formData.plan_date"></el-date-picker>
+          <label style="margin-left: 10px;">团数:</label><el-input-number controls-position="right" :min="0"></el-input-number>
+        </div>
+        <div style="margin-top: 10px;">
+          <label>甲方团号:</label><el-input class="plan-edit-input" v-model="formData.code_a" clearable/>
+        </div>
+        <div style="margin-top: 10px;">
+          <div>
+            <label>成人:</label><el-input-number style="width: 100px;" v-model="formData.adult_num" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">小孩占:</label><el-input-number style="width: 100px;" v-model="formData.bedkid_num" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">小孩不占:</label><el-input-number style="width: 100px;" v-model="formData.nobedkid_num" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">婴儿:</label><el-input-number style="width: 100px;" v-model="formData.baby_num" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">领队:</label><el-input-number style="width: 100px;" v-model="formData.leader_num" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">余位:</label><el-input-number style="width: 100px;" v-model="formData.remain_num" controls-position="right" :min="0"></el-input-number>
+          </div>
+          <div style="margin-top: 10px;">
+            <label>预定房间数：SGL:</label><el-input-number style="width: 100px;" v-model="formData.sgl" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">TWN:</label><el-input-number style="width: 100px;" v-model="formData.twn" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">TRP:</label><el-input-number style="width: 100px;" v-model="formData.trp" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">DBL:</label><el-input-number style="width: 100px;" v-model="formData.dbl" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">HNM:</label><el-input-number style="width: 100px;" v-model="formData.honeymood" controls-position="right" :min="0"></el-input-number>
+            <label style="margin-left: 10px;">TL:</label><el-input-number style="width: 100px;" v-model="formData.tl" controls-position="right" :min="0"></el-input-number>
+          </div>
+        </div>
       </el-form-item>
       <el-form-item :label="$t('plan.field.subsidiary')">
         <el-select v-model="formData.sub_company_id" class="filter-item" @change="handleChangeCity" placeholder="">
@@ -111,7 +138,10 @@
       <el-form-item :label="$t('plan.field.shopping')">
         <el-select
           v-model="formData.detail.shopping"
+          allow-create
           multiple
+          filterable
+          default-first-option
           placeholder=""
           style="width: 100%">
           <el-option
@@ -125,7 +155,10 @@
       <el-form-item :label="$t('plan.field.selfCost')">
         <el-select
           v-model="formData.detail.self_cost"
+          allow-create
           multiple
+          filterable
+          default-first-option
           placeholder=""
           style="width: 100%">
           <el-option
@@ -307,6 +340,20 @@ export default {
         kingpower_team_no: '',
         finance_date: '',
         take_date: '',
+        plan_date: '',
+        code_a: '',
+        adult_num: '',
+        bedkid_num: '',
+        nobedkid_num: '',
+        baby_num: '',
+        leader_num: '',
+        remain_num: '',
+        sgl: '',
+        twn: '',
+        trp: '',
+        dbl: '',
+        honeymood: '',
+        tl: '',
         detail: {
           outlay: '',
           other_flight: '',
@@ -447,6 +494,20 @@ export default {
         kingpower_team_no: '',
         finance_date: '',
         take_date: '',
+        plan_date: '',
+        code_a: '',
+        adult_num: '',
+        bedkid_num: '',
+        nobedkid_num: '',
+        baby_num: '',
+        leader_num: '',
+        remain_num: '',
+        sgl: '',
+        twn: '',
+        trp: '',
+        dbl: '',
+        honeymood: '',
+        tl: '',
         detail: {
           outlay: '',
           other_flight: '',

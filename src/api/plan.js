@@ -35,3 +35,12 @@ export function editPlan(data) {
     data
   })
 }
+
+// 总计划列表
+export function getPlanList(params) {
+  return request({
+    url: '/admin/factordata/plan/search',
+    method: 'get',
+    params
+  })
+}
