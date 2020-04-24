@@ -18,6 +18,13 @@ const router = {
       component: () => import('@/views/group/list'),
       name: 'groupList',
       meta: { title: 'groupList' }
+    },
+    {
+      path: 'detail',
+      component: () => import('@/views/group/detail'),
+      name: 'groupDetail',
+      hidden: true,
+      meta: { title: 'groupDetail' }
     }
   ]
 }

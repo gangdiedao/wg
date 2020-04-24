@@ -44,6 +44,9 @@
         prop="code"
         width="180"
         :label="$t('plan.field.code')">
+        <template slot-scope="{row}">
+          <el-link type="primary" @click="$router.push({path: '/group/detail', query: {code: row.code}})">{{row.code}}</el-link>
+        </template>
       </el-table-column>
       <el-table-column
         prop="type"
@@ -157,6 +160,16 @@
         prop="market"
         width="140"
         :label="$t('plan.field.market')">
+        <template slot-scope="{row}">
+          <el-popover
+            placement="top-start"
+            title=""
+            width="400"
+            trigger="hover"
+            :content="row.market">
+            <div class="text-ellipsis" slot="reference">{{row.market}}</div>
+          </el-popover>
+        </template>
       </el-table-column>
       <el-table-column
         prop="in_code"
@@ -291,9 +304,10 @@
     <el-row type="flex" justify="end">
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-row>
-    <keep-alive>
-      <div v-if="loadEditModal"><edit-plan :show.sync="showEditPlan" :item="planItem" @success="getList"/></div>
-    </keep-alive>
+    <!-- <keep-alive>
+      <div v-if="loadEditModal"></div>
+    </keep-alive> -->
+    <edit-plan :show.sync="showEditPlan" :item="planItem" @success="getList"/>
   </div>
 </template>
 
