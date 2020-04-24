@@ -44,3 +44,12 @@ export function getPlanList(params) {
     params
   })
 }
+
+// 团期列表
+export function getGroupList(params) {
+  return request({
+    url: '/admin/factordata/plan/search2',
+    method: 'get',
+    params
+  })
+}

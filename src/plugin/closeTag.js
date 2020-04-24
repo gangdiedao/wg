@@ -20,8 +20,20 @@ const closeTag = (view = router.app.$route) => {
   })
 }
 
+const refreshSelectedTag = (view = router.app.$route) => {
+  store.dispatch('tagsView/delCachedView', view).then(() => {
+    const { fullPath } = view
+    setTimeout(() => {
+      router.replace({
+        path: '/redirect' + fullPath
+      })
+    })
+  })
+}
+
 export default {
   install(Vue, options = {}) {
     Vue.prototype.$closeTag = closeTag
+    Vue.prototype.$refreshTag = refreshSelectedTag
   }
 }

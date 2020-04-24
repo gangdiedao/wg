@@ -16,7 +16,7 @@
       <el-form-item :label="$t('plan.field.dateNum')">
         <div>
           <label>日期:</label><el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="formData.plan_date"></el-date-picker>
-          <label style="margin-left: 10px;">团数:</label><el-input-number controls-position="right" :min="0"></el-input-number>
+          <label style="margin-left: 10px;">团数:</label><el-input-number controls-position="right" :min="1"></el-input-number>
         </div>
         <div style="margin-top: 10px;">
           <label>甲方团号:</label><el-input class="plan-edit-input" v-model="formData.code_a" clearable/>
@@ -41,17 +41,17 @@
         </div>
       </el-form-item>
       <el-form-item :label="$t('plan.field.subsidiary')">
-        <el-select v-model="formData.sub_company_id" class="filter-item" @change="handleChangeCity" placeholder="">
+        <el-select v-model="formData.sub_company_id" class="filter-item" @change="handleChangeSelect('subsidiaryOptions', {'sub_company_name': 'name'}, $event)" placeholder="">
           <el-option v-for="item in subsidiaryOptions" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('plan.field.op')">
-        <el-select v-model="formData.op_user_id" class="filter-item" @change="handleChangeCity" placeholder="">
+        <el-select v-model="formData.op_user_id" class="filter-item" @change="handleChangeSelect('opList', {'op_organization_id': 'department_id', 'op_user_name': 'name'}, $event)" placeholder="">
           <el-option v-for="item in opList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('plan.field.manager')">
-        <el-select v-model="formData.deal_user_id" class="filter-item" @change="handleChangeCity" placeholder="">
+        <el-select v-model="formData.deal_user_id" class="filter-item" @change="handleChangeSelect('manageList', {'deal_user_name': 'name', 'deal_organization_id': 'department_id'}, $event)" placeholder="">
           <el-option v-for="item in manageList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -60,7 +60,7 @@
         <span>(Exp:2-2-1 5N7D)</span>
       </el-form-item>
       <el-form-item :label="$t('plan.field.guide')">
-        <el-input class="plan-edit-input" v-model="formData.guide_id" clearable/>
+        <div @click="showSelectGuid = !showSelectGuid"><el-input class="plan-edit-input" v-model="formData.guide_name" readonly/></div>
       </el-form-item>
       <el-form-item :label="$t('plan.field.fromCity')">
         <el-input class="plan-edit-input" v-model="formData.from_city" clearable/>
@@ -80,7 +80,7 @@
         <el-input type="textarea" :rows="1" v-model="formData.detail.other_flight2" clearable/>
       </el-form-item>
       <el-form-item :label="$t('plan.field.jiafang')">
-        <el-select v-model="formData.company_id" class="filter-item" @change="handleChangeCity" placeholder="">
+        <el-select v-model="formData.company_id" class="filter-item" @change="handleChangeSelect('partnerList', {'company_name': 'name'}, $event)" placeholder="">
           <el-option v-for="item in partnerList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -137,7 +137,7 @@
       </el-form-item>
       <el-form-item :label="$t('plan.field.shopping')">
         <el-select
-          v-model="formData.detail.shopping"
+          v-model="formData.detail.shoppingArr"
           allow-create
           multiple
           filterable
@@ -154,7 +154,7 @@
       </el-form-item>
       <el-form-item :label="$t('plan.field.selfCost')">
         <el-select
-          v-model="formData.detail.self_cost"
+          v-model="formData.detail.self_costArr"
           allow-create
           multiple
           filterable
@@ -256,6 +256,7 @@
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
+    <SelectGuide :show.sync="showSelectGuid" @row-click="handleSelectGuid"/>
   </el-dialog>
 </template>>
 
@@ -266,8 +267,13 @@ import { getPlanCodeDetail, addPlan, editPlan } from '@/api/plan'
 import { addScenic, editScenic } from '@/api/scenic'
 import { getUserList } from '@/api/organization'
 import { fetchList as getPartnerList } from '@/api/partner'
+import SelectGuide from '@/views/guide/components/select-guide'
+import { parseTime } from '@/utils/index'
 
 export default {
+  components: {
+    SelectGuide
+  },
   props: {
     show: {
       type: Boolean,
@@ -283,17 +289,20 @@ export default {
     },
     show(bool) {
       this.dialogFormVisible = bool
-      if (this.item) {
-        Object.assign(this.formData, this.item)
-        this.dialogStatus = 'update'
-      } else {
-        // this.resetformData()
-        this.dialogStatus = 'create'
+      if (bool) {
+        if (this.item) {
+          Object.assign(this.formData, this.item)
+          this.dialogStatus = 'update'
+        } else {
+          this.resetformData()
+          this.dialogStatus = 'create'
+        }
       }
     }
   },
   data() {
     return {
+      showSelectGuid: false,
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
@@ -331,6 +340,7 @@ export default {
         guide_id: undefined,
         guide_name: '',
         from_city: '',
+        plan_day: '',
         leader: '',
         flight: '',
         one_price: '',
@@ -340,7 +350,7 @@ export default {
         kingpower_team_no: '',
         finance_date: '',
         take_date: '',
-        plan_date: '',
+        plan_date: parseTime(new Date(), '{y}-{m}-{d}'),
         code_a: '',
         adult_num: '',
         bedkid_num: '',
@@ -358,8 +368,8 @@ export default {
           outlay: '',
           other_flight: '',
           other_flight2: '',
-          shopping: '',
-          self_cost: '',
+          shoppingArr: '',
+          self_costArr: '',
           customer_info: '',
           car_remark: '',
           room_remark: '',
@@ -368,8 +378,7 @@ export default {
         }
       },
       rules: {
-        name: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
-        city_id: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
+        // plan_date: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }]
       },
       customersource: [],
       shichangrex: [],
@@ -485,6 +494,7 @@ export default {
         guide_id: undefined,
         guide_name: '',
         from_city: '',
+        plan_day: '',
         leader: '',
         flight: '',
         one_price: '',
@@ -494,7 +504,7 @@ export default {
         kingpower_team_no: '',
         finance_date: '',
         take_date: '',
-        plan_date: '',
+        plan_date: parseTime(new Date(), '{y}-{m}-{d}'),
         code_a: '',
         adult_num: '',
         bedkid_num: '',
@@ -512,8 +522,8 @@ export default {
           outlay: '',
           other_flight: '',
           other_flight2: '',
-          shopping: '',
-          self_cost: '',
+          shoppingArr: '',
+          self_costArr: '',
           customer_info: '',
           car_remark: '',
           room_remark: '',
@@ -551,11 +561,18 @@ export default {
       })
     },
     // 选择更改
-    handleChangeCity(id) {
-      // let res = this.cityOptions.filter(item => item.id === id)
-      // if (res.length > 0) {
-      //   this.formData.city_name = res[0]['value']
-      // }
+    handleChangeSelect(dataname, keys, id) {
+      let res = this[dataname].filter(item => item.id === id)
+      if (res.length > 0) {
+        for (let key in keys) {
+          this.formData[key] = res[0][keys[key]]
+        }
+      }
+    },
+    // 选择导游
+    handleSelectGuid(item) {
+      this.formData.guide_id = item.id
+      this.formData.guide_name = item.name
     }
   }
 }
