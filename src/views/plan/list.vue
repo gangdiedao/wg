@@ -41,21 +41,246 @@
       </el-table-column>
       <el-table-column
         fixed
-        prop="name"
-        :label="$t('plan.field.name')">
+        prop="code"
+        width="180"
+        :label="$t('plan.field.code')">
       </el-table-column>
       <el-table-column
-        fixed
-        prop="name"
-        :label="$t('plan.field.name')">
+        prop="type"
+        width="180"
+        :label="$t('plan.field.zhutuan')">
+        <template slot-scope="{row}">
+          <span>{{{1: '单团', 2: '主团', 3: '子团'}[row.type]}}</span>
+        </template>
       </el-table-column>
       <el-table-column
-        fixed
         prop="name"
-        :label="$t('plan.field.name')">
+        width="140"
+        :label="$t('plan.field.zituan')">
+      </el-table-column>
+      <el-table-column
+        prop="company_name"
+        width="140"
+        :label="$t('plan.field.jiafang')">
+      </el-table-column>
+      <el-table-column
+        prop="code_a"
+        width="140"
+        :label="$t('plan.field.jiafangCode')">
+      </el-table-column>
+      <el-table-column
+        prop="foundation_prodcut_name"
+        width="140"
+        :label="$t('plan.field.product')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.productType')">
+      </el-table-column>
+      <el-table-column
+        prop="cal_people_num"
+        width="140"
+        :label="$t('plan.field.number')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.room')">
+      </el-table-column>
+      <el-table-column
+        prop="plan_day"
+        width="140"
+        :label="$t('plan.field.days')">
+      </el-table-column>
+      <el-table-column
+        prop="from_city"
+        width="140"
+        :label="$t('plan.field.fromCity')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.outlayRemark')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.outlayDetail')">
+      </el-table-column>
+      <el-table-column
+        prop="op_user_name"
+        width="140"
+        :label="$t('plan.field.op')">
+      </el-table-column>
+      <el-table-column
+        prop="deal_user_name"
+        width="140"
+        :label="$t('plan.field.manager')">
+      </el-table-column>
+      <el-table-column
+        prop="guide_name"
+        width="140"
+        :label="$t('plan.field.guide')">
+      </el-table-column>
+      <el-table-column
+        prop="leader"
+        width="140"
+        :label="$t('plan.field.lingdui')">
+      </el-table-column>
+      <el-table-column
+        prop="flight"
+        width="140"
+        :label="$t('plan.field.flight')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.flight1')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.flight2')">
+      </el-table-column>
+      <el-table-column
+        prop="operator_a"
+        width="140"
+        :label="$t('plan.field.jiafangOp')">
+      </el-table-column>
+      <el-table-column
+        prop="source"
+        width="140"
+        :label="$t('plan.field.source')">
+      </el-table-column>
+      <el-table-column
+        prop="market"
+        width="140"
+        :label="$t('plan.field.market')">
+      </el-table-column>
+      <el-table-column
+        prop="in_code"
+        width="140"
+        :label="$t('plan.field.inCode')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.shopping')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.selfCost')">
+      </el-table-column>
+      <el-table-column
+        prop="one_price"
+        width="140"
+        :label="$t('plan.field.onePrice')">
+      </el-table-column>
+      <el-table-column
+        prop="pass_order"
+        width="140"
+        :label="$t('plan.field.passOrder')">
+      </el-table-column>
+      <el-table-column
+        prop="others_money"
+        width="140"
+        :label="$t('plan.field.othersMoney')">
+      </el-table-column>
+      <el-table-column
+        prop="leader_ret_pay"
+        width="140"
+        :label="$t('plan.field.lingduiYj')">
+      </el-table-column>
+      <el-table-column
+        prop="service_pay"
+        width="140"
+        :label="$t('plan.field.guideXf')">
+      </el-table-column>
+      <el-table-column
+        prop="settlement"
+        width="140"
+        :label="$t('plan.field.settlement')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.customerInfo')">
+      </el-table-column>
+      <el-table-column
+        prop="shopping_team_no"
+        width="140"
+        :label="$t('plan.field.shoppingTeamCode')">
+      </el-table-column>
+      <el-table-column
+        prop="kingpower_team_no"
+        width="140"
+        :label="$t('plan.field.kingpowerTeamCode')">
+      </el-table-column>
+      <el-table-column
+        prop="financeDate"
+        width="140"
+        :label="$t('plan.field.financeDate')">
+      </el-table-column>
+      <el-table-column
+        prop="take_date"
+        width="140"
+        :label="$t('plan.field.takeDate')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.carRemark')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.roomRemark')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.hotel')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.car')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.speedboat')">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        width="140"
+        :label="$t('plan.field.status')">
+      </el-table-column>
+      <el-table-column
+        prop="out_status"
+        width="140"
+        :label="$t('plan.field.qrstatus')">
+      </el-table-column>
+      <el-table-column
+        prop="remark"
+        width="140"
+        :label="$t('plan.field.remark')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.updater')">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        width="140"
+        :label="$t('plan.field.updateDate')">
       </el-table-column>
       <el-table-column
         fixed="right"
+        width="140"
         :label="$t('plan.field.action')">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="handleEdit(scope.row)">{{ $t('actions.edit') }}</el-button>
@@ -66,7 +291,9 @@
     <el-row type="flex" justify="end">
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </el-row>
-    <edit-plan :show.sync="showEditPlan" :item="planItem" @success="getList"/>
+    <keep-alive>
+      <div v-if="loadEditModal"><edit-plan :show.sync="showEditPlan" :item="planItem" @success="getList"/></div>
+    </keep-alive>
   </div>
 </template>
 
@@ -74,7 +301,7 @@
 import EditPlan from './components/edit-plan'
 import mixin from './mixin'
 import Pagination from '@/components/Pagination'
-// import { getRoleList, deleteRole } from '@/api/organization'
+import { getPlanList } from '@/api/plan'
 export default {
   name: 'planList',
   mixins: [mixin],
@@ -87,6 +314,7 @@ export default {
   },
   data() {
     return {
+      loadEditModal: false,
       showEditPlan: false,
       planItem: '',
       total: 10,
@@ -104,10 +332,12 @@ export default {
 
     },
     handleCreate() {
+      this.loadEditModal = true
       this.showEditPlan = true
       this.planItem = ''
     },
     handleEdit(item) {
+      this.loadEditModal = true
       this.planItem = item
       this.showEditPlan = true
     },
@@ -119,10 +349,10 @@ export default {
       this.getList()
     },
     getList() {
-      // getRoleList(this.listQuery).then(res => {
-      //   this.total = res.data.count
-      //   this.tableData = res.data.data
-      // })
+      getPlanList(this.listQuery).then(res => {
+        this.total = res.data.count
+        this.tableData = res.data.data
+      })
     }
   }
 }
