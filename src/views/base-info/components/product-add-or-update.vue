@@ -5,6 +5,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     center
+    customClass="customWidth"
   >
     <el-form
       ref="dataForm"
@@ -125,35 +126,36 @@
         <el-input v-model="dataForm.outlay" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.outlay')" />
       </el-form-item>
       <el-form-item prop="outlay" :label="$t('i18nView.information.tourFee')">
-        <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate()">
+        <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate(1)">
         {{ $t('i18nView.information.add') }}
       </el-button>
       <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="date" label="项目" align="center">
+        <el-table-column prop="name" label="项目" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.busno" />
+            <el-input v-model="row.name" />
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="价格" align="center">
+        <el-table-column prop="price" label="价格" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.carno" />
+            <el-input v-model="row.price" type="number"/>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="数量" align="center">
+        <el-table-column prop="count" label="数量" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.driver" />
+            <el-input v-model="row.count" type="number"/>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="小计" align="center">
+        <el-table-column prop="total" label="小计" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.telphone" />
+            <!-- <span>{{parseInt(row.count) + parseInt(row.price)}}</span> -->
+            <span>{{row.total}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="类型" align="center">
+        <el-table-column prop="type" label="类型" align="center">
           <template slot-scope="{row}">
-            <el-select v-model="row.bustype">
+            <el-select v-model="row.type">
               <el-option
-                v-for="item in busTypeList"
+                v-for="item in proTypeList"
                 :key="item.id"
                 :label="item.name"
                 :value="item.name"
@@ -273,57 +275,45 @@
         <el-input v-model="dataForm.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.remarks')" type="textarea" />
       </el-form-item>
       <el-divider content-position="left">行程信息</el-divider>
-      <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate()">
+      <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate(2)">
         {{ $t('i18nView.information.add') }}
       </el-button>
-      <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="date" label="天数" align="center">
-          <template slot-scope="{row}">
-            <el-input v-model="row.busno" />
-          </template>
-        </el-table-column>
+      <el-table :data="tableData2" border style="width: 100%">
+        <el-table-column type="index" label="天数" align="center"></el-table-column>
         <el-table-column prop="name" label="行程" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.carno" />
+            <el-input v-model="row.trip" type="textarea"/>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="用餐" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.driver" />
+            <el-input v-model="row.dine" type="textarea"/>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="餐厅" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.telphone" />
+            <el-button type="text" size="small">设置</el-button>
+            <el-button type="text" size="small">清除</el-button>
+            <el-button type="text" size="small">设为用餐</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="景点" align="center">
           <template slot-scope="{row}">
-            <el-select v-model="row.bustype">
-              <el-option
-                v-for="item in busTypeList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.name"
-              />
-            </el-select>
+            <el-button type="text" size="small">设置</el-button>
+            <el-button type="text" size="small">清除</el-button>
+            <el-button type="text" size="small">设为行程</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="酒店" align="center">
           <template slot-scope="{row}">
-            <el-select v-model="row.busstatus">
-              <el-option
-                v-for="item in busStatus"
-                :key="item.id"
-                :label="item.name"
-                :value="item.name"
-              />
-            </el-select>
+           <el-button type="text" size="small">设置</el-button>
+            <el-button type="text" size="small">清除</el-button>
+            <el-button type="text" size="small">复制上一天酒店</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="备注" align="center">
           <template slot-scope="{row}">
-            <el-input v-model="row.remark" />
+            <el-input v-model="row.remark"  type="textarea"/>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="操作" align="center">
@@ -374,6 +364,16 @@ export default {
         page: 1,
         limit: 1000,
       },
+      proTypeList: [
+        {
+          id: 0,
+          name: '默认'
+        },
+        {
+          id: 1,
+          name: '可选'
+        }
+      ],
       dataRule: {
         info_type_id: [
           { required: true, message: this.$t('i18nView.information.select') + this.$t('i18nView.information.infoType'), trigger: 'blur' }
@@ -416,7 +416,18 @@ export default {
       payTypeData: [],
       serviceData: [],
       tableData: [],
+      tableData2: [],
       dialogImageUrl: ''
+    }
+  },
+  watch: {
+    tableData:{
+       handler(val, oldVal) {
+         val.map(item => {
+           item.total = item.count * item.price
+         })
+      },
+      deep: true
     }
   },
   computed: {},
@@ -452,6 +463,8 @@ export default {
             email: '',
             logo: ''
           }
+          this.tableData = []
+          this.tableData2 = []
         }
       })
     },
@@ -510,6 +523,31 @@ export default {
         return item.id === id
       })
       this.dataForm.info_type_name = obj.name
+    },
+    //新增团费，新增行程
+    handleCreate(flag){
+      if(flag == 1){
+        this.tableData.push(
+          {
+            name: '',
+            count: 0,
+            price: 0,
+            total: 0,
+            type: '默认'
+          }
+        )
+      }else{
+        this.tableData2.push(
+          {
+            trips: '',
+            dine: '',
+            hotels: [],
+            scenics: [],
+            restaurants: [],
+            remark: ''
+          }
+        )
+      }
     },
     coChange(){},
     // 上传图片、图标之前
@@ -659,3 +697,8 @@ export default {
   }
 }
 </script>
+<style>
+.customWidth{
+  width:1200px
+}
+</style>
