@@ -9,6 +9,15 @@ export function getHotelList(params) {
   })
 }
 
+// 酒店详情
+export function getHotelDetail(params) {
+  return request({
+    url: '/admin/factordata/hotel/detail',
+    method: 'get',
+    params
+  })
+}
+
 // 酒店创建
 export function addHotel(data) {
   return request({

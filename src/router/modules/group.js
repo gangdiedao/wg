@@ -10,7 +10,7 @@ const router = {
   alwaysShow: true,
   meta: {
     title: 'group',
-    icon: 'table'
+    icon: 'international'
   },
   children: [
     {

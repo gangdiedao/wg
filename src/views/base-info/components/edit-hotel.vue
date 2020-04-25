@@ -1,6 +1,11 @@
 <template>
   <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
-    <el-form ref="dataForm" :rules="rules" :model="formData" label-position="right" label-width="80px">
+    <el-form style="height: 80vh;overflow-y: auto" ref="dataForm" :rules="rules" :model="formData" label-position="right" label-width="80px">
+      <el-form-item :label="$t('i18nView.information.infoType')">
+        <el-select v-model="formData.info_type_id" clearable class="filter-item" @change="handleChangeSelect('infotag', {info_type_name: 'value'}, $event)" :placeholder="$t('i18nView.information.infoType')">
+          <el-option v-for="item in infotag" :key="item.id" :label="item.value" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item :label="$t('i18nView.information.name')" prop="name">
         <el-input v-model="formData.name"/>
       </el-form-item>
@@ -17,13 +22,13 @@
         <el-input v-model="formData.contact" />
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.city')" prop="city_id">
-        <el-select v-model="formData.city_id" class="filter-item" @change="handleChangeCity" placeholder="选择城市 ">
+        <el-select v-model="formData.city_id" class="filter-item" @change="handleChangeSelect('cityOptions', {city_name: 'value'}, $event)" :placeholder="$t('i18nView.common.selectCity')">
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.hotelType')">
-        <el-select v-model="formData.hotel_type_id" class="filter-item" @change="handleChangeHotel" placeholder="选择酒店类别">
-          <el-option v-for="item in hotelTypeOptions" :key="item.id" :label="item.value" :value="item.id" />
+        <el-select v-model="formData.hotel_type_id" class="filter-item" @change="handleChangeSelect('hoteltype', {hotel_type_name: 'value'}, $event)" :placeholder="$t('i18nView.common.selectHotelType')">
+          <el-option v-for="item in hoteltype" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.hotelLevel')">
@@ -39,13 +44,13 @@
         <el-input v-model="formData.url" />
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.payType')">
-        <el-select v-model="formData.pay_type_id" class="filter-item" @change="handleChangePayType" placeholder="选择支付类型">
-          <el-option v-for="item in payOptions" :key="item.id" :label="item.value" :value="item.id" />
+        <el-select v-model="formData.pay_type_id" class="filter-item" @change="handleChangeSelect('paymenttype', {pay_type_name: 'value'}, $event)" :placeholder="$t('i18nView.common.selectPayType')">
+          <el-option v-for="item in paymenttype" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.files')">
         <upload :files.sync="formData.filesArr">
-          <el-button size="small" type="primary">点击上传</el-button>
+          <el-button size="small" type="primary">{{$t('i18nView.common.upload')}}</el-button>
         </upload>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.introduce')">
@@ -54,9 +59,10 @@
       <el-form-item :label="$t('i18nView.information.remarks')">
         <el-input v-model="formData.remark" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
       </el-form-item>
-
-      <el-divider hidden content-position="left">价格信息</el-divider>
-      <el-calendar hidden v-model="calendar">
+      <el-divider content-position="left">
+        <label>{{ $t('i18nView.common.priceInfo') }}</label>
+      </el-divider>
+      <el-calendar v-model="calendar">
          <template
           slot="dateCell"
           slot-scope="{date, data}">
@@ -65,9 +71,9 @@
               {{ data.day.split('-').slice(1)[1] }}
             </b>
             <div style="margin-top: 10px;">
-              <small>成人价：10</small><br>
-              <small>小孩价：10</small><br>
-              <small>限预定数量：10</small>
+              <small>{{ $t('i18nView.common.price') }}：{{setCalendarPrice(data.day).price || '-'}}</small><br>
+              <small>{{ $t('i18nView.common.kidPrice') }}：{{setCalendarPrice(data.day).kid_price || '-'}}</small><br>
+              <small>{{ $t('i18nView.common.num') }}：{{setCalendarPrice(data.day).num || '-'}}</small>
             </div>
           </div>
         </template>
@@ -87,31 +93,31 @@
       center
       append-to-body>
       <el-form label-width="100px">
-        <el-form-item label="选择日期">
+        <el-form-item :label="$t('i18nView.common.selectDate')">
           <el-date-picker
             v-model="calendarData.daterange"
             type="daterange"
             value-format="yyyy-MM-dd"
             :editable="false"
             :picker-options="pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期">
+            :range-separator="$t('i18nView.common.to')"
+            :start-placeholder="$t('i18nView.common.startDate')"
+            :end-placeholder="$t('i18nView.common.endDate')">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="小孩价">
+        <el-form-item :label="$t('i18nView.common.price')">
           <el-input type="number" v-model="calendarData.childprice"></el-input>
         </el-form-item>
-        <el-form-item label="成人价">
+        <el-form-item :label="$t('i18nView.common.kidPrice')">
           <el-input type="number" v-model="calendarData.price"></el-input>
         </el-form-item>
-        <el-form-item label="控制预定数量">
+        <el-form-item :label="$t('i18nView.common.num')">
           <el-input type="number" v-model="calendarData.num"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="innerVisible = false">取 消</el-button>
-        <el-button @click="saveCalendar" type="primary">确 定</el-button>
+        <el-button @click="innerVisible = false">{{ $t('actions.cancel') }}</el-button>
+        <el-button @click="saveCalendar" type="primary">{{ $t('actions.confirm') }}</el-button>
       </span>
     </el-dialog>
   </el-dialog>
@@ -119,10 +125,11 @@
 
 <script>
 import { getOtherDictList } from '@/api/system'
-import { addHotel, editHotel } from '@/api/hotel'
+import { addHotel, editHotel, getHotelDetail } from '@/api/hotel'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 import upload from '@/components/Upload/index'
+import { mapGetters } from 'vuex'
 
 const moment = extendMoment(Moment)
 
@@ -144,15 +151,16 @@ export default {
       }
     },
     show(bool) {
+      this.resetformData()
       // this.$refs['dataForm'].clearValidate()
       this.dialogFormVisible = bool
       if (this.item) {
-          Object.assign(this.formData, this.item)
-          this.dialogStatus = 'update'
-        } else {
-          this.resetformData()
-          this.dialogStatus = 'create'
-        }
+        this.getHotelDetail(this.item.id)
+        Object.assign(this.formData, this.item)
+        this.dialogStatus = 'update'
+      } else {
+        this.dialogStatus = 'create'
+      }
     },
     innerVisible(bool) {
       if (!bool) {
@@ -160,12 +168,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters({
+      cityOptions: 'cityList'
+    })
+  },
   data() {
     return {
       currentDate: '',
       daterange: '',
       calendar: '',
       calendarData: {
+        id: undefined,
         daterange: '',
         price: '',
         childprice: '',
@@ -208,9 +222,10 @@ export default {
         name: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
         city_id: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
       },
-      cityOptions: [],
-      hotelTypeOptions: [],
-      payOptions: [],
+      // cityOptions: [],
+      hoteltype: [],
+      paymenttype: [],
+      infotag: [],
       pickerOptions: {
         disabledDate: (date) => {
           // console.log(new Date(date).getTime(), new Date(this.currentDate).setHours(0).getTime())
@@ -225,27 +240,31 @@ export default {
   methods: {
     init() {
       this.getCity()
-      this.getPayType()
-      this.getHotelType()
+      this.getDictList('paymenttype')
+      this.getDictList('hoteltype')
+      this.getDictList('infotag')
     },
-    getPayType() {
-      getOtherDictList({type: 'paymenttype'}).then(res => {
-        this.payOptions = res.data
+    getDictList(name) {
+      getOtherDictList({type: name}).then(res => {
+        this[name] = res.data
       })
     },
     getCity() {
-      getOtherDictList({type: 'city'}).then(res => {
-        this.cityOptions = res.data
-      })
-    },
-    getHotelType() {
-      getOtherDictList({type: 'hoteltype'}).then(res => {
-        this.hotelTypeOptions = res.data
-      })
+      if (!this.cityOptions.length) {
+        this.$store.dispatch('system/getCity')
+      }
     },
     handleCaledar(day, date) {
       this.currentDate = date
       this.calendarData.daterange = [day, day]
+      let res = this.setCalendarPrice(day)
+      if (res.id) {
+        this.calendarData.id = res.id
+        this.calendarData.price = res.price
+        this.calendarData.childprice = res.kid_price
+        this.calendarData.num = res.num
+      }
+      
       this.innerVisible = true
     },
     resetformData() {
@@ -276,6 +295,39 @@ export default {
         priceDate: []
       }
     },
+    getHotelDetail(id) {
+      getHotelDetail({id}).then(res => {
+        this.formData.priceDate = res.data.price_date
+        this.formData.num = res.data.num
+      })
+    },
+    setCalendarPrice(day) {
+      let data = {
+        id: undefined,
+        price: '',
+        kid_price: '',
+        num: ''
+      }
+      for (let i = 0, len = this.formData.priceDate.length; i < len; i++) {
+        if (this.formData.priceDate[i]['start_date'] == day) {
+          data.id = this.formData.priceDate[i]['id']
+          data.price = this.formData.priceDate[i]['detail'].length ? this.formData.priceDate[i]['detail'][0]['price'] : ''
+          data.kid_price = this.formData.priceDate[i]['detail'].length ? this.formData.priceDate[i]['detail'][0]['kid_price']: ''
+          break
+        }
+      }
+      for (let i = 0, len = this.formData.num.length; i < len; i++) {
+        if (this.formData.num[i]['start_date'] == day) {
+          data.num = this.formData.num[i]['num']
+          break
+        }
+      }
+      return data
+    },
+    close() {
+      this.resetformData()
+      this.dialogFormVisible = false
+    },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -284,8 +336,8 @@ export default {
               message: 'success',
               type: 'success'
             })
+            this.close()
             this.$emit('success')
-            this.dialogFormVisible = false
           })
         }
       })
@@ -298,29 +350,19 @@ export default {
               message: 'success',
               type: 'success'
             })
+            this.close()
             this.$emit('success')
-            this.dialogFormVisible = false
           })
         }
       })
     },
-    // 选择城市
-    handleChangeCity(id) {
-      let res = this.cityOptions.filter(item => item.id === id)
+    // 选择
+    handleChangeSelect(dataname, params, id) {
+      let res = this[dataname].filter(item => item.id === id)
       if (res.length > 0) {
-        this.formData.city_name = res[0]['value']
-      }
-    },
-    handleChangePayType(id) {
-      let res = this.payOptions.filter(item => item.id === id)
-      if (res.length > 0) {
-        this.formData.pay_type_name = res[0]['value']
-      }
-    },
-    handleChangeHotel(id) {
-      let res = this.hotelTypeOptions.filter(item => item.id === id)
-      if (res.length > 0) {
-        this.formData.hotel_type_name = res[0]['value']
+        for (let key in params) {
+          this.formData[key] = res[0][params[key]]
+        }
       }
     },
     saveCalendar() {
@@ -335,6 +377,7 @@ export default {
       const days = Array.from(range.by('days'))
       const data = days.map(m => {
         return {
+          id: this.calendarData.id,
           start_date: m.format('YYYY-MM-DD'),
           end_date: m.format('YYYY-MM-DD'),
           detail: [{
@@ -347,13 +390,22 @@ export default {
       })
       const num = days.map(m => {
         return {
+          id: this.calendarData.id,
           start_date: m.format('YYYY-MM-DD'),
           end_date: m.format('YYYY-MM-DD'),
           num: this.calendarData.num
         }
       })
-      this.formData.priceDate = data
-      this.formData.num = num
+      if (this.dialogStatus === 'update') {
+        let dates = days.map(m => m.format('YYYY-MM-DD'))
+        let _price = this.formData.priceDate.filter(item => !dates.includes(item.start_date))
+        let _num = this.formData.num.filter(item => !dates.includes(item.start_date))
+        this.formData.priceDate = [..._price, ...data]
+        this.formData.num = [..._num, ...num]
+      } else {
+        this.formData.priceDate = data
+        this.formData.num = num
+      }
       this.innerVisible = false
     }
   }

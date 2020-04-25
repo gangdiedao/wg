@@ -1,6 +1,11 @@
 <template>
   <el-dialog :fullscreen="false" top="0" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center>
     <el-form ref="dataForm" :rules="rules" :model="formData" label-position="right" label-width="80px">
+      <el-form-item :label="$t('i18nView.information.infoType')">
+        <el-select v-model="formData.info_type_id" clearable class="filter-item" @change="handleChangeSelect('infotag', {info_type_name: 'value'}, $event)" :placeholder="$t('i18nView.information.infoType')">
+          <el-option v-for="item in infotag" :key="item.id" :label="item.value" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item :label="$t('i18nView.information.name')" prop="name">
         <el-input v-model="formData.name"/>
       </el-form-item>
@@ -8,7 +13,7 @@
         <upload :accept="$config.imageAccept" list-type="picture-card" :files.sync="formData.imagesArr"></upload>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.city')" prop="city_id">
-        <el-select v-model="formData.city_id" class="filter-item" @change="handleChangeCity" placeholder="选择城市 ">
+        <el-select v-model="formData.city_id" class="filter-item" @change="handleChangeCity" :placeholder="$t('i18nView.common.selectCity')">
           <el-option v-for="item in cityOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -39,13 +44,13 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.payType')">
-        <el-select v-model="formData.pay_type_id" class="filter-item" @change="handleChangePayType" placeholder="选择支付类型">
+        <el-select v-model="formData.pay_type_id" class="filter-item" @change="handleChangePayType" :placeholder="$t('i18nView.common.selectPayType')">
           <el-option v-for="item in payOptions" :key="item.id" :label="item.value" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.files')">
         <upload :files.sync="formData.filesArr">
-          <el-button size="small" type="primary">点击上传</el-button>
+          <el-button size="small" type="primary">{{$t('i18nView.common.upload')}}</el-button>
         </upload>
       </el-form-item>
       <el-form-item :label="$t('i18nView.information.introduce')">
@@ -55,8 +60,8 @@
         <el-input v-model="formData.remark" :autosize="{ minRows: 1, maxRows: 4}" type="textarea" placeholder="" />
       </el-form-item>
 
-      <el-divider hidden content-position="left">价格信息</el-divider>
-      <el-calendar hidden v-model="calendar">
+      <!-- <el-divider hidden content-position="left">价格信息</el-divider> -->
+      <!-- <el-calendar hidden v-model="calendar">
          <template
           slot="dateCell"
           slot-scope="{date, data}">
@@ -71,7 +76,7 @@
             </div>
           </div>
         </template>
-      </el-calendar>
+      </el-calendar> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisible = false">
@@ -81,7 +86,7 @@
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
-    <el-dialog
+    <!-- <el-dialog
       width="30%"
       :visible.sync="innerVisible"
       center
@@ -113,7 +118,7 @@
         <el-button @click="innerVisible = false">取 消</el-button>
         <el-button @click="saveCalendar" type="primary">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </el-dialog>
 </template>>
 
@@ -123,6 +128,7 @@ import { addDining, editDining } from '@/api/dining'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 import upload from '@/components/Upload/index'
+import { mapGetters } from 'vuex'
 
 const moment = extendMoment(Moment)
 
@@ -137,6 +143,11 @@ export default {
     },
     item: ''
   },
+  computed: {
+    ...mapGetters({
+      cityOptions: 'cityList'
+    })
+  },
   watch: {
     dialogFormVisible(bool) {
       if (!bool) {
@@ -144,13 +155,13 @@ export default {
       }
     },
     show(bool) {
+      this.resetformData()
       // this.$refs['dataForm'].clearValidate()
       this.dialogFormVisible = bool
       if (this.item) {
           Object.assign(this.formData, this.item)
           this.dialogStatus = 'update'
         } else {
-          this.resetformData()
           this.dialogStatus = 'create'
         }
     },
@@ -209,10 +220,11 @@ export default {
         name: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
         city_id: [{ required: true, message: this.$t('rules.required'), trigger: 'blur' }],
       },
-      cityOptions: [],
+      // cityOptions: [],
       hotelTypeOptions: [],
       payOptions: [],
       valuationOptions: [],
+      infotag: [],
       pickerOptions: {
         disabledDate: (date) => {
           return new Date(new Date(this.currentDate).setHours(0)).getTime() > new Date(date).getTime()
@@ -225,9 +237,14 @@ export default {
   },
   methods: {
     init() {
-      this.getCity()
+      this.getDictList('infotag')
       this.getPayType()
       this.getValuation()
+    },
+    getDictList(name) {
+      getOtherDictList({type: name}).then(res => {
+        this[name] = res.data
+      })
     },
     getPayType() {
       getOtherDictList({type: 'paymenttype'}).then(res => {
@@ -278,6 +295,10 @@ export default {
         priceDate: []
       }
     },
+    close() {
+      this.resetformData()
+      this.dialogFormVisible = false
+    },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -287,7 +308,7 @@ export default {
               type: 'success'
             })
             this.$emit('success')
-            this.dialogFormVisible = false
+            this.close()
           })
         }
       })
@@ -301,7 +322,7 @@ export default {
               type: 'success'
             })
             this.$emit('success')
-            this.dialogFormVisible = false
+            this.close()
           })
         }
       })
@@ -329,6 +350,15 @@ export default {
       let res = this.valuationOptions.filter(item => item.id === id)
       if (res.length > 0) {
         this.formData.money_type_name = res[0]['value']
+      }
+    },
+    // 选择
+    handleChangeSelect(dataname, params, id) {
+      let res = this[dataname].filter(item => item.id === id)
+      if (res.length > 0) {
+        for (let key in params) {
+          this.formData[key] = res[0][params[key]]
+        }
       }
     },
     saveCalendar() {

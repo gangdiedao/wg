@@ -112,10 +112,10 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   baseInfoRouter,
-  organizationRouter,
-  systemRouter,
   planRouter,
   groupRouter,
+  organizationRouter,
+  systemRouter,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

@@ -1,10 +1,11 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <!-- <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" /> -->
+    <div style="margin-bottom: 15px;">
+      <small>{{$t('i18nView.information.status')}}</small>
+      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.name" :value="item.key" />
       </el-select>
-      <el-input v-model="listQuery.title" :placeholder="$t('other.keyword')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" clearable :placeholder="$t('other.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('actions.search') }}
       </el-button>
@@ -14,12 +15,12 @@
         <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
         <el-button type="success" @click="setStatusAll(1)" :disabled="!multipleSelection.length" size="mini">{{ $t('actions.open') }}</el-button>
         <el-button size="mini" @click="setStatusAll(2)" :disabled="!multipleSelection.length">{{ $t('actions.close') }}</el-button>
-        <el-button size="mini" @click="setStatusAll" :disabled="total < 1">{{ $t('actions.export') }}</el-button>
-        <el-button size="mini" @click="setStatusAll">{{ $t('actions.import') }}</el-button>
+        <el-button size="mini" :disabled="total < 1" @click="handleExport">{{ $t('actions.export') }}</el-button>
+        <!-- <el-button size="mini" @click="setStatusAll">{{ $t('actions.import') }}</el-button> -->
       </el-col>
     </el-row>
-    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" tabPosition="top">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
+    <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card" tabPosition="left">
+      <el-tab-pane v-for="item in cityOptions" :key="item.id" :label="item.value" :name="item.id + ''">
         <keep-alive>
           <el-table
             :key="tableKey"
@@ -39,6 +40,7 @@
             />
             <el-table-column :label="$t('i18nView.information.id')" fixed prop="id" align="center" width="80"></el-table-column>
             <el-table-column :label="$t('i18nView.information.hotelName')" fixed prop="name"  width="180px" align="center"></el-table-column>
+            <el-table-column :label="$t('i18nView.information.infoType')" prop="info_type_name"  width="140px" align="center"></el-table-column>
             <el-table-column :label="$t('i18nView.information.company')" prop="company" min-width="250px"></el-table-column>
             <el-table-column :label="$t('i18nView.information.price')" prop="company" width="140px" align="center"></el-table-column>
             <el-table-column :label="$t('i18nView.information.telePhone')" prop="telphone" width="140px" align="center"></el-table-column>
@@ -69,8 +71,8 @@
                 <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">{{scope.row.status === 1 ? $t('actions.open') : $t('actions.close')}}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
-              <template slot-scope="{row,$index}">
+            <el-table-column :label="$t('i18nView.information.actions')" fixed="right" align="center" width="160" class-name="small-padding fixed-width">
+              <template slot-scope="{row}">
                 <el-button type="primary" size="mini" @click="handleUpdate(row)">
                   {{ $t('actions.edit') }}
                 </el-button>
@@ -103,6 +105,7 @@ import EditHotel from './components/edit-hotel'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import mixin from './mixin'
 import { getHotelList, setStatus } from '@/api/hotel'
+import { mapGetters } from 'vuex'
 
 export default {
   mixins: [mixin],
@@ -115,7 +118,7 @@ export default {
       tabMapOptions: [],
       multipleSelection: [],
       hotelItem: '',
-      activeName: 'all',
+      activeName: '',
       tableKey: 0,
       list: null,
       total: 0,
@@ -123,7 +126,9 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        // status: 'all'
+        city_id: undefined,
+        status: 1,
+        name: ''
       },
       showEditHotel: false,
       
@@ -131,6 +136,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['cityList']),
+    cityOptions: {
+      get() {
+        return [{id: '', value: 'All/全部'}, ...this.cityList]
+      }
+    },
     lang: {
       get() {
         return this.$store.state.app.language
@@ -139,26 +150,45 @@ export default {
   },
   watch: {
     activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
+      if (val !== '0') {
+        this.$router.push(`${this.$route.path}?cityid=${val}`)
+        this.listQuery.city_id = val * 1
+      } else {
+        this.$router.push(`${this.$route.path}`)
+        this.listQuery.city_id = ''
+      }
+      this.getList(1)
     },
     lang() {
       this.setOptions()
     }
   },
   created() {
-    const tab = this.$route.query.tab
-    if (tab) {
-      this.activeName = tab
+    const cityid = this.$route.query.cityid
+    if (cityid) {
+      this.activeName = cityid
+      this.listQuery.city_id = cityid * 1
     }
     this.setOptions()
     // this.setStatusOptions()
+    this.getCityList()
     this.getList()
   },
   methods: {
-    setOptions() {
-      this.tabMapOptions = this.setCityOptions()
+    getCityList() {
+      // if (!this.cityList.length) {
+      //   this.$store.dispatch('system/getCity')
+      // }
+      this.$store.dispatch('system/getCity')
     },
-    getList() {
+    setOptions() {
+      // this.tabMapOptions = this.setCityOptions()
+      this.getStatus()
+    },
+    getList(page) {
+      if (/\d+/.test(page)) {
+        this.listQuery.page = page
+      }
       this.listLoading = true
       getHotelList(this.listQuery).then(response => {
         this.total = response.data.count
@@ -217,6 +247,9 @@ export default {
         this.getList()
       })
     },
+    handleExport() {
+      location.href = `${process.env.VUE_APP_BASE_API}/admin/factordata/hotel/down?status=${this.listQuery.status}&city_id=${this.listQuery.city_id}`
+    }
     // handleDownload() {
     //   this.downloadLoading = true
     //   import('@/vendor/Export2Excel').then(excel => {

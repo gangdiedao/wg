@@ -8,7 +8,7 @@ export default {
         search: '搜索',
         add: '添加',
         export: '导出',
-        id: '序号',
+        id: 'Id',
         name: '名称',
         hotelName: '酒店名称',
         company: '公司名称',
@@ -131,8 +131,8 @@ export default {
         kohchang: '象岛'
       },
       status: {
-        publish: '开启',
-        draft: '关闭',
+        open: '激活',
+        close: '锁定',
         all: '全部'
       },
       payTypeList: {
@@ -176,6 +176,20 @@ export default {
         default: '默认类型',
         company: '公司佣金',
         leader: '导游佣金'
+      },
+      common: {
+        selectCity: '选择城市',
+        selectHotelType: '选择酒店类别',
+        selectPayType: '选择支付类型',
+        selectDate: '选择日期',
+        startDate: '开始日期',
+        endDate: '结束日期',
+        to: '至',
+        upload: '点击上传',
+        priceInfo: '价格信息',
+        price: '成人价',
+        kidPrice: '小孩价',
+        num: '限预定数量'
       }
     }
   },
@@ -183,14 +197,15 @@ export default {
     i18nView: {
       information: {
         hotel: 'Hotel',
+        hotelName: 'Hotel',
         keyword: 'keyword',
         search: 'search',
         add: 'add',
         export: 'export',
-        id: '序号',
+        id: 'ID',
         name: 'HotelName',
         company: 'company',
-        infoType: '信息类型',
+        infoType: 'infoType',
         icon: 'icon',
         pic: 'image',
         url: 'url',
@@ -210,13 +225,14 @@ export default {
         files: 'files',
         remarks: 'remark',
         modifier: '修改者',
-        actions: 'actions',
+        actions: 'action',
         edit: 'edit',
         delete: 'delete',
         team: 'TEAM',
         fit: 'FIT',
         cancel: 'cancel',
-        confirm: 'confirm'
+        confirm: 'confirm',
+        status: 'status'
       },
       areas: {
         all: 'All',

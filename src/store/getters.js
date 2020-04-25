@@ -17,6 +17,7 @@ const getters = {
   dictList: state => state.system.dictList,
   deptList: state => state.organization.deptList,
   roleMenu: state => state.organization.menus,
-  roleList: state => state.organization.roleList
+  roleList: state => state.organization.roleList,
+  cityList: state => state.system.city
 }
 export default getters
