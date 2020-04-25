@@ -2,22 +2,7 @@
   <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :destroy-on-close="true" center>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="180px">
       <el-form-item label="选择导游" prop="foundation_guide_id">
-        <el-select
-          v-model="ruleForm.foundation_guide_id"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="请输入关键词"
-          :remote-method="remoteMethod"
-          :loading="loading"
-          style="width: 100%">
-          <el-option
-            v-for="item in guideUserList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
+        <div @click="showSelectGuid = !showSelectGuid"><el-input class="plan-edit-input" v-model="ruleForm.guide_name" readonly/></div>
       </el-form-item>
       <el-form-item label="日期" prop="bill_date">
         <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="选择日期" v-model="ruleForm.bill_date" style="width: 100%;"></el-date-picker>
@@ -39,20 +24,23 @@
       <el-button @click="dialogFormVisible = false">
         {{ $t('actions.cancel') }}
       </el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+      <el-button :loading="submitLoading" type="primary" @click="dialogStatus==='create'?createData():updateData()">
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
+    <SelectGuide :show.sync="showSelectGuid" @row-click="handleSelectGuid"/>
   </el-dialog>
 </template>
 
 <script>
 import upload from '@/components/Upload/index'
 import { guideList, addAdvance, editAdvance } from '@/api/guide'
+import SelectGuide from '@/views/guide/components/select-guide'
 
 export default {
   components: {
-    upload
+    upload,
+    SelectGuide
   },
   props: {
     show: {
@@ -77,6 +65,7 @@ export default {
           this.ruleForm = {
             id: undefined,
             foundation_guide_id: '',
+            guide_name: '',
             bill_date: '',
             amount: '',
             advance_no: '',
@@ -89,10 +78,12 @@ export default {
     }
   },
   created() {
-    this.init()
+    // this.init()
   },
   data() {
     return {
+      submitLoading: false,
+      showSelectGuid: false,
       loading: false,
       guideUserList: [],
       fileList: [],
@@ -105,6 +96,7 @@ export default {
       ruleForm: {
         id: undefined,
         foundation_guide_id: '',
+        guide_name: '',
         bill_date: '',
         amount: '',
         advance_no: '',
@@ -139,24 +131,40 @@ export default {
         this.guideUserList = []
       }
     },
+    // 选择导游
+    handleSelectGuid(item) {
+      this.ruleForm.foundation_guide_id = item.id
+      this.ruleForm.guide_name = item.name
+    },
     createData() {
-      addAdvance(this.ruleForm).then(() => {
-        this.$message({
-          message: 'success',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.dialogFormVisible = false
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.submitLoading = true
+          addAdvance(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.dialogFormVisible = false
+          }).finally(() => {
+            this.submitLoading = false
+          })
+        }
       })
     },
     updateData() {
-      editAdvance(this.ruleForm).then(() => {
-        this.$message({
-          message: 'success',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.dialogFormVisible = false
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          editAdvance(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.dialogFormVisible = false
+          })
+        }
       })
     }
   }

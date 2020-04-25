@@ -7,7 +7,7 @@
       <el-input v-model="ruleForm.confirm" type="password" autocomplete="off" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">{{ $t('actions.confirm') }}</el-button>
+      <el-button :loading="submitLoading" type="primary" @click="submitForm('ruleForm')">{{ $t('actions.confirm') }}</el-button>
       <el-button @click="resetForm('ruleForm')">{{ $t('profile.field.reset') }}</el-button>
     </el-form-item>
   </el-form>
@@ -36,6 +36,7 @@ export default {
       }
     }
     return {
+      submitLoading: false,
       ruleForm: {
         password: '',
         confirm: ''
@@ -54,11 +55,14 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.submitLoading = true
           updatePwd(this.ruleForm).then(() => {
             this.$message({
               message: '修改成功',
               type: 'success'
             })
+          }).finally(() => {
+            this.submitLoading = false
           })
         }
       })

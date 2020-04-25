@@ -63,7 +63,7 @@
       <el-button @click="dialogFormVisible = false">
         {{ $t('actions.cancel') }}
       </el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+      <el-button :loading="submitLoading" type="primary" @click="dialogStatus==='create'?createData():updateData()">
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
@@ -131,6 +131,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       open: false,
       parentname: '',
       filterText: '',
@@ -194,23 +195,37 @@ export default {
       this.dialogFormVisible = false
     },
     createData() {
-      createUser(this.ruleForm).then(() => {
-        this.$message({
-          message: '创建用户成功',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.close()
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.submitLoading = true
+          createUser(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.close()
+          }).finally(() => {
+            this.submitLoading = false
+          })
+        }
       })
     },
     updateData() {
-      updateUser(this.ruleForm).then(() => {
-        this.$message({
-          message: '修改用户成功',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.close()
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.submitLoading = true
+          updateUser(this.ruleForm).then(() => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.close()
+          }).finally(() => {
+            this.submitLoading = false
+          })
+        }
       })
     }
   }

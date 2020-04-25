@@ -18,7 +18,7 @@
       <el-button @click="dialogFormVisible = false">
         {{ $t('actions.cancel') }}
       </el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+      <el-button :loading="submitLoading" type="primary" @click="dialogStatus==='create'?createData():updateData()">
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
@@ -63,6 +63,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
@@ -85,27 +86,37 @@ export default {
   },
   methods: {
     createData() {
-      addLang(this.ruleForm).then(res => {
-        this.$message({
-          message: '添加成功',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.dialogFormVisible = false
-      }).catch(error => {
-        this.$notify.error(error)
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.submitLoading = true
+          addLang(this.ruleForm).then(res => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.dialogFormVisible = false
+          }).finally(() => {
+            this.submitLoading = false
+          })
+        }
       })
     },
     updateData() {
-      updateLang(this.ruleForm).then(res => {
-        this.$message({
-          message: '修改成功',
-          type: 'success'
-        })
-        this.$emit('success')
-        this.dialogFormVisible = false
-      }).catch(error => {
-        this.$notify.error(error)
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.submitLoading = true
+          updateLang(this.ruleForm).then(res => {
+            this.$message({
+              message: 'success',
+              type: 'success'
+            })
+            this.$emit('success')
+            this.dialogFormVisible = false
+          }).finally(() => {
+            this.submitLoading = false
+          })
+        }
       })
     }
   }

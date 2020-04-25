@@ -47,13 +47,13 @@
           <el-input v-model="ruleForm.email" readonly></el-input>
         </el-tooltip> -->
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.router')" prop="phone">
+      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.router')">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.filepath')" prop="phone">
+      <el-form-item v-if="ruleForm.type === 1" :label="$t('organization.menuModules.field.filepath')">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item v-if="ruleForm.type === 2" :label="$t('organization.menuModules.field.auth')" prop="phone">
+      <el-form-item v-if="ruleForm.type === 2" :label="$t('organization.menuModules.field.auth')">
         <el-cascader
           placeholder="搜索"
           :options="options"
@@ -64,7 +64,7 @@
           style="width: 100%">
         </el-cascader>
       </el-form-item>
-      <el-form-item :label="$t('organization.menuModules.field.sort')" prop="phone">
+      <el-form-item :label="$t('organization.menuModules.field.sort')">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
     </el-form>
@@ -134,9 +134,6 @@ export default {
         ],
         email: [
           { type: 'email', message: '请选正确的emial', trigger: 'blur' }
-        ],
-        phone: [
-          { type: 'phone', message: '请填写正确的手机号', trigger: 'blur' }
         ]
       },
       filterText: '',

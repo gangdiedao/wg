@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div style="margin-bottom: 15px;">
       <el-select v-model="listQuery.op_user_id" style="width: 180px" class="filter-item" clearable @change="handleFilter" :placeholder="$t('guide.common.fromJingliSearch')">
         <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
@@ -44,6 +44,9 @@
               <!-- <template slot-scope="{row}">
                 <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
               </template> -->
+              <template slot-scope="{row}">
+                <span class="link-type">{{ row.name }}</span>
+              </template>
             </el-table-column>
             <el-table-column :label="$t('guide.field.id')" prop="code" align="center" width="80"></el-table-column>
             <el-table-column :label="$t('guide.field.insideId')" prop="inner_code" width="110px"></el-table-column>

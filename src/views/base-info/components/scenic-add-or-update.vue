@@ -82,7 +82,7 @@
       <el-button @click="dialogFormVisible = false">
         {{ $t('actions.cancel') }}
       </el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+      <el-button :loading="submitLoading" type="primary" @click="dialogStatus==='create'?createData():updateData()">
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
@@ -173,6 +173,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       currentDate: '',
       daterange: '',
       calendar: '',
@@ -307,6 +308,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.submitLoading = true
           addScenic(this.formData).then(() => {
             this.$message({
               message: 'success',
@@ -314,6 +316,8 @@ export default {
             })
             this.$emit('success')
             this.close()
+          }).finally(() => {
+            this.submitLoading = false
           })
         }
       })
@@ -321,6 +325,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.submitLoading = true
           editScenic(this.formData).then(() => {
             this.$message({
               message: 'success',
@@ -328,6 +333,8 @@ export default {
             })
             this.$emit('success')
             this.close()
+          }).finally(() => {
+            this.submitLoading = false
           })
         }
       })
