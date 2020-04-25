@@ -2,7 +2,8 @@ import * as systemApi from '@/api/system'
 
 const state = {
   dictTypeList: '',
-  dictList: []
+  dictList: [],
+  city: [],
 }
 
 const mutations = {
@@ -11,6 +12,9 @@ const mutations = {
   },
   SET_DICTTYPE_LIST: (state, data) => {
     state.dictTypeList = data.data
+  },
+  SET_CITY: (state, data) => {
+    state.city = data.data.reverse()
   }
 }
 
@@ -23,6 +27,10 @@ const actions = {
     let res = await systemApi.getDictList(params)
     commit('SET_DICT_LIST', res)
     return res
+  },
+
+  async getCity({ commit }) {
+    commit('SET_CITY', await systemApi.getOtherDictList({type: 'city'}))
   }
 }
 

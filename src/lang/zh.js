@@ -96,7 +96,8 @@ export default {
     transfer: '转移',
     reviewer: '审核',
     export: '导出',
-    import: '导入'
+    import: '导入',
+    closePage: '关闭页面'
   },
   other: {
     keyword: '关键字'

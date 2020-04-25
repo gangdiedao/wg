@@ -31,7 +31,8 @@
       <el-input v-model.trim="formData.address" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submit">{{ $t('actions.update') }}</el-button>
+      <el-button :loading="submitLoading" type="primary" @click="submit">{{ $t('actions.update') }}</el-button>
+      <el-button @click="$closeTag()">{{ $t('actions.closePage') }}</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -64,6 +65,7 @@ export default {
   },
   methods: {
     submit() {
+      this.submitLoading = true
       this.$store.dispatch('user/update', this.formData).then(() => {
         this.$message({
           message: 'User information has been updated successfully',
@@ -74,6 +76,8 @@ export default {
           message: error,
           type: 'error'
         })
+      }).finally(() => {
+        this.submitLoading = false
       })
     },
     cropSuccess(resData) {

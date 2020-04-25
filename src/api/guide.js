@@ -90,6 +90,15 @@ export function setDepositStatus(data) {
   })
 }
 
+// 删除押金
+export function removeDeposit(data) {
+  return request({
+    url: '/admin/factordata/guidedeposit/del',
+    method: 'post',
+    data
+  })
+}
+
 // 预支创建
 export function addAdvance(data) {
   return request({

@@ -9,6 +9,11 @@ export default {
       this.$i18n.mergeLocaleMessage('zh', local.zh)
     }
   },
+  data() {
+    return {
+      statusOptions: []
+    }
+  },
   methods: {
     setCityOptions() {
       return [
@@ -23,6 +28,14 @@ export default {
         { key: 'samui', label: this.$t('i18nView.areas.samui') },
         { key: 'surat', label: this.$t('i18nView.areas.surat') },
         { key: 'kohchang', label: this.$t('i18nView.areas.kohchang') }
+      ]
+    },
+    // 获取状态类型
+    getStatus() {
+      this.statusOptions = [
+        { key: '', name: this.$t('i18nView.status.all') },
+        { key: 1, name: this.$t('i18nView.status.open') },
+        { key: 2, name: this.$t('i18nView.status.close') }
       ]
     },
     // 支付类型

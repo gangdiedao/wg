@@ -47,6 +47,10 @@ export default {
         yuzhihao: '预支号',
         amount: '金额',
       },
+      common: {
+        fromJingliSearch: '按排团经理搜索',
+        fromGuojiSearch: '按国籍搜索'
+      },
       status: {
         open: '已激活',
         close: '已锁定',

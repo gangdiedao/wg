@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-select v-model="listQuery.op_user_id" style="width: 180px" class="filter-item" @change="handleFilter" placeholder="按排团经理搜索">
-        <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" clearable/>
+    <div style="margin-bottom: 15px;">
+      <el-select v-model="listQuery.op_user_id" style="width: 180px" class="filter-item" clearable @change="handleFilter" :placeholder="$t('guide.common.fromJingliSearch')">
+        <el-option v-for="item in userList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-select v-model="listQuery.nationality_id" style="width: 140px" class="filter-item" clearable @change="handleFilter" placeholder="按国籍搜索">
+      <el-select v-model="listQuery.nationality_id" style="width: 140px" class="filter-item" clearable @change="handleFilter" :placeholder="$t('guide.common.fromGuojiSearch')">
         <el-option v-for="item in nationalityList" :key="item.id" :label="item.value" :value="item.id" />
       </el-select>
       <el-input v-model="listQuery.keyword" :placeholder="$t('guide.field.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
@@ -44,6 +44,9 @@
               <!-- <template slot-scope="{row}">
                 <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
               </template> -->
+              <template slot-scope="{row}">
+                <span class="link-type">{{ row.name }}</span>
+              </template>
             </el-table-column>
             <el-table-column :label="$t('guide.field.id')" prop="code" align="center" width="80"></el-table-column>
             <el-table-column :label="$t('guide.field.insideId')" prop="inner_code" width="110px"></el-table-column>

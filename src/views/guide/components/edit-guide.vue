@@ -88,7 +88,7 @@
       <el-button @click="dialogFormVisible = false">
         {{ $t('actions.cancel') }}
       </el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+      <el-button :loading="submitLoading" type="primary" @click="dialogStatus==='create'?createData():updateData()">
         {{ $t('actions.confirm') }}
       </el-button>
     </div>
@@ -164,6 +164,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       dialogFormVisible: this.show,
       dialogStatus: this.item ? 'update' : 'create',
       textMap: {
@@ -252,6 +253,7 @@ export default {
     createData() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
+          this.submitLoading = true
           addGuide(this.ruleForm).then(() => {
             this.$message({
               message: 'success',
@@ -259,6 +261,8 @@ export default {
             })
             this.$emit('success')
             this.dialogFormVisible = false
+          }).finally(() => {
+            this.submitLoading = false
           })
         }
       })
@@ -266,6 +270,7 @@ export default {
     updateData() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
+          this.submitLoading = true
           editGuide(this.ruleForm).then(() => {
             this.$message({
               message: 'success',
@@ -273,6 +278,8 @@ export default {
             })
             this.$emit('success')
             this.dialogFormVisible = false
+          }).finally(() => {
+            this.submitLoading = false
           })
         }
       })

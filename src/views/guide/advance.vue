@@ -1,24 +1,25 @@
 <template>
   <div class="app-container">
-    <el-row type="flex" class="filter-container">
+    <div style="margin-bottom: 15px;">
       <el-select v-model="listQuery.date_type" style="width: 140px" class="filter-item">
         <el-option v-for="item in [{id: 1, label: '支票日期'}, {id: 2, label: '支付日期'}, {id: 3, label: '创建日期'}]" :key="item.id" :label="item.label" :value="item.id" />
       </el-select>
       <el-date-picker
         v-model="listQuery.date"
         type="daterange"
-        align="right"
+        align="center"
         unlink-panels
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
+        @change="handleFilter"
         :picker-options="pickerOptions">
       </el-date-picker>
       <el-input v-model="listQuery.keyword" :placeholder="$t('guide.field.keyword') + $t('actions.search')" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('guide.button.search') }}
       </el-button>
-    </el-row>
+    </div>
     <el-row type="flex" class="row-bg" justify="start">
       <el-col :span="12">
         <el-button type="primary" size="mini" @click="handleCreate">{{ $t('actions.create') }}</el-button>
@@ -34,7 +35,7 @@
       fit
       highlight-current-row
       :summary-method="getSummaries"
-      show-summary
+      :show-summary="false"
       @selection-change="handleSelectionChange"
       style="margin-top:15px;"
     >
@@ -46,7 +47,7 @@
       <el-table-column :label="$t('guide.field.date')" prop="bill_date" width="150px" align="center"></el-table-column>
       <el-table-column :label="$t('guide.field.guide')" width="140px">
         <template slot-scope="{row}">
-          <span class="link-type">{{ row.guide.name }}</span>
+          <span class="link-type">{{ row.guide && row.guide.name }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('guide.field.groupNumber')" prop="group_code" width="180px" align="center"></el-table-column>
@@ -64,22 +65,14 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('guide.field.remark')" prop="remark" width="140px" align="center"></el-table-column>
-      <el-table-column :label="$t('guide.field.reviewer')" width="180px" align="center">
-        <template slot-scope="{row}">
-          <!-- <span>{{ row.author }}</span> -->
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('guide.field.log')" width="140px" align="center">
-        <template slot-scope="{row}">
-          <!-- <span>{{ row.author }}</span> -->
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('guide.field.actions')" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('guide.field.reviewer')" width="180px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.log')" width="140px" align="center"></el-table-column>
+      <el-table-column :label="$t('guide.field.actions')" fixed="right" align="center" width="230px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             {{ $t('actions.edit') }}
           </el-button>
-          <el-button size="mini" type="success">
+          <el-button :disabled="true" size="mini" type="success">
             {{ $t('actions.reviewer') }}
           </el-button>
           <el-button size="mini" type="danger" @click="setStatus(row)">
@@ -125,7 +118,8 @@
         listQuery: {
           page: 1,
           limit: 10,
-          keyword: ''
+          keyword: '',
+          date_type: 3
         }
       }
     },
