@@ -8,7 +8,7 @@
     </el-form-item>
     <el-form-item>
       <el-button :loading="submitLoading" type="primary" @click="submitForm('ruleForm')">{{ $t('actions.confirm') }}</el-button>
-      <el-button @click="resetForm('ruleForm')">{{ $t('profile.field.reset') }}</el-button>
+      <el-button @click="$closeTag()">{{ $t('actions.closePage') }}</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -67,6 +67,7 @@ export default {
         }
       })
     },
+    // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields()
     }
