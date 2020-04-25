@@ -211,8 +211,8 @@ export default {
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
-        this.saveBtn = true
         if (valid) {
+          this.saveBtn = true
           if (this.dataForm.id) {
             updateArticle(this.dataForm).then(response => {
               if (response.code === 2000) {

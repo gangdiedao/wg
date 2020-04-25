@@ -291,24 +291,24 @@
           </template>
         </el-table-column>
         <el-table-column prop="date" label="餐厅" align="center">
-          <template slot-scope="{row}">
-            <el-button type="text" size="small">设置</el-button>
-            <el-button type="text" size="small">清除</el-button>
-            <el-button type="text" size="small">设为用餐</el-button>
+          <template>
+            <el-button type="text" size="small" @click="handleSet(1)">设置</el-button>
+            <el-button type="text" size="small" @click="handleClear(1)">清除</el-button>
+            <el-button type="text" size="small" @click="handleSets(1)">设为用餐</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="景点" align="center">
-          <template slot-scope="{row}">
-            <el-button type="text" size="small">设置</el-button>
-            <el-button type="text" size="small">清除</el-button>
-            <el-button type="text" size="small">设为行程</el-button>
+          <template>
+            <el-button type="text" size="small" @click="handleSet(2)">设置</el-button>
+            <el-button type="text" size="small" @click="handleClear(1)">清除</el-button>
+            <el-button type="text" size="small" @click="handleSets(2)">设为行程</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="酒店" align="center">
-          <template slot-scope="{row}">
-           <el-button type="text" size="small">设置</el-button>
-            <el-button type="text" size="small">清除</el-button>
-            <el-button type="text" size="small">复制上一天酒店</el-button>
+          <template>
+           <el-button type="text" size="small" @click="handleSet(3)">设置</el-button>
+            <el-button type="text" size="small" @click="handleClear(1)">清除</el-button>
+            <el-button type="text" size="small" @click="handleCopy()">复制上一天酒店</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="备注" align="center">
@@ -327,11 +327,55 @@
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()" :loading="saveBtn">{{ $t('i18nView.information.save') }}</el-button>
     </template>
+    <el-dialog
+      width="50%"
+      title="设置"
+      :visible.sync="innerVisible"
+      center
+      append-to-body>
+      <el-table
+      :data="restaurantListData"
+      @selection-change="handleSelectionChange"
+      border
+      style="width: 100%">
+      <el-table-column
+        type="selection"
+        align="center"
+        width="55"
+      />
+      <el-table-column
+        prop="name"
+        label="名称"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="address"
+        label="地址"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="telphone"
+        label="联系电话">
+      </el-table-column>
+      <!-- <el-table-column
+        prop="telphone"
+        label="价格">
+      </el-table-column> -->
+      <el-table-column
+        prop="pay_type_name"
+        label="支付类型">
+      </el-table-column>
+    </el-table>
+    <template slot="footer">
+      <el-button @click="innerVisible = false">{{ $t('i18nView.information.cancel') }}</el-button>
+      <el-button type="primary" @click="handleSubmit()">{{ $t('i18nView.information.save') }}</el-button>
+    </template>
+    </el-dialog>
   </el-dialog>
 </template>
 
 <script>
-import { createArticle, updateArticle, upload, userList, companyList, cityList } from '@/api/product'
+import { createArticle, updateArticle, upload, userList, companyList, cityList, restaurantList } from '@/api/product'
 import mixin from '../mixin'
 
 export default {
@@ -341,6 +385,7 @@ export default {
       visible: false,
       saveBtn: false,
       dialogVisible: false,
+      innerVisible: false,
       dataForm: {
         info_type_id: '',
         info_type_name: '',
@@ -359,9 +404,13 @@ export default {
         page: 1,
         limit: 1000,
         keyword: '',
-        status: 1
+        status: ''
       },
       listQuery2: {
+        page: 1,
+        limit: 1000,
+      },
+      restaurantQuery: {
         page: 1,
         limit: 1000,
       },
@@ -418,6 +467,7 @@ export default {
       serviceData: [],
       tableData: [],
       tableData2: [],
+      restaurantListData: [],
       dialogImageUrl: ''
     }
   },
@@ -524,6 +574,29 @@ export default {
         return item.id === id
       })
       this.dataForm.info_type_name = obj.name
+    },
+    //行程信息--设置
+    handleSet(e){
+      this.innerVisible = true
+      restaurantList(this.restaurantQuery).then(response => {
+        this.restaurantListData = response.data.data
+      })
+    },
+    //行程信息--清除
+    handleClear(e){
+
+    },
+    //行程信息--设为...
+    handleSets(e){
+
+    },
+    //行程信息--弹窗多选
+    handleSelectionChange(e){
+      console.log(e)
+    },
+    //行程信息---保存
+    handleSubmit(){
+      this.innerVisible = false
     },
     //新增团费，新增行程
     handleCreate(flag){
@@ -658,8 +731,8 @@ export default {
     // 表单提交
     dataFormSubmitHandle() {
       this.$refs['dataForm'].validate(async valid => {
-        this.saveBtn = true
         if (valid) {
+          this.saveBtn = true
           if (this.dataForm.id) {
             updateArticle(this.dataForm).then(response => {
               if (response.code === 2000) {

@@ -660,8 +660,8 @@ export default {
         this.dataForm.busesArr = this.tableData
       })
       this.$refs['dataForm'].validate(async valid => {
-        this.saveBtn = true
         if (valid) {
+          this.saveBtn = true
           if (this.dataForm.id) {
             update(this.dataForm).then(response => {
               if (response.code === 2000) {

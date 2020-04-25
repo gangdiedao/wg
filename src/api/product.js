@@ -8,6 +8,14 @@ export function fetchList(query) {
     params: query
   })
 }
+// 餐厅列表
+export function restaurantList(query) {
+  return request({
+    url: '/admin/factordata/restaurant/search',
+    method: 'get',
+    params: query
+  })
+}
 // 用户列表
 export function userList(query) {
   return request({
