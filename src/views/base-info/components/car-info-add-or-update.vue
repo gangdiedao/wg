@@ -211,7 +211,7 @@
     </el-table>
     <template slot="footer">
       <el-button @click="visible = false">{{ $t('i18nView.information.cancel') }}</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('i18nView.information.save') }}</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()" :loading="saveBtn">{{ $t('i18nView.information.save') }}</el-button>
     </template>
   </el-dialog>
 </template>
@@ -227,6 +227,7 @@ export default {
   data() {
     return {
       visible: false,
+      saveBtn: false,
       dialogVisible: false,
       currentDate: '',
       daterange: '',
@@ -659,6 +660,7 @@ export default {
         this.dataForm.busesArr = this.tableData
       })
       this.$refs['dataForm'].validate(async valid => {
+        this.saveBtn = true
         if (valid) {
           if (this.dataForm.id) {
             update(this.dataForm).then(response => {
@@ -669,11 +671,13 @@ export default {
                   message: this.$t('i18nView.information.edit') + this.$t('i18nView.information.success'),
                   onClose: () => {
                     this.visible = false
+                    this.saveBtn = false
                     this.$emit('callBcak', 'edit')
                   }
                 })
               } else {
                 this.$message.error(response.msg)
+                this.saveBtn = false
               }
             })
           } else {
@@ -685,11 +689,13 @@ export default {
                   message: this.$t('i18nView.information.add') + this.$t('i18nView.information.success'),
                   onClose: () => {
                     this.visible = false
+                    this.saveBtn = false
                     this.$emit('callBcak', 'add')
                   }
                 })
               } else {
                 this.$message.error(response.msg)
+                this.saveBtn = false
               }
             })
           }
