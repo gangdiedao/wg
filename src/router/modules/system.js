@@ -14,6 +14,12 @@ const router = {
   },
   children: [
     {
+      path: 'parameter',
+      component: () => import('@/views/system/parameter'),
+      name: 'parameter',
+      meta: { title: 'parameter' }
+    },
+    {
       path: 'datadict',
       component: () => import('@/views/system/datadict'),
       name: 'datadict',
@@ -24,6 +30,12 @@ const router = {
       component: () => import('@/views/system/lang'),
       name: 'lang',
       meta: { title: 'lang' }
+    },
+    {
+      path: 'confirmdetail',
+      component: () => import('@/views/system/confirmdetail'),
+      name: 'confirmdetail',
+      meta: { title: 'confirmdetail' }
     }
   ]
 }

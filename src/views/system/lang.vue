@@ -61,7 +61,7 @@ import Pagination from '@/components/Pagination'
 import { mapGetters } from 'vuex'
 import { langList, deleteLang } from '@/api/system'
 export default {
-  name: 'roleManage',
+  name: 'lang',
   mixins: [mixin],
   components: {
     Pagination,

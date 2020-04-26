@@ -78,7 +78,7 @@ import Pagination from '@/components/Pagination'
 import { mapGetters } from 'vuex'
 import { changeStatus } from '@/api/system'
 export default {
-  name: 'roleManage',
+  name: 'datadict',
   mixins: [mixin],
   components: {
     Pagination,

@@ -81,11 +81,47 @@ export function deleteLang(params) {
   })
 }
 
-// 删除语言
+// 语言列表
 export function langList(params) {
   return request({
     url: '/admin/system/lang/lists',
     method: 'get',
     params
+  })
+}
+
+// 参数详情
+export function paramDetail(params) {
+  return request({
+    url: '/admin/system/parameter/detail',
+    method: 'get',
+    params
+  })
+}
+
+// 保存更新参数
+export function saveParam(data) {
+  return request({
+    url: '/admin/system/parameter/save',
+    method: 'post',
+    data
+  })
+}
+
+// 确认书模板详情
+export function confirmDetail(params) {
+  return request({
+    url: '/admin/system/template/confirmdetail',
+    method: 'get',
+    params
+  })
+}
+
+// 保存更新确认书模板
+export function saveConfirmTemp(data) {
+  return request({
+    url: '/admin/system/template/confirm',
+    method: 'post',
+    data
   })
 }
