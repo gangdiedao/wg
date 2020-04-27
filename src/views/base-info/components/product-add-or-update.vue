@@ -34,7 +34,7 @@
         <el-input v-model="dataForm.name" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.name')" />
       </el-form-item>
       <el-form-item prop="op_organization_id" :label="$t('i18nView.information.operator')">
-        <el-select v-model="dataForm.op_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.operator')" @change="coChange">
+        <el-select v-model="dataForm.op_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.operator')" @change="opChange">
           <el-option
             v-for="item in userListArr"
             :key="item.id"
@@ -44,7 +44,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="sale_organization_id" :label="$t('i18nView.information.seller')">
-        <el-select v-model="dataForm.sale_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.seller')" @change="coChange">
+        <el-select v-model="dataForm.sale_organization_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.seller')" @change="saleChange">
           <el-option
             v-for="item in userListArr"
             :key="item.id"
@@ -54,7 +54,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="company_id" :label="$t('i18nView.information.company_name')">
-        <el-select v-model="dataForm.company_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.company_name')" @change="coChange">
+        <el-select v-model="dataForm.company_id" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.company_name')" @change="companyChange">
           <el-option
             v-for="item in companyListArr"
             :key="item.id"
@@ -117,15 +117,15 @@
         </el-upload>
       </el-form-item>
     <el-divider content-position="left">计划信息</el-divider>
-      <el-form-item prop="plan_day" :label="$t('i18nView.information.tripDays')">
-        <el-input v-model="dataForm.plan_day" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.tripDays')">
+      <el-form-item :label="$t('i18nView.information.tripDays')">
+        <el-input v-model="dataForm.product_dataArr.info.plan_day" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.tripDays')">
           <template slot="append">(Exp:2-2-1 5N7D)</template>
         </el-input>
       </el-form-item>
       <el-form-item prop="outlay" :label="$t('i18nView.information.outlay')">
-        <el-input v-model="dataForm.outlay" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.outlay')" />
+        <el-input v-model="dataForm.product_dataArr.info.outlay" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.outlay')" />
       </el-form-item>
-      <el-form-item prop="outlay" :label="$t('i18nView.information.tourFee')">
+      <el-form-item prop="cost" :label="$t('i18nView.information.tourFee')">
         <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate(1)">
         {{ $t('i18nView.information.add') }}
       </el-button>
@@ -171,20 +171,20 @@
       </el-table>
       </el-form-item>
       <el-form-item prop="from_city" :label="$t('i18nView.information.origin')">
-        <el-input v-model="dataForm.from_city" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.origin')">
+        <el-input v-model="dataForm.product_dataArr.info.from_city" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.origin')">
           <template slot="append">(Exp: 杭州 - 曼谷)</template>
         </el-input>
       </el-form-item>
       <el-form-item prop="flight" :label="$t('i18nView.information.flight')">
-        <el-input v-model="dataForm.flight" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.flight')">
+        <el-input v-model="dataForm.product_dataArr.info.flight" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.flight')">
           <template slot="append">(Exp:FT1 1530/1700; FT3 2300/0100+1 次日凌晨1点)</template>
         </el-input>
       </el-form-item>
       <el-form-item prop="party_op" :label="$t('i18nView.information.firstPartyOperation')">
-        <el-input v-model="dataForm.party_op" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.firstPartyOperation')" />
+        <el-input v-model="dataForm.product_dataArr.exdata.party_op" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.firstPartyOperation')" />
       </el-form-item>
       <el-form-item prop="source" :label="$t('i18nView.information.touristDestination')">
-        <el-select v-model="dataForm.source" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.touristDestination')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.source" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.touristDestination')" @change="coChange">
           <el-option
             v-for="item in cityListData"
             :key="item.id"
@@ -194,7 +194,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="market" :label="$t('i18nView.information.market')">
-        <el-select v-model="dataForm.market" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.market')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.market" :placeholder="$t('i18nView.information.select')+$t('i18nView.information.market')" @change="coChange">
           <el-option
             v-for="item in marketListData"
             :key="item.id"
@@ -204,7 +204,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="shopping" :label="$t('i18nView.information.buy')">
-        <el-select v-model="dataForm.shopping" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.buy')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.shopping" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.buy')" @change="coChange">
           <el-option
             v-for="item in buyListDatas"
             :key="item.id"
@@ -214,7 +214,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="self_cost" :label="$t('i18nView.information.selfcost')">
-        <el-select v-model="dataForm.self_cost" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.selfcost')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.self_cost" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.selfcost')" @change="coChange">
           <el-option
             v-for="item in selFcostData"
             :key="item.id"
@@ -224,13 +224,13 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="one_price" :label="$t('i18nView.information.one_price')">
-        <el-input v-model="dataForm.one_price" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.one_price')" />
+        <el-input v-model="dataForm.product_dataArr.exdata.one_price" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.one_price')" />
       </el-form-item>
       <el-form-item prop="passport" :label="$t('i18nView.information.passport')">
-        <el-input v-model="dataForm.passport" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.passport')" />
+        <el-input v-model="dataForm.product_dataArr.exdata.passport" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.passport')" />
       </el-form-item>
       <el-form-item prop="leader_expense" :label="$t('i18nView.information.leader_expense')">
-        <el-select v-model="dataForm.leader_expense" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.leader_expense')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.leader_expense" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.leader_expense')" @change="coChange">
           <el-option
             v-for="item in payTypeData"
             :key="item.id"
@@ -240,7 +240,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="service_expense" :label="$t('i18nView.information.service_expense')">
-        <el-select v-model="dataForm.service_expense" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.service_expense')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.service_expense" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.service_expense')" @change="coChange">
           <el-option
             v-for="item in serviceData"
             :key="item.id"
@@ -250,7 +250,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="pay_type" :label="$t('i18nView.information.payType')">
-        <el-select v-model="dataForm.pay_type" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.payType')" @change="coChange">
+        <el-select v-model="dataForm.product_dataArr.exdata.pay_type" multiple :placeholder="$t('i18nView.information.select')+$t('i18nView.information.payType')" @change="coChange">
           <el-option
             v-for="item in payTypeData"
             :key="item.id"
@@ -260,19 +260,19 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="shopping_team_no" :label="$t('i18nView.information.shopping_team_no')">
-        <el-input v-model="dataForm.shopping_team_no" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.shopping_team_no')" />
+        <el-input v-model="dataForm.product_dataArr.exdata.shopping_team_no" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.shopping_team_no')" />
       </el-form-item>
       <el-form-item prop="kingpower_team_no" :label="$t('i18nView.information.kingpower_team_no')">
-        <el-input v-model="dataForm.kingpower_team_no" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.kingpower_team_no')" />
+        <el-input v-model="dataForm.product_dataArr.exdata.kingpower_team_no" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.kingpower_team_no')" />
       </el-form-item>
       <el-form-item prop="car_explain" :label="$t('i18nView.information.car_explain')">
-        <el-input v-model="dataForm.car_explain" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.car_explain')" type="textarea" />
+        <el-input v-model="dataForm.product_dataArr.info.car_explain" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.car_explain')" type="textarea" />
       </el-form-item>
       <el-form-item prop="room_explain" :label="$t('i18nView.information.room_explain')">
-        <el-input v-model="dataForm.room_explain" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.room_explain')" type="textarea" />
+        <el-input v-model="dataForm.product_dataArr.info.room_explain" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.room_explain')" type="textarea" />
       </el-form-item>
       <el-form-item prop="remark" :label="$t('i18nView.information.remarks')">
-        <el-input v-model="dataForm.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.remarks')" type="textarea" />
+        <el-input v-model="dataForm.product_dataArr.info.remark" :placeholder="$t('i18nView.information.input')+$t('i18nView.information.remarks')" type="textarea" />
       </el-form-item>
       <el-divider content-position="left">行程信息</el-divider>
       <el-button class="filter-item" style="margin-bottom: 10px;" type="primary" size="small" @click="handleCreate(2)">
@@ -387,18 +387,54 @@ export default {
       dialogVisible: false,
       innerVisible: false,
       dataForm: {
-        info_type_id: '',
-        info_type_name: '',
+        type: 1, // 类型：1：普通套餐 2：单订车 3：单酒店 4：单订房和车 默认1
+        code: '',
         name: '',
         status: 1, // 状态 1:激活 2：锁定
-        url: '',
+        plan_group: '',
+        info_type_id: '',
+        info_type_name: '',
+        fax: '',
+        op_user_id: '',
+        op_organization_id: '',
+        op_user_name: '',
+        sale_user_id: '',
+        sale_organization_id: '',
+        sale_user_name: '',
+        logo: '',
+        company_id: '',
+        company_name: '',
+        intro: '',
+        remark: '',
         imagesArr: [],
         filesArr: [],
-        intro: '',
-        contact: '',
-        telphone: '',
-        email: '',
-        logo: ''
+        product_dataArr: {
+          info:{
+            remark: '',
+            flight: '',
+            from_city: '',
+            plan_day: '',
+            car_explain: '',
+            room_explain: '',
+            outlay: ''
+          },
+          cost:[],
+          exdata: {
+            party_op: '',
+            source: '',
+            market: '',
+            shopping: '',
+            self_cost: '',
+            one_price: '',
+            passport: '',
+            leader_expense: '',
+            service_expense: '',
+            pay_type: '',
+            shopping_team_no:'',
+            kingpower_team_no: ''
+          },
+          trips: []
+      }
       },
       listQuery: {
         page: 1,
@@ -501,18 +537,56 @@ export default {
           this.dataForm = item
         } else {
           this.dataForm = {
-            info_type_id: '',
-            info_type_name: '',
+            type: 1, // 类型：1：普通套餐 2：单订车 3：单酒店 4：单订房和车 默认1
+            code: '',
             name: '',
             status: 1, // 状态 1:激活 2：锁定
-            url: '',
+            plan_group: '',
+            info_type_id: '',
+            info_type_name: '',
+            fax: '',
+            op_user_id: '',
+            op_organization_id: '',
+            op_user_name: '',
+            sale_user_id: '',
+            sale_organization_id: '',
+            sale_user_name: '',
+            logo: '',
+            company_id: '',
+            company_name: '',
+            intro: '',
+            remark: '',
             imagesArr: [],
             filesArr: [],
-            intro: '',
-            contact: '',
-            telphone: '',
-            email: '',
-            logo: ''
+            product_dataArr: [
+              {
+                info:{
+                  remark: '',
+                  flight: '',
+                  from_city: '',
+                  plan_day: '',
+                  car_explain: '',
+                  room_explain: '',
+                  outlay: ''
+                },
+                cost:[],
+                exdata: {
+                  party_op: '',
+                  source: '',
+                  market: '',
+                  shopping: '',
+                  self_cost: '',
+                  one_price: '',
+                  passport: '',
+                  leader_expense: '',
+                  service_expense: '',
+                  pay_type: '',
+                  shopping_team_no:'',
+                  kingpower_team_no: ''
+                },
+                trips: []
+              }
+            ]
           }
           this.tableData = []
           this.tableData2 = []
@@ -574,6 +648,32 @@ export default {
         return item.id === id
       })
       this.dataForm.info_type_name = obj.name
+    },
+    // 操作者类型改变
+    opChange(id) {
+      let obj = {}
+      obj = this.userListArr.find(item => {
+        return item.id === id
+      })
+      this.dataForm.op_user_name = obj.name
+      this.dataForm.op_organization_id = obj.department_id
+    },
+    // 销售类型改变
+    saleChange(id) {
+      let obj = {}
+      obj = this.userListArr.find(item => {
+        return item.id === id
+      })
+      this.dataForm.sale_user_name = obj.name
+      this.dataForm.op_organization_id = obj.department_id
+    },
+    // 组团社改变
+    companyChange(id) {
+      let obj = {}
+      obj = this.companyListArr.find(item => {
+        return item.id === id
+      })
+      this.dataForm.company_name = obj.name
     },
     //行程信息--设置
     handleSet(e){
