@@ -31,6 +31,24 @@
     <el-tab-pane label="自费管理">
       <span>自费管理</span>
     </el-tab-pane>
+    <el-tab-pane label="公司首收费">
+      <span>公司首收费</span>
+    </el-tab-pane>
+    <el-tab-pane label="公司收入">
+      <span>公司收入</span>
+    </el-tab-pane>
+    <el-tab-pane label="公司支出">
+      <span>公司支出</span>
+    </el-tab-pane>
+    <el-tab-pane label="导游支出">
+      <span>导游支出</span>
+    </el-tab-pane>
+    <el-tab-pane label="导游结账单">
+      <span>导游结账单</span>
+    </el-tab-pane>
+    <el-tab-pane label="公司结账单">
+      <span>公司结账单</span>
+    </el-tab-pane>
   </el-tabs>
 </template>
 
