@@ -45,7 +45,7 @@
         width="180"
         :label="$t('plan.field.code')">
         <template slot-scope="{row}">
-          <el-link type="primary" @click="$router.push({path: '/group/detail', query: {code: row.code}})">{{row.code}}</el-link>
+          <el-link type="primary" @click="$router.push({path: '/group/detail', query: {code: row.code, id: row.id}})">{{row.code}}</el-link>
         </template>
       </el-table-column>
       <el-table-column
