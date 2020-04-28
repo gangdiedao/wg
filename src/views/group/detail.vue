@@ -63,6 +63,12 @@ import finance from './components/finance'
 import confirmtpl from './components/confirmtpl'
 
 export default {
+  data() {
+    return {
+      dataForm: {},
+      dataRule: {}
+    }
+  },
   name: '',
   beforeRouteEnter(to, from, next) {
     to.meta.title = to.query.code
