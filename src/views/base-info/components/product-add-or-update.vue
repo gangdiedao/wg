@@ -558,35 +558,33 @@ export default {
             remark: '',
             imagesArr: [],
             filesArr: [],
-            product_dataArr: [
-              {
-                info:{
-                  remark: '',
-                  flight: '',
-                  from_city: '',
-                  plan_day: '',
-                  car_explain: '',
-                  room_explain: '',
-                  outlay: ''
-                },
-                cost:[],
-                exdata: {
-                  party_op: '',
-                  source: '',
-                  market: '',
-                  shopping: '',
-                  self_cost: '',
-                  one_price: '',
-                  passport: '',
-                  leader_expense: '',
-                  service_expense: '',
-                  pay_type: '',
-                  shopping_team_no:'',
-                  kingpower_team_no: ''
-                },
-                trips: []
-              }
-            ]
+            product_dataArr: {
+              info:{
+                remark: '',
+                flight: '',
+                from_city: '',
+                plan_day: '111',
+                car_explain: '',
+                room_explain: '',
+                outlay: ''
+              },
+              cost:[],
+              exdata: {
+                party_op: '',
+                source: '',
+                market: '',
+                shopping: '',
+                self_cost: '',
+                one_price: '',
+                passport: '',
+                leader_expense: '',
+                service_expense: '',
+                pay_type: '',
+                shopping_team_no:'',
+                kingpower_team_no: ''
+              },
+              trips: []
+          }
           }
           this.tableData = []
           this.tableData2 = []
