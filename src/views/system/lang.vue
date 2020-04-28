@@ -23,7 +23,7 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="key"
+          prop="tag"
           :label="$t('system.field.tag')">
         </el-table-column>
         <el-table-column
@@ -35,7 +35,7 @@
           :label="$t('system.field.en')">
         </el-table-column>
         <el-table-column
-          prop="th"
+          prop="tg"
           :label="$t('system.field.th')">
         </el-table-column>
         <el-table-column

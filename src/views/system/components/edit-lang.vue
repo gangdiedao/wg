@@ -11,7 +11,7 @@
         <el-input v-model="ruleForm.en"></el-input>
       </el-form-item>
       <el-form-item :label="$t('system.field.th')">
-        <el-input v-model="ruleForm.th"></el-input>
+        <el-input v-model="ruleForm.tg"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -54,7 +54,7 @@ export default {
             tag: '',
             cn: '',
             en: '',
-            th: ''
+            tg: ''
           }
           this.dialogStatus = 'create'
         }
@@ -75,7 +75,7 @@ export default {
         tag: '',
         cn: '',
         en: '',
-        th: ''
+        tg: ''
       },
       rules: {
         tag: [
