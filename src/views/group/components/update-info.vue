@@ -266,8 +266,10 @@ import { getUserList } from '@/api/organization'
 import { fetchList as getPartnerList } from '@/api/partner'
 import SelectGuide from '@/views/guide/components/select-guide'
 import { parseTime } from '@/utils/index'
+import mixin from '@/views/plan/mixin'
 
 export default {
+  mixins: [mixin],
   components: {
     SelectGuide
   },
