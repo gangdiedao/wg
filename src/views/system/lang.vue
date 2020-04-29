@@ -3,7 +3,7 @@
     <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="12">
           <el-button type="primary" size="mini" @click="handleAdd">{{ $t('actions.create') }}</el-button>
-          <el-button type="danger" size="mini" :disabled="!multipleSelection.length" @click="handleDelete">{{ $t('actions.delete') }}</el-button>
+          <el-button type="danger" size="mini" :disabled="!multipleSelection.length" @click="handleDelete('')">{{ $t('actions.delete') }}</el-button>
         </el-col>
         <el-col :span="12" style="text-align: right;">
           <el-input placeholder="请输入内容" size="mini" v-model="listQuery.keyword" class="input-with-select">
@@ -116,7 +116,7 @@ export default {
       if (item.id) {
         ids = [item.id]
       } else {
-        ids = this.multipleSelection(item => item.id)
+        ids = this.multipleSelection.map(item => item.id)
       }
       this.$confirm('确定要删除该数据?', '提示', {
         confirmButtonText: '确定',
