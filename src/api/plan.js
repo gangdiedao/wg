@@ -53,3 +53,12 @@ export function getGroupList(params) {
     params
   })
 }
+
+// 总计划详情
+export function getPlanDetail(params) {
+  return request({
+    url: '/admin/factordata/plan/detail',
+    method: 'get',
+    params
+  })
+}

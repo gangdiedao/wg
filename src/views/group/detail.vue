@@ -1,11 +1,11 @@
 <template>
-  <el-tabs type="border-card" tab-position="left">
-    <el-tab-pane>
+  <el-tabs v-model="activeName" type="border-card" tab-position="left">
+    <el-tab-pane name="baseinfo">
       <span slot="label"><i class="el-icon-date"></i> 基本信息</span>
       <baseInfo />
     </el-tab-pane>
-    <el-tab-pane label="信息设置">
-      <updateInfo />
+    <el-tab-pane label="信息设置" name="updateinfo">
+      <keep-alive><updateInfo v-if="activeName == 'updateinfo'"/></keep-alive>
     </el-tab-pane>
     <el-tab-pane label="财务设置">
       <finance />
@@ -61,14 +61,9 @@ import baseInfo from './components/base-info'
 import updateInfo from './components/update-info'
 import finance from './components/finance'
 import confirmtpl from './components/confirmtpl'
+import { getPlanDetail } from '@/api/plan'
 
 export default {
-  data() {
-    return {
-      dataForm: {},
-      dataRule: {}
-    }
-  },
   name: '',
   beforeRouteEnter(to, from, next) {
     to.meta.title = to.query.code
@@ -84,11 +79,28 @@ export default {
   },
   created() {
     const { id } = this.$route.query
-    console.log(id)
+    this.id = id
+    this.getPlanDetail()
   },
   data() {
     return {
-      id: ''
+      id: '',
+      detail: '',
+      activeName: 'baseinfo'
+    }
+  },
+  methods: {
+    getPlanDetail() {
+      if (!this.id) {
+        this.$message({
+          message: 'id 不存在',
+          type: 'error'
+        })
+        return 
+      }
+      getPlanDetail({id: this.id}).then(res => {
+        this.detail = res.data
+      })
     }
   }
 }
