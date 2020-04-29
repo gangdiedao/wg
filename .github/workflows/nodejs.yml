@@ -34,4 +34,4 @@ jobs:
         access-key-id: LTAI4G3hp4G1yPUKjCnDQvCJ
         access-key-secret: K2OfhnZfCfCmde8f0eXHi7xB8o0SZD
     - name: cp files to aliyun
-      run: ossutil cp -rf dist oss://gangdiedao/
+    - run: ossutil cp -rf dist oss://gangdiedao/
