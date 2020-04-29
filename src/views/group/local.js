@@ -60,7 +60,8 @@ export default {
       action: {
         create: '新建计划',
         saveOrUpdate: '保存修改',
-        closePage: '关闭页面'
+        closePage: '关闭页面',
+        add:'新增'
       }
     }
   },
