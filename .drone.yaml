@@ -1,6 +1,25 @@
-pipeline:
-  build:	# step name
-    image: node	# use docker image
-    commands:
-      - npm install	# install node project vendor
-      - npm run build:prod	# build static files
+# pipeline:
+#   build:	# step name
+#     image: node	# use docker image
+#     commands:
+#       - npm install	# install node project vendor
+#       - npm run build:prod	# build static files
+
+kind: pipeline:
+name: default
+
+steps:
+- name: build
+  image: node
+  commands:
+    - npm install	# install node project vendor
+    - npm run build:prod	# build static files
+
+- name: gitea_release
+  image: plugins/gitea-release
+  settings:
+    api_key: abc
+    base_url: http://47.106.193.141:10080/
+    files: dist/*
+  when:
+    event: tag
