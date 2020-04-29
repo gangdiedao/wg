@@ -26,3 +26,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: npm run build:prod
+    
+    - name: setup aliyun oss
+      uses: manyuanrong/setup-ossutil@master
+      with:
+        endpoint: oss-cn-shenzhen.aliyuncs.com
+        access-key-id: LTAI4G3hp4G1yPUKjCnDQvCJ
+        access-key-secret: K2OfhnZfCfCmde8f0eXHi7xB8o0SZD
+    - name: cp files to aliyun
+      run: ossutil cp -rf dist oss://gangdiedao/
